@@ -1,0 +1,27 @@
+# Environnement
+.env
+*.env.local
+
+# Certbot
+certbot/conf/
+certbot/www/
+
+# Docker volumes
+mysql_data/
+
+# PHP
+vendor/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Backups
+backups/
+*.sql.gz

@@ -1,0 +1,33 @@
+name: 🚀 Deploy DEV
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to VPS DEV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: ${{ secrets.DEV_PORT || 22 }}
+          script: |
+            set -e
+            echo "📦 Pull latest code..."
+            cd ~/trail-site
+            git pull origin main
+
+            echo "🐳 Rebuild & restart containers..."
+            docker compose build --no-cache app
+            docker compose up -d
+
+            echo "🧹 Cleanup old images..."
+            docker image prune -f
+
+            echo "✅ DEV deployment done — $(date)"

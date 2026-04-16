@@ -1,0 +1,42 @@
+name: 🏁 Deploy PROD
+
+on:
+  push:
+    tags:
+      - 'v*'   # Ex: git tag v1.0.0 && git push --tags
+
+jobs:
+  deploy:
+    name: Deploy to VPS PROD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_PORT || 22 }}
+          script: |
+            set -e
+            echo "🏁 PROD deployment — tag ${{ github.ref_name }}"
+            cd ~/trail-site
+
+            # Backup BDD avant déploiement
+            echo "💾 Backup BDD..."
+            docker compose exec -T mysql mysqldump \
+              -u$DB_USER -p$DB_PASS $DB_NAME \
+              > ~/backups/trail_$(date +%Y%m%d_%H%M%S).sql 2>/dev/null || true
+
+            echo "📦 Pull latest code..."
+            git pull origin main
+
+            echo "🐳 Rebuild & restart containers..."
+            docker compose build --no-cache app
+            docker compose up -d
+
+            echo "🧹 Cleanup..."
+            docker image prune -f
+
+            echo "✅ PROD deployment done — $(date)"
