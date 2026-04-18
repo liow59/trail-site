@@ -13,14 +13,11 @@ class Runner
         $this->db = Database::getInstance();
     }
 
-    /**
-     * Créer un coureur en attente de paiement
-     */
     public function create(array $data): int
     {
         $stmt = $this->db->prepare("
-            INSERT INTO runners (nom, prenom, email, telephone, date_naissance, course, taille_tshirt, club, ip_address)
-            VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :course, :taille_tshirt, :club, :ip_address)
+            INSERT INTO runners (nom, prenom, email, telephone, date_naissance, course, club, repas_poulet, repas_saucisse, repas_nuggets, total_repas, ip_address)
+            VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :course, :club, :repas_poulet, :repas_saucisse, :repas_nuggets, :total_repas, :ip_address)
         ");
 
         $stmt->execute([
@@ -30,17 +27,17 @@ class Runner
             ':telephone'       => $data['telephone'] ?? null,
             ':date_naissance'  => $data['date_naissance'] ?? null,
             ':course'          => $data['course'],
-            ':taille_tshirt'   => $data['taille_tshirt'] ?? null,
             ':club'            => $data['club'] ?? null,
+            ':repas_poulet'    => (int)($data['repas_poulet'] ?? 0),
+            ':repas_saucisse'  => (int)($data['repas_saucisse'] ?? 0),
+            ':repas_nuggets'   => (int)($data['repas_nuggets'] ?? 0),
+            ':total_repas'     => (float)($data['total_repas'] ?? 0),
             ':ip_address'      => $_SERVER['REMOTE_ADDR'] ?? null,
         ]);
 
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Mettre à jour le statut après paiement HelloAsso
-     */
     public function updatePayment(int $id, string $orderId, float $montant, string $statut = 'payé'): bool
     {
         $stmt = $this->db->prepare("
@@ -57,9 +54,6 @@ class Runner
         ]);
     }
 
-    /**
-     * Récupérer un coureur par ID
-     */
     public function findById(int $id): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM runners WHERE id = :id");
@@ -68,9 +62,6 @@ class Runner
         return $result ?: null;
     }
 
-    /**
-     * Récupérer un coureur par order HelloAsso
-     */
     public function findByOrderId(string $orderId): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM runners WHERE helloasso_order_id = :order_id");
@@ -79,9 +70,6 @@ class Runner
         return $result ?: null;
     }
 
-    /**
-     * Liste tous les coureurs (admin)
-     */
     public function getAll(string $course = '', string $statut = ''): array
     {
         $where = [];
@@ -107,9 +95,6 @@ class Runner
         return $stmt->fetchAll();
     }
 
-    /**
-     * Statistiques pour le dashboard admin
-     */
     public function getStats(): array
     {
         $stats = $this->db->query("
@@ -119,27 +104,25 @@ class Runner
                 SUM(statut = 'en_attente') as en_attente,
                 SUM(statut = 'annulé') as annules,
                 SUM(CASE WHEN statut = 'payé' THEN montant ELSE 0 END) as total_encaisse,
-                SUM(course = '10km') as total_10km,
-                SUM(course = '23km') as total_23km,
-                SUM(course = '42km') as total_42km
+                SUM(course = '3km') as total_3km,
+                SUM(course = '7.5km') as total_7_5km,
+                SUM(course = '15km') as total_15km,
+                SUM(CASE WHEN statut = 'payé' THEN total_repas ELSE 0 END) as total_repas_encaisse,
+                SUM(CASE WHEN statut = 'payé' THEN repas_poulet ELSE 0 END) as nb_poulet,
+                SUM(CASE WHEN statut = 'payé' THEN repas_saucisse ELSE 0 END) as nb_saucisse,
+                SUM(CASE WHEN statut = 'payé' THEN repas_nuggets ELSE 0 END) as nb_nuggets
             FROM runners
         ")->fetch();
 
         return $stats;
     }
 
-    /**
-     * Annuler une inscription
-     */
     public function cancel(int $id): bool
     {
         $stmt = $this->db->prepare("UPDATE runners SET statut = 'annulé' WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
 
-    /**
-     * Vérifier si email déjà inscrit pour cette course
-     */
     public function emailAlreadyRegistered(string $email, string $course): bool
     {
         $stmt = $this->db->prepare("

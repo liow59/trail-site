@@ -211,3 +211,21 @@ img { max-width: 100%; height: auto; }
 }
 
 .card-places { font-size: .78rem; color: var(--earth); letter-spacing: .05em; margin-bottom: 16px; text-align: center; padding: 6px 0; border-top: 1px solid var(--stone); }
+
+/* ===== REPAS SELECTOR ===== */
+.repas-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--stone); }
+.repas-row:last-of-type { border-bottom: none; }
+.repas-info { display: flex; align-items: baseline; gap: 8px; }
+.repas-info strong { font-size: .95rem; color: var(--charcoal); }
+.repas-prix { font-size: .85rem; color: var(--forest-mid); font-weight: 600; }
+.repas-qty { display: flex; align-items: center; gap: 0; }
+.qty-btn { width: 36px; height: 36px; border: 1.5px solid var(--stone); background: var(--cream); color: var(--charcoal); font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; }
+.qty-minus { border-radius: var(--radius) 0 0 var(--radius); }
+.qty-plus { border-radius: 0 var(--radius) var(--radius) 0; }
+.qty-btn:hover { background: var(--forest-mid); color: var(--cream); border-color: var(--forest-mid); }
+.qty-input { width: 44px; height: 36px; text-align: center; border: 1.5px solid var(--stone); border-left: none; border-right: none; font-size: .95rem; font-family: inherit; font-weight: 600; background: white; -moz-appearance: textfield; }
+.qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* ===== PRICE SUMMARY UPDATED ===== */
+.price-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: .95rem; color: var(--bark); }
+.price-total { display: flex; justify-content: space-between; padding: 12px 0 6px; margin-top: 8px; border-top: 2px solid var(--forest-mid); font-size: 1.1rem; font-weight: 700; color: var(--charcoal); }
