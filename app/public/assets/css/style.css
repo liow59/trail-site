@@ -229,3 +229,11 @@ img { max-width: 100%; height: auto; }
 /* ===== PRICE SUMMARY UPDATED ===== */
 .price-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: .95rem; color: var(--bark); }
 .price-total { display: flex; justify-content: space-between; padding: 12px 0 6px; margin-top: 8px; border-top: 2px solid var(--forest-mid); font-size: 1.1rem; font-weight: 700; color: var(--charcoal); }
+
+/* ===== HERO UPDATED ===== */
+.hero-info { margin-bottom: 32px; }
+.hero-date { font-family: 'Anton', sans-serif; font-size: 1.3rem; font-weight: 400; color: var(--lime); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 6px; }
+.hero-detail { font-size: .85rem; color: rgba(250,248,244,.55); letter-spacing: .08em; }
+.btn-hero { display: inline-block; background: var(--lime); color: var(--forest-dk); padding: 18px 48px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; border: none; cursor: pointer; transition: all .3s; text-decoration: none; }
+.btn-hero:hover { background: #9CCC65; transform: translateY(-2px); text-decoration: none; }
+.hero-scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); color: rgba(250,248,244,.4); font-size: .7rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; z-index: 2; }

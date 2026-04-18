@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail de la Vogue Challaisienne 2026</title>
+    <title>Trail de la Vogue Challex 2026</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
 <nav class="navbar" id="navbar">
-    <a href="/" class="nav-logo">La Vogue Challaisienne</a>
+    <a href="/" class="nav-logo">La Vogue Challex</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">
         <span></span><span></span><span></span>
     </button>
@@ -25,12 +25,16 @@
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <span class="hero-eyebrow">Édition 2026</span>
-        <h1>Trail<br><span class="text-lime">de la<br>Vogue</span><br>Challaisienne</h1>
-        <p class="hero-subtitle">3km · 7.5km · 15km</p>
-        <a href="/inscription.php" class="btn-primary btn--large">S'inscrire maintenant</a>
+        <span class="hero-eyebrow">▲ Saison 2026</span>
+        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br><span class="text-lime">Challex</span></h1>
+        <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
+        <div class="hero-info">
+            <p class="hero-date">📅 Dimanche 6 septembre 2026</p>
+            <p class="hero-detail">⏱ Course non chronométrée</p>
+        </div>
+        <a href="/inscription.php" class="btn-hero">S'inscrire maintenant</a>
     </div>
-    <div class="hero-scroll">Découvrir</div>
+    <div class="hero-scroll">↓ Découvrir</div>
 </section>
 
 <section class="section section--earth" id="courses">
@@ -96,7 +100,7 @@
             <div class="info-item reveal">
                 <div class="info-icon">📅</div>
                 <h4>Date</h4>
-                <p>Édition 2026<br>Retraits dossards sur place</p>
+                <p>Dimanche 6 septembre 2026<br>Retraits dossards sur place</p>
             </div>
             <div class="info-item reveal">
                 <div class="info-icon">🏆</div>
@@ -126,7 +130,7 @@
 </section>
 
 <footer class="footer">
-    <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
+    <p>© 2026 Trail de la Vogue Challex · Tous droits réservés</p>
 </footer>
 
 <script src="/assets/js/main.js"></script>
