@@ -26,7 +26,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <span class="hero-eyebrow">▲ 1ère Édition</span>
-        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br>Challaisienne</h1>
+        <h1>TRAIL<br><span class="text-lime text-small">de la</span><br>VOGUE<br>CHALLAISIENNE</h1>
         <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
         <div class="hero-info">
             <p class="hero-date-big">Dimanche 6 Septembre 2026</p>
