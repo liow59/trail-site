@@ -4,90 +4,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail 2025 – Courez dans les montagnes</title>
+    <title>Trail de la Vogue Challaisienne</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
-<!-- HERO -->
+<nav class="navbar" id="navbar">
+    <a href="/" class="nav-logo">La Vogue Challaisienne</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#courses">Courses</a></li>
+        <li><a href="#infos">Infos</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="/inscription.php" class="nav-cta">S'inscrire</a></li>
+    </ul>
+</nav>
+
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <span class="hero-eyebrow">Édition 2025</span>
-        <h1>Trail des Crêtes</h1>
+        <h1>Trail<br><span class="text-lime">de la<br>Vogue</span><br>Challaisienne</h1>
         <p class="hero-subtitle">10km · 23km · 42km — Samedi 12 juillet 2025</p>
-        <a href="/inscription.php" class="btn-primary">S'inscrire maintenant</a>
+        <a href="/inscription.php" class="btn-primary btn--large">S'inscrire maintenant</a>
     </div>
-    <div class="hero-scroll">↓</div>
+    <div class="hero-scroll">Découvrir</div>
 </section>
 
-<!-- COURSES -->
-<section class="section" id="courses">
+<section class="section section--earth" id="courses">
     <div class="container">
-        <h2 class="section-title">Les courses</h2>
+        <span class="section-label reveal">Les parcours</span>
+        <h2 class="section-title reveal">Choisissez votre aventure</h2>
+        <p class="section-desc reveal">Trois distances, un même terrain de jeu exceptionnel. Sentiers techniques, crêtes panoramiques et chemins de vignes.</p>
         <div class="cards">
             <div class="card">
-                <div class="card-badge">Découverte</div>
+                <span class="card-badge">Découverte</span>
                 <h3>10 km</h3>
                 <p class="card-stat">D+ 400m</p>
                 <ul>
                     <li>Accessible à tous</li>
-                    <li>Ravitaillement x2</li>
+                    <li>Ravitaillement ×2</li>
                     <li>Départ 10h00</li>
                 </ul>
                 <p class="card-price">25 €</p>
-                <a href="/inscription.php?course=10km" class="btn-outline">S'inscrire</a>
+                <a href="/inscription.php?course=10km" class="btn-outline btn--full">S'inscrire</a>
             </div>
             <div class="card card--featured">
-                <div class="card-badge">Populaire</div>
+                <span class="card-badge">Populaire</span>
                 <h3>23 km</h3>
                 <p class="card-stat">D+ 1 100m</p>
                 <ul>
                     <li>Semi-technique</li>
-                    <li>Ravitaillement x4</li>
+                    <li>Ravitaillement ×4</li>
                     <li>Départ 8h30</li>
                 </ul>
                 <p class="card-price">40 €</p>
-                <a href="/inscription.php?course=23km" class="btn-primary">S'inscrire</a>
+                <a href="/inscription.php?course=23km" class="btn-primary btn--full">S'inscrire</a>
             </div>
             <div class="card">
-                <div class="card-badge">Expert</div>
+                <span class="card-badge">Expert</span>
                 <h3>42 km</h3>
                 <p class="card-stat">D+ 2 600m</p>
                 <ul>
                     <li>Technique & engagé</li>
-                    <li>Ravitaillement x6</li>
+                    <li>Ravitaillement ×6</li>
                     <li>Départ 6h00</li>
                 </ul>
                 <p class="card-price">60 €</p>
-                <a href="/inscription.php?course=42km" class="btn-outline">S'inscrire</a>
+                <a href="/inscription.php?course=42km" class="btn-outline btn--full">S'inscrire</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- INFOS -->
-<section class="section section--dark" id="infos">
+<section class="section section--forest" id="infos">
     <div class="container">
-        <h2 class="section-title">Informations pratiques</h2>
+        <span class="section-label reveal">Informations</span>
+        <h2 class="section-title reveal">Le jour J</h2>
+        <p class="section-desc reveal">Tout ce qu'il faut savoir pour préparer votre course dans les meilleures conditions.</p>
         <div class="info-grid">
-            <div class="info-item">
-                <span class="info-icon">📍</span>
+            <div class="info-item reveal">
+                <div class="info-icon">📍</div>
                 <h4>Lieu de départ</h4>
                 <p>Place du village<br>74000 Annecy</p>
             </div>
-            <div class="info-item">
-                <span class="info-icon">📅</span>
+            <div class="info-item reveal">
+                <div class="info-icon">📅</div>
                 <h4>Date</h4>
                 <p>Samedi 12 juillet 2025<br>Retraits dossards dès 7h00</p>
             </div>
-            <div class="info-item">
-                <span class="info-icon">🏆</span>
+            <div class="info-item reveal">
+                <div class="info-icon">🏆</div>
                 <h4>Récompenses</h4>
-                <p>Podium par catégorie<br>Finisher medal pour tous</p>
+                <p>Podium par catégorie<br>Médaille finisher pour tous</p>
             </div>
-            <div class="info-item">
-                <span class="info-icon">🚗</span>
+            <div class="info-item reveal">
+                <div class="info-icon">🚗</div>
                 <h4>Parking gratuit</h4>
                 <p>Parking de l'église<br>Navettes disponibles</p>
             </div>
@@ -95,12 +109,12 @@
     </div>
 </section>
 
-<!-- CONTACT -->
 <section class="section" id="contact">
     <div class="container container--narrow">
-        <h2 class="section-title">Contact</h2>
-        <p style="text-align:center">
-            Une question ? Écrivez-nous à
+        <span class="section-label reveal">Contact</span>
+        <h2 class="section-title reveal">Une question ?</h2>
+        <p class="reveal" style="text-align:center;color:var(--muted);margin-top:20px;">
+            Écrivez-nous à
             <a href="mailto:<?= htmlspecialchars($_ENV['BREVO_FROM_EMAIL'] ?? 'contact@trail.fr') ?>">
                 <?= htmlspecialchars($_ENV['BREVO_FROM_EMAIL'] ?? 'contact@trail.fr') ?>
             </a>
@@ -109,8 +123,9 @@
 </section>
 
 <footer class="footer">
-    <p>© 2025 Trail des Crêtes · Tous droits réservés</p>
+    <p>© 2025 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
+<script src="/assets/js/main.js"></script>
 </body>
 </html>
