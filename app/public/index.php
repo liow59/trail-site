@@ -26,7 +26,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <span class="hero-eyebrow">▲ Saison 2026</span>
-        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br><span class="text-lime">Challex</span></h1>
+        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br>Challex</h1>
         <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
         <div class="hero-info">
             <p class="hero-date">📅 Dimanche 6 septembre 2026</p>
