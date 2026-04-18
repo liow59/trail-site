@@ -1,6 +1,6 @@
-# 🏔️ Trail des Crêtes – Site Web
+# 🏔️ Trail de la vogue Challaisienne – Site Web
 
-Site d'inscription pour le Trail des Crêtes 2025.  
+Site d'inscription pour le Trail de la vogue Challaisienne 2026.  
 Stack : PHP 8.2 · MySQL 8 · Nginx · Docker · HelloAsso · Brevo
 
 ---
