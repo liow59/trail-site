@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail de la Vogue Challex 2026</title>
+    <title>Trail de la Vogue Challaisienne 2026</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
 <nav class="navbar" id="navbar">
-    <a href="/" class="nav-logo">La Vogue Challex</a>
+    <a href="/" class="nav-logo">La Vogue Challaisienne</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">
         <span></span><span></span><span></span>
     </button>
@@ -26,7 +26,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <span class="hero-eyebrow">▲ 1ère Édition</span>
-        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br>Challex</h1>
+        <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br>Challaisienne</h1>
         <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
         <div class="hero-info">
             <p class="hero-date-big">Dimanche 6 Septembre 2026</p>
@@ -130,7 +130,7 @@
 </section>
 
 <footer class="footer">
-    <p>© 2026 Trail de la Vogue Challex · Tous droits réservés</p>
+    <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
 <script src="/assets/js/main.js"></script>
