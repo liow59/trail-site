@@ -25,11 +25,11 @@
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <span class="hero-eyebrow">▲ Saison 2026</span>
+        <span class="hero-eyebrow">▲ 1ère Édition</span>
         <h1>Trail<br><span class="text-lime">de la</span><br>Vogue<br>Challex</h1>
         <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
         <div class="hero-info">
-            <p class="hero-date">📅 Dimanche 6 septembre 2026</p>
+            <p class="hero-date-big">Dimanche 6 Septembre 2026</p>
             <p class="hero-detail">⏱ Course non chronométrée</p>
         </div>
         <a href="/inscription.php" class="btn-hero">S'inscrire maintenant</a>
