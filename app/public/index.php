@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail de la Vogue Challaisienne</title>
+    <title>Trail de la Vogue Challaisienne 2026</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -25,9 +25,9 @@
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <span class="hero-eyebrow">Édition 2025</span>
+        <span class="hero-eyebrow">Édition 2026</span>
         <h1>Trail<br><span class="text-lime">de la<br>Vogue</span><br>Challaisienne</h1>
-        <p class="hero-subtitle">10km · 23km · 42km — Samedi 12 juillet 2025</p>
+        <p class="hero-subtitle">3km · 7.5km · 15km</p>
         <a href="/inscription.php" class="btn-primary btn--large">S'inscrire maintenant</a>
     </div>
     <div class="hero-scroll">Découvrir</div>
@@ -37,43 +37,46 @@
     <div class="container">
         <span class="section-label reveal">Les parcours</span>
         <h2 class="section-title reveal">Choisissez votre aventure</h2>
-        <p class="section-desc reveal">Trois distances, un même terrain de jeu exceptionnel. Sentiers techniques, crêtes panoramiques et chemins de vignes.</p>
+        <p class="section-desc reveal">Trois distances pour tous les âges, au cœur des chemins de vignes et sentiers de Challex.</p>
         <div class="cards">
             <div class="card">
                 <span class="card-badge">Découverte</span>
-                <h3>10 km</h3>
-                <p class="card-stat">D+ 400m</p>
+                <h3>3 km</h3>
+                <p class="card-stat">Course enfants</p>
                 <ul>
-                    <li>Accessible à tous</li>
-                    <li>Ravitaillement ×2</li>
-                    <li>Départ 10h00</li>
+                    <li>Départ à 11h00</li>
+                    <li>De 8 à 11 ans</li>
+                    <li>Accompagnement adulte possible</li>
                 </ul>
-                <p class="card-price">25 €</p>
-                <a href="/inscription.php?course=10km" class="btn-outline btn--full">S'inscrire</a>
+                <p class="card-price">Gratuit</p>
+                <div class="card-places">50 places</div>
+                <a href="/inscription.php?course=3km" class="btn-outline btn--full">S'inscrire</a>
             </div>
             <div class="card card--featured">
                 <span class="card-badge">Populaire</span>
-                <h3>23 km</h3>
-                <p class="card-stat">D+ 1 100m</p>
+                <h3>7.5 km</h3>
+                <p class="card-stat">150 D+</p>
                 <ul>
-                    <li>Semi-technique</li>
-                    <li>Ravitaillement ×4</li>
-                    <li>Départ 8h30</li>
+                    <li>Départ à 10h00</li>
+                    <li>À partir de 12 ans</li>
+                    <li>Ravitaillement sur parcours</li>
                 </ul>
-                <p class="card-price">40 €</p>
-                <a href="/inscription.php?course=23km" class="btn-primary btn--full">S'inscrire</a>
+                <p class="card-price">10 €</p>
+                <div class="card-places">100 places</div>
+                <a href="/inscription.php?course=7.5km" class="btn-primary btn--full">S'inscrire</a>
             </div>
             <div class="card">
                 <span class="card-badge">Expert</span>
-                <h3>42 km</h3>
-                <p class="card-stat">D+ 2 600m</p>
+                <h3>15 km</h3>
+                <p class="card-stat">300 D+ · 2 boucles</p>
                 <ul>
-                    <li>Technique & engagé</li>
-                    <li>Ravitaillement ×6</li>
-                    <li>Départ 6h00</li>
+                    <li>Départ à 9h00</li>
+                    <li>À partir de 16 ans</li>
+                    <li>Parcours technique</li>
                 </ul>
-                <p class="card-price">60 €</p>
-                <a href="/inscription.php?course=42km" class="btn-outline btn--full">S'inscrire</a>
+                <p class="card-price">15 €</p>
+                <div class="card-places">100 places</div>
+                <a href="/inscription.php?course=15km" class="btn-outline btn--full">S'inscrire</a>
             </div>
         </div>
     </div>
@@ -88,12 +91,12 @@
             <div class="info-item reveal">
                 <div class="info-icon">📍</div>
                 <h4>Lieu de départ</h4>
-                <p>Place du village<br>74000 Annecy</p>
+                <p>Challex — La Halle<br>381 Rue de la Mairie<br>01630 Challex</p>
             </div>
             <div class="info-item reveal">
                 <div class="info-icon">📅</div>
                 <h4>Date</h4>
-                <p>Samedi 12 juillet 2025<br>Retraits dossards dès 7h00</p>
+                <p>Édition 2026<br>Retraits dossards sur place</p>
             </div>
             <div class="info-item reveal">
                 <div class="info-icon">🏆</div>
@@ -103,7 +106,7 @@
             <div class="info-item reveal">
                 <div class="info-icon">🚗</div>
                 <h4>Parking gratuit</h4>
-                <p>Parking de l'église<br>Navettes disponibles</p>
+                <p>Parking à proximité<br>de La Halle</p>
             </div>
         </div>
     </div>
@@ -123,7 +126,7 @@
 </section>
 
 <footer class="footer">
-    <p>© 2025 Trail de la Vogue Challaisienne · Tous droits réservés</p>
+    <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
 <script src="/assets/js/main.js"></script>

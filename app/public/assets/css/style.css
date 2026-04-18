@@ -209,3 +209,5 @@ img { max-width: 100%; height: auto; }
     .login-card { padding: 32px 24px; }
     .navbar { padding: 12px 20px; }
 }
+
+.card-places { font-size: .78rem; color: var(--earth); letter-spacing: .05em; margin-bottom: 16px; text-align: center; padding: 6px 0; border-top: 1px solid var(--stone); }
