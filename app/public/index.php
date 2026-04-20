@@ -59,55 +59,67 @@ $raceStats = $stats->getRaceStats();
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
     <!-- CARTE TEST -->
-    <a href="/inscription.php?course=test" class="race-card-preview" style="text-decoration:none; color:inherit; border:2px dashed var(--rust);">
-      <div style="position:absolute; top:0.75rem; right:0.75rem; background:var(--rust); color:var(--cream); padding:0.25rem 0.5rem; font-size:0.65rem; border-radius:2px; font-weight:700; letter-spacing:0.05em;">TEST</div>
-      <div class="race-dist" style="font-size:2.5rem; color:var(--rust)">TEST</div>
-      <div class="race-type">
-        <div class="race-info-item"><span class="icon">🧪</span><span>Test de paiement</span></div>
-        <div class="race-info-item"><span class="icon">💳</span><span>Inscription factice</span></div>
+    <a href="/inscription.php?course=test" style="text-decoration:none; color:inherit;">
+      <div class="race-card" style="border:2px dashed var(--rust);">
+        <div style="position:absolute; top:0.75rem; right:0.75rem; background:var(--rust); color:var(--cream); padding:0.25rem 0.5rem; font-size:0.65rem; border-radius:2px; font-weight:700; letter-spacing:0.05em;">TEST</div>
+        <div class="race-dist" style="font-size:2.5rem; color:var(--rust)">TEST</div>
+        <div class="race-type">
+          <div class="race-info-item"><span class="icon">🧪</span><span>Test de paiement</span></div>
+          <div class="race-info-item"><span class="icon">💳</span><span>Inscription factice</span></div>
+        </div>
+        <div class="race-price" style="color:var(--rust)">0.50 €</div>
+        <div class="race-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['test']['percentage'] ?>%; background:var(--rust)"></div></div>
+          <span class="spots-text"><?= $raceStats['test']['registered'] ?> inscriptions test</span>
+        </div>
       </div>
-      <div class="race-price" style="color:var(--rust)">0.50 €</div>
-      <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['test']['percentage'] ?>%; background:var(--rust)"></div></div>
-        <span class="spots-text"><?= $raceStats['test']['registered'] ?> inscriptions test</span>
-      </div>
-      <div style="font-size:0.75rem; color:var(--sand); margin-top:0.5rem; font-style:italic;">Pour tester le système de paiement</div>
     </a>
     
-    <a href="/inscription.php?course=3km" class="race-card-preview" style="text-decoration:none; color:inherit;">
-      <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
-      <div class="race-type">
-        <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
-        <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
-      </div>
-      <div class="race-price" style="color:var(--sky)">Gratuit</div>
-      <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
-        <span class="spots-text"><?= $raceStats['3km']['remaining'] ?> places restantes sur <?= $raceStats['3km']['total'] ?></span>
-      </div>
-    </a>
-    <a href="/inscription.php?course=7.5km" class="race-card-preview" style="text-decoration:none; color:inherit;">
-      <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
-      <div class="race-type">
-        <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
-        <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
-      </div>
-      <div class="race-price">10 €</div>
-      <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
-        <span class="spots-text"><?= $raceStats['7.5km']['remaining'] ?> places restantes sur <?= $raceStats['7.5km']['total'] ?></span>
+    <a href="/inscription.php?course=3km" style="text-decoration:none; color:inherit;">
+      <div class="race-card" data-race="3km" data-price="0">
+        <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
+        <div class="race-type">
+          <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
+          <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
+          <div class="race-info-item"><span class="icon">👨‍👧</span><span>Accompagnement adulte possible</span></div>
+        </div>
+        <div class="race-price" style="color:var(--sky)">Gratuit</div>
+        <div class="race-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
+          <span class="spots-text"><?= $raceStats['3km']['remaining'] ?> places restantes sur <?= $raceStats['3km']['total'] ?></span>
+        </div>
       </div>
     </a>
-    <a href="/inscription.php?course=15km" class="race-card-preview" style="text-decoration:none; color:inherit;">
-      <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
-      <div class="race-type">
-        <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
-        <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
+    
+    <a href="/inscription.php?course=7.5km" style="text-decoration:none; color:inherit;">
+      <div class="race-card" data-race="7.5km" data-price="10">
+        <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
+        <div class="race-type">
+          <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
+          <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 12 ans</span></div>
+          <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
+        </div>
+        <div class="race-price">10 €</div>
+        <div class="race-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
+          <span class="spots-text"><?= $raceStats['7.5km']['remaining'] ?> places restantes sur <?= $raceStats['7.5km']['total'] ?></span>
+        </div>
       </div>
-      <div class="race-price">15 €</div>
-      <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
-        <span class="spots-text"><?= $raceStats['15km']['remaining'] ?> places restantes sur <?= $raceStats['15km']['total'] ?></span>
+    </a>
+    
+    <a href="/inscription.php?course=15km" style="text-decoration:none; color:inherit;">
+      <div class="race-card" data-race="15km" data-price="15">
+        <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
+        <div class="race-type">
+          <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
+          <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 16 ans</span></div>
+          <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
+        </div>
+        <div class="race-price">15 €</div>
+        <div class="race-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
+          <span class="spots-text"><?= $raceStats['15km']['remaining'] ?> places restantes sur <?= $raceStats['15km']['total'] ?></span>
+        </div>
       </div>
     </a>
   </div>
