@@ -53,30 +53,30 @@
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <div class="race-card-preview">
+    <a href="/inscription.php?course=3km" class="race-card-preview" style="text-decoration:none; color:inherit;">
       <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
       <div class="race-type">
         <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
         <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
       </div>
       <div class="race-price" style="color:var(--sky)">Gratuit</div>
-    </div>
-    <div class="race-card-preview">
+    </a>
+    <a href="/inscription.php?course=7.5km" class="race-card-preview" style="text-decoration:none; color:inherit;">
       <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
       <div class="race-type">
         <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
         <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
       </div>
       <div class="race-price">10 €</div>
-    </div>
-    <div class="race-card-preview">
+    </a>
+    <a href="/inscription.php?course=15km" class="race-card-preview" style="text-decoration:none; color:inherit;">
       <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
       <div class="race-type">
         <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
         <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
       </div>
       <div class="race-price">15 €</div>
-    </div>
+    </a>
   </div>
   <div style="text-align:center; margin-top:2rem;">
     <a href="/inscription.php" class="cta-btn">Choisir ma course →</a>
