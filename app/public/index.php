@@ -2,137 +2,87 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail de la Vogue Challaisienne 2026</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trail de la Vogue Challaisienne 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
-<nav class="navbar" id="navbar">
-    <a href="/" class="nav-logo">La Vogue Challaisienne</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Menu">
-        <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-links" id="navLinks">
-        <li><a href="#courses">Courses</a></li>
-        <li><a href="#infos">Infos</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="/inscription.php" class="nav-cta">S'inscrire</a></li>
-    </ul>
-</nav>
-
+<!-- HERO -->
 <section class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <span class="hero-eyebrow">▲ 1ère Édition</span>
-        <h1>TRAIL<br><span class="text-lime text-small">de la</span><br>VOGUE<br>CHALLAISIENNE</h1>
-        <p class="hero-subtitle">Course nature — Inscriptions ouvertes 2026</p>
-        <div class="hero-info">
-            <p class="hero-date-big">Dimanche 6 Septembre 2026</p>
-            <p class="hero-detail">⏱ Course non chronométrée</p>
-        </div>
-        <a href="/inscription.php" class="btn-hero">S'inscrire maintenant</a>
-    </div>
-    <div class="hero-scroll">↓ Découvrir</div>
+  <div class="hero-content">
+    <span class="badge">⛰ 1ère Édition</span>
+    <h1>TRAIL<br><span>de la</span><br>VOGUE<br>CHALLAISIENNE</h1>
+    <p class="subtitle">Course nature — Inscriptions ouvertes 2026</p>
+    <p style="font-family:'Bebas Neue',sans-serif; font-size:1.6rem; color:var(--lime); letter-spacing:0.1em; margin-bottom:0.5rem;">📅 Dimanche 6 Septembre 2026</p>
+    <p style="font-family:'DM Mono',sans-serif; font-size:0.85rem; color:var(--sand); letter-spacing:0.12em; margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
+    <a href="/inscription.php" class="cta-btn">S'inscrire maintenant</a>
+  </div>
+  <div class="scroll-hint">
+    <span>↓ Découvrir</span>
+  </div>
 </section>
 
-<section class="section section--earth" id="courses">
-    <div class="container">
-        <span class="section-label reveal">Les parcours</span>
-        <h2 class="section-title reveal">Choisissez votre aventure</h2>
-        <p class="section-desc reveal">Trois distances pour tous les âges, au cœur des chemins de vignes et sentiers de Challex.</p>
-        <div class="cards">
-            <div class="card">
-                <span class="card-badge">Découverte</span>
-                <h3>3 km</h3>
-                <p class="card-stat">Course enfants</p>
-                <ul>
-                    <li>Départ à 11h00</li>
-                    <li>De 8 à 11 ans</li>
-                    <li>Accompagnement adulte possible</li>
-                </ul>
-                <p class="card-price">Gratuit</p>
-                <div class="card-places">50 places</div>
-                <a href="/inscription.php?course=3km" class="btn-outline btn--full">S'inscrire</a>
-            </div>
-            <div class="card card--featured">
-                <span class="card-badge">Populaire</span>
-                <h3>7.5 km</h3>
-                <p class="card-stat">150 D+</p>
-                <ul>
-                    <li>Départ à 10h00</li>
-                    <li>À partir de 12 ans</li>
-                    <li>Ravitaillement sur parcours</li>
-                </ul>
-                <p class="card-price">10 €</p>
-                <div class="card-places">100 places</div>
-                <a href="/inscription.php?course=7.5km" class="btn-primary btn--full">S'inscrire</a>
-            </div>
-            <div class="card">
-                <span class="card-badge">Expert</span>
-                <h3>15 km</h3>
-                <p class="card-stat">300 D+ · 2 boucles</p>
-                <ul>
-                    <li>Départ à 9h00</li>
-                    <li>À partir de 16 ans</li>
-                    <li>Parcours technique</li>
-                </ul>
-                <p class="card-price">15 €</p>
-                <div class="card-places">100 places</div>
-                <a href="/inscription.php?course=15km" class="btn-outline btn--full">S'inscrire</a>
-            </div>
-        </div>
+<!-- LIEU -->
+<section class="section">
+  <p class="section-tag">// Lieu de départ</p>
+  <h2 class="section-title">Où nous<br>trouver ?</h2>
+  <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; margin-bottom:1.5rem;">
+    <div style="padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid rgba(255,255,255,0.07);">
+      <span style="font-size:1.5rem;">📍</span>
+      <div>
+        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--lime); letter-spacing:0.05em;">Challex — La Halle</p>
+        <p style="font-size:0.85rem; color:var(--sand);">381 Rue de la Mairie, 01630 Challex</p>
+      </div>
     </div>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2737.8!2d5.9728!3d46.182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDEwJzU1LjIiTiA1wrA1OCcyMi4xIkU!5e0!3m2!1sfr!2sfr!4v1234567890" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
+    <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+      <a href="https://www.google.com/maps/search/La+Halle+Challex+381+Rue+de+la+Mairie+01630" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://waze.com/ul?ll=46.182,5.9728&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+    </div>
+  </div>
 </section>
 
-<section class="section section--forest" id="infos">
-    <div class="container">
-        <span class="section-label reveal">Informations</span>
-        <h2 class="section-title reveal">Le jour J</h2>
-        <p class="section-desc reveal">Tout ce qu'il faut savoir pour préparer votre course dans les meilleures conditions.</p>
-        <div class="info-grid">
-            <div class="info-item reveal">
-                <div class="info-icon">📍</div>
-                <h4>Lieu de départ</h4>
-                <p>Challex — La Halle<br>381 Rue de la Mairie<br>01630 Challex</p>
-            </div>
-            <div class="info-item reveal">
-                <div class="info-icon">📅</div>
-                <h4>Date</h4>
-                <p>Dimanche 6 septembre 2026<br>Retraits dossards sur place</p>
-            </div>
-            <div class="info-item reveal">
-                <div class="info-icon">🏆</div>
-                <h4>Récompenses</h4>
-                <p>Podium par catégorie<br>Médaille finisher pour tous</p>
-            </div>
-            <div class="info-item reveal">
-                <div class="info-icon">🚗</div>
-                <h4>Parking gratuit</h4>
-                <p>Parking à proximité<br>de La Halle</p>
-            </div>
-        </div>
+<!-- COURSES PREVIEW -->
+<section class="section">
+  <p class="section-tag">// Les parcours</p>
+  <h2 class="section-title">Trois distances<br>pour tous</h2>
+  <div class="races-grid">
+    <div class="race-card-preview">
+      <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
+        <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
+      </div>
+      <div class="race-price" style="color:var(--sky)">Gratuit</div>
     </div>
+    <div class="race-card-preview">
+      <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
+        <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
+      </div>
+      <div class="race-price">10 €</div>
+    </div>
+    <div class="race-card-preview">
+      <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
+        <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
+      </div>
+      <div class="race-price">15 €</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:2rem;">
+    <a href="/inscription.php" class="cta-btn">Choisir ma course →</a>
+  </div>
 </section>
 
-<section class="section" id="contact">
-    <div class="container container--narrow">
-        <span class="section-label reveal">Contact</span>
-        <h2 class="section-title reveal">Une question ?</h2>
-        <p class="reveal" style="text-align:center;color:var(--muted);margin-top:20px;">
-            Écrivez-nous à
-            <a href="mailto:<?= htmlspecialchars($_ENV['BREVO_FROM_EMAIL'] ?? 'contact@trail.fr') ?>">
-                <?= htmlspecialchars($_ENV['BREVO_FROM_EMAIL'] ?? 'contact@trail.fr') ?>
-            </a>
-        </p>
-    </div>
-</section>
-
-<footer class="footer">
-    <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
+<footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:4rem;">
+  <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
-<script src="/assets/js/main.js"></script>
 </body>
 </html>

@@ -1,285 +1,215 @@
-<?php
-
+<?php 
 require_once __DIR__ . '/../src/bootstrap.php';
 
-use Trail\Src\Runner;
-use Trail\Src\HelloAsso;
-use Trail\Src\Mailer;
-
-$errors  = [];
-$success = false;
-
-$preselectedCourse = in_array($_GET['course'] ?? '', ['3km', '7.5km', '15km'])
-    ? $_GET['course']
-    : '7.5km';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
-        $errors[] = 'Token de sécurité invalide. Rechargez la page.';
-    }
-
-    $required = ['nom', 'prenom', 'email', 'date_naissance', 'course'];
-    foreach ($required as $field) {
-        if (empty(trim($_POST[$field] ?? ''))) {
-            $errors[] = "Le champ « {$field} » est obligatoire.";
-        }
-    }
-
-    if (empty($errors)) {
-        $email  = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
-        $course = $_POST['course'];
-
-        if (!$email) {
-            $errors[] = 'Adresse email invalide.';
-        }
-
-        if (!in_array($course, ['3km', '7.5km', '15km'])) {
-            $errors[] = 'Course invalide.';
-        }
-    }
-
-    if (empty($errors)) {
-        $runner = new Runner();
-
-        if ($runner->emailAlreadyRegistered($email, $course)) {
-            $errors[] = 'Cette adresse email est déjà inscrite pour cette course.';
-        }
-    }
-
-    if (empty($errors)) {
+    // Traitement du formulaire comme avant
+    $prenom = trim($_POST['prenom'] ?? '');
+    $nom = trim($_POST['nom'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $telephone = trim($_POST['telephone'] ?? '');
+    $date_naissance = $_POST['date_naissance'] ?? '';
+    $sexe = $_POST['sexe'] ?? '';
+    $course = $_POST['course'] ?? '';
+    
+    $repas_poulet = (int)($_POST['repas_poulet'] ?? 0);
+    $repas_saucisse = (int)($_POST['repas_saucisse'] ?? 0);
+    $repas_nuggets = (int)($_POST['repas_nuggets'] ?? 0);
+    
+    $total_repas = ($repas_poulet * 10) + ($repas_saucisse * 12) + ($repas_nuggets * 8);
+    
+    // Validation basique
+    if ($prenom && $nom && $email && $course) {
         try {
-            $repas_poulet   = max(0, (int)($_POST['repas_poulet'] ?? 0));
-            $repas_saucisse = max(0, (int)($_POST['repas_saucisse'] ?? 0));
-            $repas_nuggets  = max(0, (int)($_POST['repas_nuggets'] ?? 0));
-            $total_repas    = ($repas_poulet * 10) + ($repas_saucisse * 12) + ($repas_nuggets * 8);
-
-            $runnerId = $runner->create([
-                'nom'             => $_POST['nom'],
-                'prenom'          => $_POST['prenom'],
-                'email'           => $email,
-                'telephone'       => $_POST['telephone'] ?? null,
-                'date_naissance'  => $_POST['date_naissance'],
-                'course'          => $course,
-                'club'            => $_POST['club'] ?? null,
-                'repas_poulet'    => $repas_poulet,
-                'repas_saucisse'  => $repas_saucisse,
-                'repas_nuggets'   => $repas_nuggets,
-                'total_repas'     => $total_repas,
+            $runner = new Runner();
+            $runner->create([
+                'prenom' => $prenom,
+                'nom' => $nom,
+                'email' => $email,
+                'telephone' => $telephone,
+                'date_naissance' => $date_naissance,
+                'sexe' => $sexe,
+                'course' => $course,
+                'repas_poulet' => $repas_poulet,
+                'repas_saucisse' => $repas_saucisse,
+                'repas_nuggets' => $repas_nuggets,
+                'total_repas' => $total_repas
             ]);
-
-            $runnerData  = $runner->findById($runnerId);
-            $helloasso   = new HelloAsso();
-            $paymentUrl  = $helloasso->getPaymentUrl(
-                $runnerId,
-                $email,
-                $_POST['prenom'],
-                $_POST['nom']
-            );
-
-            $mailer = new Mailer();
-            $mailer->sendPendingPayment($runnerData, $paymentUrl);
-
-            header('Location: ' . $paymentUrl);
+            
+            header('Location: /inscription.php?success=1');
             exit;
-
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            $errors[] = 'Une erreur est survenue. Veuillez réessayer.';
+        } catch (Exception $e) {
+            $error = $e->getMessage();
         }
     }
 }
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-$tarifs = ['3km' => 0, '7.5km' => 10, '15km' => 15];
-$repasMenu = [
-    'poulet'   => ['label' => 'Poulet frites', 'prix' => 10],
-    'saucisse' => ['label' => 'Saucisse polenta', 'prix' => 12],
-    'nuggets'  => ['label' => 'Nuggets', 'prix' => 8],
-];
+$success = isset($_GET['success']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription — Trail de la Vogue Challaisienne 2026</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription - Trail de la Vogue Challaisienne 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
-<header class="page-header">
-    <a href="/" class="logo">La Vogue Challaisienne</a>
-</header>
+<div class="page-header">
+  <a href="/" class="back-link">← Retour à l'accueil</a>
+  <h1>Inscription</h1>
+  <p>Choisissez votre course et complétez le formulaire</p>
+</div>
 
-<main class="form-page">
-    <div class="container container--narrow">
-        <h1>Inscription</h1>
-        <p class="form-intro">Remplissez le formulaire ci-dessous. Vous serez redirigé(e) vers HelloAsso pour le paiement sécurisé.</p>
+<?php if ($success): ?>
+<div class="section">
+  <div style="background:rgba(168,198,64,0.1); border:1px solid var(--lime); border-radius:4px; padding:2rem; text-align:center; max-width:600px; margin:0 auto;">
+    <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--lime); margin-bottom:1rem;">Inscription confirmée !</h2>
+    <p style="color:var(--sand); margin-bottom:1.5rem;">Vous recevrez un email de confirmation sous peu.</p>
+    <a href="/" class="cta-btn">Retour à l'accueil</a>
+  </div>
+</div>
+<?php else: ?>
 
-        <?php if (!empty($errors)): ?>
-        <div class="alert alert--error">
-            <ul><?php foreach ($errors as $e): ?><li><?= htmlspecialchars($e) ?></li><?php endforeach; ?></ul>
-        </div>
-        <?php endif; ?>
-
-        <form method="POST" action="/inscription.php" class="form" id="inscriptionForm">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-            <fieldset>
-                <legend>Informations personnelles</legend>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="prenom">Prénom *</label>
-                        <input type="text" id="prenom" name="prenom"
-                               value="<?= htmlspecialchars($_POST['prenom'] ?? '') ?>"
-                               required autocomplete="given-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="nom">Nom *</label>
-                        <input type="text" id="nom" name="nom"
-                               value="<?= htmlspecialchars($_POST['nom'] ?? '') ?>"
-                               required autocomplete="family-name">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email"
-                               value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                               required autocomplete="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="telephone">Téléphone</label>
-                        <input type="tel" id="telephone" name="telephone"
-                               value="<?= htmlspecialchars($_POST['telephone'] ?? '') ?>"
-                               autocomplete="tel">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="date_naissance">Date de naissance *</label>
-                    <input type="date" id="date_naissance" name="date_naissance"
-                           value="<?= htmlspecialchars($_POST['date_naissance'] ?? '') ?>"
-                           required>
-                </div>
-                <div class="form-group">
-                    <label for="club">Club (facultatif)</label>
-                    <input type="text" id="club" name="club"
-                           value="<?= htmlspecialchars($_POST['club'] ?? '') ?>">
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Choix de la course</legend>
-                <div class="course-selector">
-                    <?php foreach ($tarifs as $dist => $prix): ?>
-                    <label class="course-option <?= ($preselectedCourse === $dist || ($_POST['course'] ?? '') === $dist) ? 'selected' : '' ?>">
-                        <input type="radio" name="course" value="<?= $dist ?>"
-                               <?= ($preselectedCourse === $dist || ($_POST['course'] ?? '') === $dist) ? 'checked' : '' ?>>
-                        <span class="course-label">
-                            <strong><?= $dist ?></strong>
-                            <em><?= $prix > 0 ? $prix . ' €' : 'Gratuit' ?></em>
-                        </span>
-                    </label>
-                    <?php endforeach; ?>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Choix du repas (facultatif)</legend>
-                <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px;">Commandez vos repas pour le jour de la course. Le montant sera ajouté au prix de l'inscription.</p>
-
-                <?php foreach ($repasMenu as $key => $repas): ?>
-                <div class="repas-row">
-                    <div class="repas-info">
-                        <strong><?= $repas['label'] ?></strong>
-                        <span class="repas-prix"><?= $repas['prix'] ?> €</span>
-                    </div>
-                    <div class="repas-qty">
-                        <button type="button" class="qty-btn qty-minus" data-target="repas_<?= $key ?>">−</button>
-                        <input type="number" name="repas_<?= $key ?>" id="repas_<?= $key ?>"
-                               value="<?= (int)($_POST['repas_' . $key] ?? 0) ?>"
-                               min="0" max="10" class="qty-input" data-prix="<?= $repas['prix'] ?>">
-                        <button type="button" class="qty-btn qty-plus" data-target="repas_<?= $key ?>">+</button>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </fieldset>
-
-            <div class="price-summary" id="priceSummary">
-                <div class="price-line">
-                    <span>Course</span>
-                    <strong id="prixCourse"><?= $tarifs[$preselectedCourse] ?> €</strong>
-                </div>
-                <div class="price-line" id="repasLine" style="display:none;">
-                    <span>Repas</span>
-                    <strong id="prixRepas">0 €</strong>
-                </div>
-                <div class="price-total">
-                    <span>Total à payer</span>
-                    <strong id="prixTotal"><?= $tarifs[$preselectedCourse] ?> €</strong>
-                </div>
-                <small>(paiement sécurisé via HelloAsso)</small>
-            </div>
-
-            <div class="form-footer">
-                <p class="legal">En soumettant ce formulaire, vous acceptez nos
-                    <a href="#">conditions de participation</a> et notre
-                    <a href="#">politique de confidentialité</a>.
-                </p>
-                <button type="submit" class="btn-primary btn--large btn--full">
-                    Continuer vers le paiement →
-                </button>
-            </div>
-        </form>
+<section class="section">
+  <p class="section-tag">// Étape 1</p>
+  <h2 class="section-title">Choisissez<br>votre course</h2>
+  
+  <?php if (isset($error)): ?>
+  <div style="background:rgba(196,68,10,0.15); border:1px solid var(--rust); border-radius:2px; padding:1rem; margin-bottom:2rem; color:#e87a50;">
+    ⚠ <?= htmlspecialchars($error) ?>
+  </div>
+  <?php endif; ?>
+  
+  <div class="races-grid">
+    <div class="race-card" data-race="3km" data-price="0">
+      <div class="race-check">✓</div>
+      <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
+        <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
+        <div class="race-info-item"><span class="icon">👨‍👧</span><span>Accompagnement adulte possible</span></div>
+      </div>
+      <div class="race-price" style="color:var(--sky)">Gratuit</div>
+      <div class="race-spots">
+        <div class="spots-bar"><div class="spots-fill" style="width:0%; background:var(--sky)"></div></div>
+        <span class="spots-text">50 places</span>
+      </div>
     </div>
-</main>
+    <div class="race-card" data-race="7.5km" data-price="10">
+      <div class="race-check">✓</div>
+      <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
+        <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 12 ans</span></div>
+        <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
+      </div>
+      <div class="race-price">10 €</div>
+      <div class="race-spots">
+        <div class="spots-bar"><div class="spots-fill" style="width:0%"></div></div>
+        <span class="spots-text">100 places</span>
+      </div>
+    </div>
+    <div class="race-card" data-race="15km" data-price="15">
+      <div class="race-check">✓</div>
+      <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
+        <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 16 ans</span></div>
+        <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
+      </div>
+      <div class="race-price">15 €</div>
+      <div class="race-spots">
+        <div class="spots-bar"><div class="spots-fill" style="width:0%"></div></div>
+        <span class="spots-text">100 places</span>
+      </div>
+    </div>
+  </div>
 
-<script>
-const tarifs = <?= json_encode($tarifs) ?>;
+  <form class="reg-form" method="POST" action="/inscription.php">
+    <p class="section-tag" style="margin-top:3rem">// Étape 2 - Vos informations</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Prénom *</label>
+        <input type="text" name="prenom" required>
+      </div>
+      <div class="form-group">
+        <label>Nom *</label>
+        <input type="text" name="nom" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Téléphone *</label>
+        <input type="tel" name="telephone" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date de naissance *</label>
+        <input type="date" name="date_naissance" required>
+      </div>
+      <div class="form-group">
+        <label>Sexe *</label>
+        <select name="sexe" required>
+          <option value="">—</option>
+          <option value="M">Homme</option>
+          <option value="F">Femme</option>
+        </select>
+      </div>
+    </div>
 
-function updateTotal() {
-    const course = document.querySelector('input[name="course"]:checked');
-    const prixCourse = course ? tarifs[course.value] : 0;
+    <p class="section-tag" style="margin-top:2rem">// Étape 3 - Repas de fin de course</p>
+    <div class="repas-grid">
+      <div class="repas-row">
+        <div class="repas-info"><strong>Poulet frites</strong><span class="repas-prix">10 €</span></div>
+        <div class="repas-qty">
+          <button type="button" class="qty-btn qty-minus" data-meal="poulet">−</button>
+          <input type="number" name="repas_poulet" class="qty-input" value="0" min="0" readonly>
+          <button type="button" class="qty-btn qty-plus" data-meal="poulet">+</button>
+        </div>
+      </div>
+      <div class="repas-row">
+        <div class="repas-info"><strong>Saucisse polenta</strong><span class="repas-prix">12 €</span></div>
+        <div class="repas-qty">
+          <button type="button" class="qty-btn qty-minus" data-meal="saucisse">−</button>
+          <input type="number" name="repas_saucisse" class="qty-input" value="0" min="0" readonly>
+          <button type="button" class="qty-btn qty-plus" data-meal="saucisse">+</button>
+        </div>
+      </div>
+      <div class="repas-row">
+        <div class="repas-info"><strong>Nuggets</strong><span class="repas-prix">8 €</span></div>
+        <div class="repas-qty">
+          <button type="button" class="qty-btn qty-minus" data-meal="nuggets">−</button>
+          <input type="number" name="repas_nuggets" class="qty-input" value="0" min="0" readonly>
+          <button type="button" class="qty-btn qty-plus" data-meal="nuggets">+</button>
+        </div>
+      </div>
+    </div>
 
-    let prixRepas = 0;
-    document.querySelectorAll('.qty-input').forEach(input => {
-        prixRepas += parseInt(input.value || 0) * parseInt(input.dataset.prix);
-    });
+    <div class="price-summary">
+      <div class="price-line"><span>Course</span><span id="course-price">— €</span></div>
+      <div class="price-line"><span>Repas</span><span id="meal-price">0 €</span></div>
+      <div class="price-total"><span>Total</span><span id="total-price">— €</span></div>
+    </div>
 
-    document.getElementById('prixCourse').textContent = prixCourse > 0 ? prixCourse + ' €' : 'Gratuit';
-    document.getElementById('prixRepas').textContent = prixRepas + ' €';
-    document.getElementById('repasLine').style.display = prixRepas > 0 ? 'flex' : 'none';
-    document.getElementById('prixTotal').textContent = (prixCourse + prixRepas) + ' €';
-}
+    <input type="hidden" name="course" id="selected-course">
+    <button type="submit" class="submit-btn" disabled>Confirmer mon inscription →</button>
+  </form>
+</section>
 
-document.querySelectorAll('input[name="course"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        document.querySelectorAll('.course-option').forEach(el => el.classList.remove('selected'));
-        radio.closest('.course-option').classList.add('selected');
-        updateTotal();
-    });
-});
+<?php endif; ?>
 
-document.querySelectorAll('.qty-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const input = document.getElementById(btn.dataset.target);
-        let val = parseInt(input.value || 0);
-        if (btn.classList.contains('qty-plus') && val < 10) val++;
-        if (btn.classList.contains('qty-minus') && val > 0) val--;
-        input.value = val;
-        updateTotal();
-    });
-});
+<footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:4rem;">
+  <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
+</footer>
 
-document.querySelectorAll('.qty-input').forEach(input => {
-    input.addEventListener('change', updateTotal);
-});
-
-updateTotal();
-</script>
-
+<script src="/assets/js/main.js"></script>
 </body>
 </html>
