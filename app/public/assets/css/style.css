@@ -535,3 +535,13 @@ body {
   .form-row { grid-template-columns: 1fr; }
   .hero { padding: 2rem; }
 }
+
+/* Hero date box updated */
+.hero-date-box {
+  margin-top: 1.5rem !important;
+}
+
+.date-text {
+  font-size: 3rem !important;
+  font-weight: 400;
+}
