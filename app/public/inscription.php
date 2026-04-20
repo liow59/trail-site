@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../src/bootstrap.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Traitement du formulaire comme avant
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -17,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $total_repas = ($repas_poulet * 10) + ($repas_saucisse * 12) + ($repas_nuggets * 8);
     
-    // Validation basique
     if ($prenom && $nom && $email && $course) {
         try {
             $runner = new Runner();
@@ -210,6 +208,86 @@ $success = isset($_GET['success']);
   <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
-<script src="/assets/js/main.js"></script>
+<script>
+let selectedRace = null;
+let selectedPrice = 0;
+
+const racePrices = {'3km': 0, '7.5km': 10, '15km': 15};
+const mealPrices = {'poulet': 10, 'saucisse': 12, 'nuggets': 8};
+
+// Pré-sélection depuis URL
+const urlParams = new URLSearchParams(window.location.search);
+const preselectedCourse = urlParams.get('course');
+
+// Race card selection
+document.querySelectorAll('.race-card').forEach(card => {
+  const race = card.dataset.race;
+  
+  // Pré-sélectionner
+  if (preselectedCourse === race) {
+    card.classList.add('selected');
+    selectedRace = race;
+    selectedPrice = parseInt(card.dataset.price);
+    document.getElementById('selected-course').value = race;
+    updatePrices();
+    checkFormValidity();
+  }
+  
+  card.addEventListener('click', () => {
+    const price = parseInt(card.dataset.price);
+    document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedRace = race;
+    selectedPrice = price;
+    document.getElementById('selected-course').value = race;
+    updatePrices();
+    checkFormValidity();
+  });
+});
+
+// Meal buttons
+document.querySelectorAll('.qty-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const meal = btn.dataset.meal;
+    const input = document.querySelector(`input[name="repas_${meal}"]`);
+    let value = parseInt(input.value) || 0;
+    if (btn.classList.contains('qty-plus')) value++;
+    else if (btn.classList.contains('qty-minus') && value > 0) value--;
+    input.value = value;
+    updatePrices();
+  });
+});
+
+function updatePrices() {
+  document.getElementById('course-price').textContent = (selectedPrice || 0) + ' €';
+  let mealTotal = 0;
+  Object.keys(mealPrices).forEach(meal => {
+    const qty = parseInt(document.querySelector(`input[name="repas_${meal}"]`).value) || 0;
+    mealTotal += qty * mealPrices[meal];
+  });
+  document.getElementById('meal-price').textContent = mealTotal + ' €';
+  document.getElementById('total-price').textContent = ((selectedPrice || 0) + mealTotal) + ' €';
+}
+
+function checkFormValidity() {
+  const prenom = document.querySelector('input[name="prenom"]').value.trim();
+  const nom = document.querySelector('input[name="nom"]').value.trim();
+  const email = document.querySelector('input[name="email"]').value.trim();
+  const telephone = document.querySelector('input[name="telephone"]').value.trim();
+  const dateNaissance = document.querySelector('input[name="date_naissance"]').value;
+  const sexe = document.querySelector('select[name="sexe"]').value;
+  const allFilled = selectedRace && prenom && nom && email && telephone && dateNaissance && sexe;
+  document.querySelector('.submit-btn').disabled = !allFilled;
+}
+
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', checkFormValidity);
+  el.addEventListener('change', checkFormValidity);
+});
+
+updatePrices();
+checkFormValidity();
+</script>
 </body>
 </html>
