@@ -1,47 +1,41 @@
 <?php 
-require_once __DIR__ . '/../src/Runner.php';
+require_once __DIR__ . '/../src/HelloAsso.php';
+
+$error = null;
+$success = isset($_GET['success']);
+$paymentError = isset($_GET['error']);
+$checkoutUrl = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $prenom = trim($_POST['prenom'] ?? '');
-    $nom = trim($_POST['nom'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $telephone = trim($_POST['telephone'] ?? '');
-    $date_naissance = $_POST['date_naissance'] ?? '';
-    $sexe = $_POST['sexe'] ?? '';
-    $course = $_POST['course'] ?? '';
-    
-    $repas_poulet = (int)($_POST['repas_poulet'] ?? 0);
-    $repas_saucisse = (int)($_POST['repas_saucisse'] ?? 0);
-    $repas_nuggets = (int)($_POST['repas_nuggets'] ?? 0);
-    
-    $total_repas = ($repas_poulet * 10) + ($repas_saucisse * 12) + ($repas_nuggets * 8);
-    
-    if ($prenom && $nom && $email && $course) {
-        try {
-            $runner = new Runner();
-            $runner->create([
-                'prenom' => $prenom,
-                'nom' => $nom,
-                'email' => $email,
-                'telephone' => $telephone,
-                'date_naissance' => $date_naissance,
-                'sexe' => $sexe,
-                'course' => $course,
-                'repas_poulet' => $repas_poulet,
-                'repas_saucisse' => $repas_saucisse,
-                'repas_nuggets' => $repas_nuggets,
-                'total_repas' => $total_repas
-            ]);
-            
-            header('Location: /inscription.php?success=1');
+    try {
+        $helloasso = new HelloAsso();
+        
+        $participantData = [
+            'prenom' => trim($_POST['prenom'] ?? ''),
+            'nom' => trim($_POST['nom'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'telephone' => trim($_POST['telephone'] ?? ''),
+            'date_naissance' => $_POST['date_naissance'] ?? '',
+            'sexe' => $_POST['sexe'] ?? '',
+            'course' => $_POST['course'] ?? '',
+            'course_price' => (int)($_POST['course_price'] ?? 0),
+            'repas_poulet' => (int)($_POST['repas_poulet'] ?? 0),
+            'repas_saucisse' => (int)($_POST['repas_saucisse'] ?? 0),
+            'repas_nuggets' => (int)($_POST['repas_nuggets'] ?? 0)
+        ];
+        
+        $checkout = $helloasso->createCheckoutIntent($participantData);
+        $checkoutUrl = $checkout['redirectUrl'] ?? null;
+        
+        if ($checkoutUrl) {
+            // Rediriger vers la page de paiement HelloAsso
+            header('Location: ' . $checkoutUrl);
             exit;
-        } catch (Exception $e) {
-            $error = $e->getMessage();
         }
+    } catch (Exception $e) {
+        $error = $e->getMessage();
     }
 }
-
-$success = isset($_GET['success']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -64,9 +58,18 @@ $success = isset($_GET['success']);
 <div class="section">
   <div style="background:rgba(168,198,64,0.1); border:1px solid var(--lime); border-radius:4px; padding:2rem; text-align:center; max-width:600px; margin:0 auto;">
     <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
-    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--lime); margin-bottom:1rem;">Inscription confirmée !</h2>
-    <p style="color:var(--sand); margin-bottom:1.5rem;">Vous recevrez un email de confirmation sous peu.</p>
+    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--lime); margin-bottom:1rem;">Paiement confirmé !</h2>
+    <p style="color:var(--sand); margin-bottom:1.5rem;">Votre inscription est validée. Vous recevrez un email de confirmation.</p>
     <a href="/" class="cta-btn">Retour à l'accueil</a>
+  </div>
+</div>
+<?php elseif ($paymentError): ?>
+<div class="section">
+  <div style="background:rgba(196,68,10,0.15); border:1px solid var(--rust); border-radius:4px; padding:2rem; text-align:center; max-width:600px; margin:0 auto;">
+    <div style="font-size:3rem; margin-bottom:1rem;">❌</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--rust); margin-bottom:1rem;">Paiement annulé</h2>
+    <p style="color:var(--sand); margin-bottom:1.5rem;">Le paiement n'a pas pu être finalisé. Vous pouvez réessayer.</p>
+    <a href="/inscription.php" class="cta-btn">Réessayer</a>
   </div>
 </div>
 <?php else: ?>
@@ -75,7 +78,7 @@ $success = isset($_GET['success']);
   <p class="section-tag">// Étape 1</p>
   <h2 class="section-title">Choisissez<br>votre course</h2>
   
-  <?php if (isset($error)): ?>
+  <?php if ($error): ?>
   <div style="background:rgba(196,68,10,0.15); border:1px solid var(--rust); border-radius:2px; padding:1rem; margin-bottom:2rem; color:#e87a50;">
     ⚠ <?= htmlspecialchars($error) ?>
   </div>
@@ -126,36 +129,36 @@ $success = isset($_GET['success']);
     </div>
   </div>
 
-  <form class="reg-form" method="POST" action="/inscription.php">
+  <form class="reg-form" method="POST" id="inscription-form">
     <p class="section-tag" style="margin-top:3rem">// Étape 2 - Vos informations</p>
     <div class="form-row">
       <div class="form-group">
         <label>Prénom *</label>
-        <input type="text" name="prenom" required>
+        <input type="text" name="prenom" id="prenom" required>
       </div>
       <div class="form-group">
         <label>Nom *</label>
-        <input type="text" name="nom" required>
+        <input type="text" name="nom" id="nom" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Email *</label>
-        <input type="email" name="email" required>
+        <input type="email" name="email" id="email" required>
       </div>
       <div class="form-group">
         <label>Téléphone *</label>
-        <input type="tel" name="telephone" required>
+        <input type="tel" name="telephone" id="telephone" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Date de naissance *</label>
-        <input type="date" name="date_naissance" required>
+        <input type="date" name="date_naissance" id="date_naissance" required>
       </div>
       <div class="form-group">
         <label>Sexe *</label>
-        <select name="sexe" required>
+        <select name="sexe" id="sexe" required>
           <option value="">—</option>
           <option value="M">Homme</option>
           <option value="F">Femme</option>
@@ -169,7 +172,7 @@ $success = isset($_GET['success']);
         <div class="repas-info"><strong>Poulet frites</strong><span class="repas-prix">10 €</span></div>
         <div class="repas-qty">
           <button type="button" class="qty-btn qty-minus" data-meal="poulet">−</button>
-          <input type="number" name="repas_poulet" class="qty-input" value="0" min="0" readonly>
+          <input type="number" name="repas_poulet" id="repas_poulet" class="qty-input" value="0" min="0" readonly>
           <button type="button" class="qty-btn qty-plus" data-meal="poulet">+</button>
         </div>
       </div>
@@ -177,7 +180,7 @@ $success = isset($_GET['success']);
         <div class="repas-info"><strong>Saucisse polenta</strong><span class="repas-prix">12 €</span></div>
         <div class="repas-qty">
           <button type="button" class="qty-btn qty-minus" data-meal="saucisse">−</button>
-          <input type="number" name="repas_saucisse" class="qty-input" value="0" min="0" readonly>
+          <input type="number" name="repas_saucisse" id="repas_saucisse" class="qty-input" value="0" min="0" readonly>
           <button type="button" class="qty-btn qty-plus" data-meal="saucisse">+</button>
         </div>
       </div>
@@ -185,7 +188,7 @@ $success = isset($_GET['success']);
         <div class="repas-info"><strong>Nuggets</strong><span class="repas-prix">8 €</span></div>
         <div class="repas-qty">
           <button type="button" class="qty-btn qty-minus" data-meal="nuggets">−</button>
-          <input type="number" name="repas_nuggets" class="qty-input" value="0" min="0" readonly>
+          <input type="number" name="repas_nuggets" id="repas_nuggets" class="qty-input" value="0" min="0" readonly>
           <button type="button" class="qty-btn qty-plus" data-meal="nuggets">+</button>
         </div>
       </div>
@@ -198,7 +201,13 @@ $success = isset($_GET['success']);
     </div>
 
     <input type="hidden" name="course" id="selected-course">
-    <button type="submit" class="submit-btn" disabled>Confirmer mon inscription →</button>
+    <input type="hidden" name="course_price" id="selected-course-price" value="0">
+    
+    <div style="background:rgba(168,198,64,0.08); border:1px solid rgba(168,198,64,0.2); border-radius:4px; padding:1rem; margin:1.5rem 0; font-size:0.85rem; color:var(--sand);">
+      🔒 Paiement sécurisé par carte bancaire ou PayPal
+    </div>
+    
+    <button type="submit" class="submit-btn" disabled>Procéder au paiement sécurisé →</button>
   </form>
 </section>
 
@@ -208,86 +217,12 @@ $success = isset($_GET['success']);
   <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
+<script src="/assets/js/main.js"></script>
 <script>
-let selectedRace = null;
-let selectedPrice = 0;
-
-const racePrices = {'3km': 0, '7.5km': 10, '15km': 15};
-const mealPrices = {'poulet': 10, 'saucisse': 12, 'nuggets': 8};
-
-// Pré-sélection depuis URL
-const urlParams = new URLSearchParams(window.location.search);
-const preselectedCourse = urlParams.get('course');
-
-// Race card selection
-document.querySelectorAll('.race-card').forEach(card => {
-  const race = card.dataset.race;
-  
-  // Pré-sélectionner
-  if (preselectedCourse === race) {
-    card.classList.add('selected');
-    selectedRace = race;
-    selectedPrice = parseInt(card.dataset.price);
-    document.getElementById('selected-course').value = race;
-    updatePrices();
-    checkFormValidity();
-  }
-  
-  card.addEventListener('click', () => {
-    const price = parseInt(card.dataset.price);
-    document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedRace = race;
-    selectedPrice = price;
-    document.getElementById('selected-course').value = race;
-    updatePrices();
-    checkFormValidity();
-  });
+document.getElementById('inscription-form').addEventListener('submit', function() {
+  document.querySelector('.submit-btn').textContent = 'Redirection vers le paiement...';
+  document.querySelector('.submit-btn').disabled = true;
 });
-
-// Meal buttons
-document.querySelectorAll('.qty-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const meal = btn.dataset.meal;
-    const input = document.querySelector(`input[name="repas_${meal}"]`);
-    let value = parseInt(input.value) || 0;
-    if (btn.classList.contains('qty-plus')) value++;
-    else if (btn.classList.contains('qty-minus') && value > 0) value--;
-    input.value = value;
-    updatePrices();
-  });
-});
-
-function updatePrices() {
-  document.getElementById('course-price').textContent = (selectedPrice || 0) + ' €';
-  let mealTotal = 0;
-  Object.keys(mealPrices).forEach(meal => {
-    const qty = parseInt(document.querySelector(`input[name="repas_${meal}"]`).value) || 0;
-    mealTotal += qty * mealPrices[meal];
-  });
-  document.getElementById('meal-price').textContent = mealTotal + ' €';
-  document.getElementById('total-price').textContent = ((selectedPrice || 0) + mealTotal) + ' €';
-}
-
-function checkFormValidity() {
-  const prenom = document.querySelector('input[name="prenom"]').value.trim();
-  const nom = document.querySelector('input[name="nom"]').value.trim();
-  const email = document.querySelector('input[name="email"]').value.trim();
-  const telephone = document.querySelector('input[name="telephone"]').value.trim();
-  const dateNaissance = document.querySelector('input[name="date_naissance"]').value;
-  const sexe = document.querySelector('select[name="sexe"]').value;
-  const allFilled = selectedRace && prenom && nom && email && telephone && dateNaissance && sexe;
-  document.querySelector('.submit-btn').disabled = !allFilled;
-}
-
-document.querySelectorAll('input, select').forEach(el => {
-  el.addEventListener('input', checkFormValidity);
-  el.addEventListener('change', checkFormValidity);
-});
-
-updatePrices();
-checkFormValidity();
 </script>
 </body>
 </html>
