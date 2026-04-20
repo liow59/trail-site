@@ -41,13 +41,13 @@ $raceStats = $stats->getRaceStats();
     <div style="padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid rgba(255,255,255,0.07);">
       <span style="font-size:1.5rem;">📍</span>
       <div>
-        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--lime); letter-spacing:0.05em;">Challex — La Halle</p>
-        <p style="font-size:0.85rem; color:var(--sand);">381 Rue de la Mairie, 01630 Challex</p>
+        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--lime); letter-spacing:0.05em;">Parking de la Halle</p>
+        <p style="font-size:0.85rem; color:var(--sand);">01630 Challex</p>
       </div>
     </div>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2737.8!2d5.9728!3d46.182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDEwJzU1LjIiTiA1wrA1OCcyMi4xIkU!5e0!3m2!1sfr!2sfr!4v1234567890" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2737.8!2d5.9728!3d46.182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDEwJzU1LjIiTiA1wrA1OCcyMi4xIkU!5e1!3m2!1sfr!2sfr!4v1234567890" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
     <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
-      <a href="https://www.google.com/maps/search/La+Halle+Challex+381+Rue+de+la+Mairie+01630" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://www.google.com/maps/search/Parking+de+la+Halle+Challex+01630" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
       <a href="https://waze.com/ul?ll=46.182,5.9728&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
     </div>
   </div>
@@ -58,24 +58,6 @@ $raceStats = $stats->getRaceStats();
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <!-- CARTE TEST - MASQUÉE POUR L'INSTANT
-    <a href="/inscription.php?course=test" style="text-decoration:none; color:inherit;">
-      <div class="race-card" style="border:2px dashed var(--rust);">
-        <div style="position:absolute; top:0.75rem; right:0.75rem; background:var(--rust); color:var(--cream); padding:0.25rem 0.5rem; font-size:0.65rem; border-radius:2px; font-weight:700; letter-spacing:0.05em;">TEST</div>
-        <div class="race-dist" style="font-size:2.5rem; color:var(--rust)">TEST</div>
-        <div class="race-type">
-          <div class="race-info-item"><span class="icon">🧪</span><span>Test de paiement</span></div>
-          <div class="race-info-item"><span class="icon">💳</span><span>Inscription factice</span></div>
-        </div>
-        <div class="race-price" style="color:var(--rust)">0.50 €</div>
-        <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['test']['percentage'] ?>%; background:var(--rust)"></div></div>
-          <span class="spots-text"><?= $raceStats['test']['registered'] ?> inscriptions test</span>
-        </div>
-      </div>
-    </a>
-    -->
-    
     <a href="/inscription.php?course=3km" style="text-decoration:none; color:inherit;">
       <div class="race-card" data-race="3km" data-price="0">
         <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
