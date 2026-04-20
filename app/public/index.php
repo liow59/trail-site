@@ -13,10 +13,13 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <span class="badge">⛰ 1ère Édition</span>
-    <h1>TRAIL<br><span>de la</span><br>VOGUE<br>CHALLAISIENNE</h1>
-    <p class="subtitle">Course nature — Inscriptions ouvertes 2026</p>
-    <p style="font-family:'Bebas Neue',sans-serif; font-size:1.6rem; color:var(--lime); letter-spacing:0.1em; margin-bottom:0.5rem;">📅 Dimanche 6 Septembre 2026</p>
+    <span class="badge">▲ 1ÈRE ÉDITION</span>
+    <h1>TRAIL<br><span class="text-lime">DE LA</span><br>VOGUE<br>CHALLAISIENNE</h1>
+    <p class="subtitle">COURSE NATURE — INSCRIPTIONS OUVERTES 2026</p>
+    <div class="hero-date-box">
+      <span class="date-icon">📅</span>
+      <span class="date-text">DIMANCHE 6 SEPTEMBRE 2026</span>
+    </div>
     <p style="font-family:'DM Mono',sans-serif; font-size:0.85rem; color:var(--sand); letter-spacing:0.12em; margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
     <a href="/inscription.php" class="cta-btn">S'inscrire maintenant</a>
   </div>
