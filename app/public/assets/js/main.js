@@ -24,12 +24,9 @@ document.querySelectorAll('.race-card').forEach(card => {
   
   // Pré-sélectionner si course dans l'URL
   if (preselectedCourse === race) {
-    card.classList.add('selected');
-    selectedRace = race;
-    selectedPrice = parseInt(card.dataset.price);
-    document.getElementById('selected-course').value = race;
-    updatePrices();
-    checkFormValidity();
+    setTimeout(() => {
+      card.click();
+    }, 100);
   }
   
   card.addEventListener('click', () => {
@@ -43,7 +40,10 @@ document.querySelectorAll('.race-card').forEach(card => {
     selectedPrice = price;
 
     // Update hidden input
-    document.getElementById('selected-course').value = race;
+    const hiddenInput = document.getElementById('selected-course');
+    if (hiddenInput) {
+      hiddenInput.value = race;
+    }
 
     // Update price display
     updatePrices();
@@ -55,9 +55,15 @@ document.querySelectorAll('.race-card').forEach(card => {
 
 // Meal quantity buttons
 document.querySelectorAll('.qty-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const meal = btn.dataset.meal;
-    const input = btn.parentElement.querySelector('.qty-input');
+    const input = document.querySelector(`input[name="repas_${meal}"]`);
+    
+    if (!input) return;
+    
     let value = parseInt(input.value) || 0;
 
     if (btn.classList.contains('qty-plus')) {
@@ -74,32 +80,54 @@ document.querySelectorAll('.qty-btn').forEach(btn => {
 function updatePrices() {
   // Course price
   const coursePrice = selectedPrice || 0;
-  document.getElementById('course-price').textContent = coursePrice + ' €';
+  const coursePriceEl = document.getElementById('course-price');
+  if (coursePriceEl) {
+    coursePriceEl.textContent = coursePrice + ' €';
+  }
 
   // Meal total
   let mealTotal = 0;
   Object.keys(mealPrices).forEach(meal => {
-    const qty = parseInt(document.querySelector(`input[name="repas_${meal}"]`).value) || 0;
-    mealTotal += qty * mealPrices[meal];
+    const input = document.querySelector(`input[name="repas_${meal}"]`);
+    if (input) {
+      const qty = parseInt(input.value) || 0;
+      mealTotal += qty * mealPrices[meal];
+    }
   });
-  document.getElementById('meal-price').textContent = mealTotal + ' €';
+  
+  const mealPriceEl = document.getElementById('meal-price');
+  if (mealPriceEl) {
+    mealPriceEl.textContent = mealTotal + ' €';
+  }
 
   // Total
   const total = coursePrice + mealTotal;
-  document.getElementById('total-price').textContent = total + ' €';
+  const totalPriceEl = document.getElementById('total-price');
+  if (totalPriceEl) {
+    totalPriceEl.textContent = total + ' €';
+  }
 }
 
 function checkFormValidity() {
-  const prenom = document.querySelector('input[name="prenom"]').value.trim();
-  const nom = document.querySelector('input[name="nom"]').value.trim();
-  const email = document.querySelector('input[name="email"]').value.trim();
-  const telephone = document.querySelector('input[name="telephone"]').value.trim();
-  const dateNaissance = document.querySelector('input[name="date_naissance"]').value;
-  const sexe = document.querySelector('select[name="sexe"]').value;
+  const submitBtn = document.querySelector('.submit-btn');
+  if (!submitBtn) return;
+  
+  const prenom = document.querySelector('input[name="prenom"]');
+  const nom = document.querySelector('input[name="nom"]');
+  const email = document.querySelector('input[name="email"]');
+  const telephone = document.querySelector('input[name="telephone"]');
+  const dateNaissance = document.querySelector('input[name="date_naissance"]');
+  const sexe = document.querySelector('select[name="sexe"]');
 
-  const allFilled = selectedRace && prenom && nom && email && telephone && dateNaissance && sexe;
+  const allFilled = selectedRace && 
+                    prenom && prenom.value.trim() && 
+                    nom && nom.value.trim() && 
+                    email && email.value.trim() && 
+                    telephone && telephone.value.trim() && 
+                    dateNaissance && dateNaissance.value && 
+                    sexe && sexe.value;
 
-  document.querySelector('.submit-btn').disabled = !allFilled;
+  submitBtn.disabled = !allFilled;
 }
 
 // Listen to all inputs for validation
