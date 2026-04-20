@@ -11,13 +11,9 @@ class HelloAsso {
     public function __construct() {
         $this->clientId = getenv('HELLOASSO_CLIENT_ID') ?: $_ENV['HELLOASSO_CLIENT_ID'] ?? '';
         $this->clientSecret = getenv('HELLOASSO_CLIENT_SECRET') ?: $_ENV['HELLOASSO_CLIENT_SECRET'] ?? '';
-        $this->apiUrl = getenv('HELLOASSO_API_URL') ?: $_ENV['HELLOASSO_API_URL'] ?? 'https://api.helloasso.com/v5';
+        $this->apiUrl = 'https://api.helloasso.com/v5'; // URL fixe pour l'API
         $this->organizationSlug = getenv('HELLOASSO_ORGANIZATION_SLUG') ?: $_ENV['HELLOASSO_ORGANIZATION_SLUG'] ?? '';
         $this->formSlug = getenv('HELLOASSO_FORM_SLUG') ?: $_ENV['HELLOASSO_FORM_SLUG'] ?? '';
-        
-        // Debug - À RETIRER après test
-        error_log("Client ID: " . substr($this->clientId, 0, 10) . "...");
-        error_log("Client Secret: " . (empty($this->clientSecret) ? 'VIDE' : 'OK'));
     }
 
     private function getAccessToken() {
@@ -25,7 +21,8 @@ class HelloAsso {
             return $this->accessToken;
         }
 
-        $tokenUrl = $this->apiUrl . '/oauth2/token';
+        // L'endpoint OAuth2 est à la racine, pas dans /v5
+        $tokenUrl = 'https://api.helloasso.com/oauth2/token';
         
         $postData = http_build_query([
             'client_id' => $this->clientId,
@@ -45,11 +42,6 @@ class HelloAsso {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
-        
-        // Debug
-        error_log("Token URL: " . $tokenUrl);
-        error_log("HTTP Code: " . $httpCode);
-        error_log("Response: " . $response);
         
         if ($curlError) {
             throw new Exception('Erreur cURL: ' . $curlError);
@@ -124,17 +116,9 @@ class HelloAsso {
                 'firstName' => $participantData['prenom'],
                 'lastName' => $participantData['nom'],
                 'email' => $participantData['email'],
-                'dateOfBirth' => $participantData['date_naissance'],
-                'phoneNumber' => $participantData['telephone']
+                'dateOfBirth' => $participantData['date_naissance']
             ],
-            'items' => $items,
-            'metadata' => [
-                'course' => $participantData['course'],
-                'sexe' => $participantData['sexe'],
-                'repas_poulet' => $participantData['repas_poulet'],
-                'repas_saucisse' => $participantData['repas_saucisse'],
-                'repas_nuggets' => $participantData['repas_nuggets']
-            ]
+            'items' => $items
         ];
 
         $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
