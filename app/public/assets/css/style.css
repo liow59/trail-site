@@ -68,7 +68,7 @@ body {
 .hero-content h1 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(5rem, 15vw, 12rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 0.85;
   text-transform: uppercase;
   color: var(--cream);
@@ -97,7 +97,7 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
-  font-weight: 400;
+  font-weight: 700;
   text-align: center;
 }
 
@@ -120,7 +120,7 @@ body {
   font-size: 1rem;
   color: var(--earth);
   letter-spacing: 0.08em;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .cta-btn {
@@ -178,7 +178,7 @@ body {
 .section-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1;
   color: var(--cream);
   margin-bottom: 2rem;
@@ -253,7 +253,7 @@ body {
 .race-dist {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 3rem;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--lime);
   margin-bottom: 0.75rem;
 }
@@ -543,5 +543,5 @@ body {
 
 .date-text {
   font-size: 3rem !important;
-  font-weight: 400;
+  font-weight: 700;
 }
