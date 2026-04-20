@@ -58,6 +58,18 @@ $raceStats = $stats->getRaceStats();
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
+    <!-- CARTE TEST -->
+    <a href="/inscription.php?course=test" class="race-card-preview" style="text-decoration:none; color:inherit; border:2px dashed var(--rust);">
+      <div style="position:absolute; top:0.75rem; right:0.75rem; background:var(--rust); color:var(--cream); padding:0.25rem 0.5rem; font-size:0.65rem; border-radius:2px; font-weight:700; letter-spacing:0.05em;">TEST</div>
+      <div class="race-dist" style="font-size:2.5rem; color:var(--rust)">TEST</div>
+      <div class="race-type">
+        <div class="race-info-item"><span class="icon">🧪</span><span>Test de paiement</span></div>
+        <div class="race-info-item"><span class="icon">💳</span><span>Inscription factice</span></div>
+      </div>
+      <div class="race-price" style="color:var(--rust)">0.50 €</div>
+      <div style="font-size:0.75rem; color:var(--sand); margin-top:0.5rem; font-style:italic;">Pour tester le système de paiement</div>
+    </a>
+    
     <a href="/inscription.php?course=3km" class="race-card-preview" style="text-decoration:none; color:inherit;">
       <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
       <div class="race-type">
