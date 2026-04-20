@@ -9,11 +9,15 @@ class HelloAsso {
     private $accessToken;
 
     public function __construct() {
-        $this->clientId = $_ENV['HELLOASSO_CLIENT_ID'] ?? '';
-        $this->clientSecret = $_ENV['HELLOASSO_CLIENT_SECRET'] ?? '';
-        $this->apiUrl = $_ENV['HELLOASSO_API_URL'] ?? 'https://api.helloasso.com/v5';
-        $this->organizationSlug = $_ENV['HELLOASSO_ORGANIZATION_SLUG'] ?? '';
-        $this->formSlug = $_ENV['HELLOASSO_FORM_SLUG'] ?? '';
+        $this->clientId = getenv('HELLOASSO_CLIENT_ID') ?: $_ENV['HELLOASSO_CLIENT_ID'] ?? '';
+        $this->clientSecret = getenv('HELLOASSO_CLIENT_SECRET') ?: $_ENV['HELLOASSO_CLIENT_SECRET'] ?? '';
+        $this->apiUrl = getenv('HELLOASSO_API_URL') ?: $_ENV['HELLOASSO_API_URL'] ?? 'https://api.helloasso.com/v5';
+        $this->organizationSlug = getenv('HELLOASSO_ORGANIZATION_SLUG') ?: $_ENV['HELLOASSO_ORGANIZATION_SLUG'] ?? '';
+        $this->formSlug = getenv('HELLOASSO_FORM_SLUG') ?: $_ENV['HELLOASSO_FORM_SLUG'] ?? '';
+        
+        // Debug - À RETIRER après test
+        error_log("Client ID: " . substr($this->clientId, 0, 10) . "...");
+        error_log("Client Secret: " . (empty($this->clientSecret) ? 'VIDE' : 'OK'));
     }
 
     private function getAccessToken() {
@@ -21,50 +25,68 @@ class HelloAsso {
             return $this->accessToken;
         }
 
-        $ch = curl_init($this->apiUrl . '/oauth2/token');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+        $tokenUrl = $this->apiUrl . '/oauth2/token';
+        
+        $postData = http_build_query([
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
             'grant_type' => 'client_credentials'
-        ]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+        ]);
+
+        $ch = curl_init($tokenUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
 
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
+        
+        // Debug
+        error_log("Token URL: " . $tokenUrl);
+        error_log("HTTP Code: " . $httpCode);
+        error_log("Response: " . $response);
+        
+        if ($curlError) {
+            throw new Exception('Erreur cURL: ' . $curlError);
+        }
+
+        if ($httpCode !== 200) {
+            throw new Exception('Erreur authentification HelloAsso (HTTP ' . $httpCode . '): ' . $response);
+        }
 
         $data = json_decode($response, true);
         $this->accessToken = $data['access_token'] ?? null;
+        
+        if (!$this->accessToken) {
+            throw new Exception('Token non reçu: ' . json_encode($data));
+        }
 
         return $this->accessToken;
     }
 
     public function createCheckoutIntent($participantData) {
         $token = $this->getAccessToken();
-        if (!$token) {
-            throw new Exception('Impossible d\'obtenir le token API HelloAsso');
-        }
 
-        // Calculer le montant total
         $coursePrice = $participantData['course_price'];
         $mealTotal = ($participantData['repas_poulet'] * 10) + 
                      ($participantData['repas_saucisse'] * 12) + 
                      ($participantData['repas_nuggets'] * 8);
         $totalAmount = $coursePrice + $mealTotal;
 
-        // Préparer les items de paiement
         $items = [];
         
-        // Item pour la course
         $items[] = [
             'name' => 'Inscription ' . $participantData['course'],
             'priceCategory' => 'Fixed',
-            'amount' => $coursePrice * 100, // En centimes
+            'amount' => $coursePrice * 100,
             'type' => 'Payment'
         ];
 
-        // Items pour les repas
         if ($participantData['repas_poulet'] > 0) {
             $items[] = [
                 'name' => 'Poulet frites x' . $participantData['repas_poulet'],
@@ -90,7 +112,6 @@ class HelloAsso {
             ];
         }
 
-        // Créer le checkout intent
         $payload = [
             'totalAmount' => $totalAmount * 100,
             'initialAmount' => $totalAmount * 100,
@@ -130,7 +151,7 @@ class HelloAsso {
         curl_close($ch);
 
         if ($httpCode !== 200 && $httpCode !== 201) {
-            throw new Exception('Erreur API HelloAsso: ' . $response);
+            throw new Exception('Erreur création paiement (HTTP ' . $httpCode . '): ' . $response);
         }
 
         $data = json_decode($response, true);
