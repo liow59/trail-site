@@ -62,28 +62,28 @@ body {
 }
 
 .hero-content h1 {
-  font-family: Impact, 'Arial Black', sans-serif;
-  font-size: clamp(3.5rem, 10vw, 7rem);
-  font-weight: 900;
-  line-height: 1;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 400;
+  line-height: 0.9;
   text-transform: uppercase;
   color: var(--cream);
-  text-shadow: 2px 2px 12px rgba(0,0,0,0.4);
-  margin-bottom: 1rem;
+  text-shadow: 3px 3px 15px rgba(0,0,0,0.5);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
 }
 
 .hero-content h1 span {
   color: var(--lime);
   font-size: 1em;
   display: block;
-  letter-spacing: 0.08em;
-  font-weight: 900;
+  font-weight: 400;
 }
 
 .subtitle {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.65);
-  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
   font-weight: 400;
@@ -164,9 +164,9 @@ body {
 }
 
 .section-title {
-  font-family: Impact, 'Arial Black', sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 900;
+  font-weight: 400;
   line-height: 1;
   color: var(--cream);
   margin-bottom: 2rem;
@@ -239,9 +239,9 @@ body {
 }
 
 .race-dist {
-  font-family: Impact, sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 3rem;
-  font-weight: 900;
+  font-weight: 400;
   color: var(--lime);
   margin-bottom: 0.75rem;
 }
@@ -494,7 +494,7 @@ body {
 }
 
 .page-header h1 {
-  font-family: Impact, sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 2.5rem;
   color: var(--cream);
   text-transform: uppercase;
