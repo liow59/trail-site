@@ -1,5 +1,5 @@
 <?php 
-require_once __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/Runner.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom = trim($_POST['prenom'] ?? '');
