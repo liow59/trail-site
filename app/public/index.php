@@ -58,7 +58,7 @@ $raceStats = $stats->getRaceStats();
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <!-- CARTE TEST -->
+    <!-- CARTE TEST - MASQUÉE POUR L'INSTANT
     <a href="/inscription.php?course=test" style="text-decoration:none; color:inherit;">
       <div class="race-card" style="border:2px dashed var(--rust);">
         <div style="position:absolute; top:0.75rem; right:0.75rem; background:var(--rust); color:var(--cream); padding:0.25rem 0.5rem; font-size:0.65rem; border-radius:2px; font-weight:700; letter-spacing:0.05em;">TEST</div>
@@ -74,6 +74,7 @@ $raceStats = $stats->getRaceStats();
         </div>
       </div>
     </a>
+    -->
     
     <a href="/inscription.php?course=3km" style="text-decoration:none; color:inherit;">
       <div class="race-card" data-race="3km" data-price="0">
