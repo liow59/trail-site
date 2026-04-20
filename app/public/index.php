@@ -67,6 +67,10 @@ $raceStats = $stats->getRaceStats();
         <div class="race-info-item"><span class="icon">💳</span><span>Inscription factice</span></div>
       </div>
       <div class="race-price" style="color:var(--rust)">0.50 €</div>
+      <div class="race-spots">
+        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['test']['percentage'] ?>%; background:var(--rust)"></div></div>
+        <span class="spots-text"><?= $raceStats['test']['registered'] ?> inscriptions test</span>
+      </div>
       <div style="font-size:0.75rem; color:var(--sand); margin-top:0.5rem; font-style:italic;">Pour tester le système de paiement</div>
     </a>
     

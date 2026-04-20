@@ -48,6 +48,7 @@ class Statistics {
     
     public function getRaceStats() {
         $races = [
+            'test' => ['total' => 999, 'registered' => 0],
             '3km' => ['total' => 50, 'registered' => 0],
             '7.5km' => ['total' => 100, 'registered' => 0],
             '15km' => ['total' => 100, 'registered' => 0]
@@ -56,7 +57,6 @@ class Statistics {
         try {
             $token = $this->getAccessToken();
             if (!$token) {
-                // Fallback sur valeurs par défaut si API ne répond pas
                 return $this->calculateStats($races);
             }
             
@@ -79,20 +79,20 @@ class Statistics {
                 
                 // Compter les inscriptions par course
                 foreach ($items as $item) {
-                    // Le nom de l'item contient la course (ex: "Inscription 3km")
-                    $itemName = $item['name'] ?? '';
+                    $itemName = strtolower($item['name'] ?? '');
                     
-                    if (strpos($itemName, '3km') !== false) {
+                    if (strpos($itemName, 'test') !== false || strpos($itemName, 'Test') !== false) {
+                        $races['test']['registered']++;
+                    } elseif (strpos($itemName, '3km') !== false || strpos($itemName, '3 km') !== false) {
                         $races['3km']['registered']++;
-                    } elseif (strpos($itemName, '7.5km') !== false) {
+                    } elseif (strpos($itemName, '7.5km') !== false || strpos($itemName, '7.5 km') !== false) {
                         $races['7.5km']['registered']++;
-                    } elseif (strpos($itemName, '15km') !== false) {
+                    } elseif (strpos($itemName, '15km') !== false || strpos($itemName, '15 km') !== false) {
                         $races['15km']['registered']++;
                     }
                 }
             }
         } catch (Exception $e) {
-            // En cas d'erreur, utiliser les valeurs par défaut
             error_log('Erreur récupération stats HelloAsso: ' . $e->getMessage());
         }
         
