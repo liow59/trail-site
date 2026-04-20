@@ -46,6 +46,8 @@ body {
   position: relative;
   z-index: 2;
   max-width: 700px;
+  width: 100%;
+  text-align: center;
 }
 
 .badge {
@@ -65,12 +67,13 @@ body {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(5rem, 15vw, 12rem);
   font-weight: 400;
-  line-height: 0.9;
+  line-height: 0.8;
   text-transform: uppercase;
   color: var(--cream);
   text-shadow: 3px 3px 15px rgba(0,0,0,0.5);
   margin-bottom: 1.5rem;
   letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .hero-content h1 span {
@@ -78,6 +81,7 @@ body {
   font-size: 1em;
   display: block;
   font-weight: 400;
+  text-align: center;
 }
 
 .subtitle {
@@ -87,6 +91,7 @@ body {
   text-transform: uppercase;
   margin-bottom: 1.5rem;
   font-weight: 400;
+  text-align: center;
 }
 
 .hero-date-box {
