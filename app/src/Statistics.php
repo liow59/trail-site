@@ -8,6 +8,13 @@ class Statistics {
     private $formSlug;
     private $accessToken;
     
+    // Configuration des courses (total places)
+    private $racesConfig = [
+        '3km'   => ['total' => 50,  'price' => 0,  'label' => '3 km'],
+        '7.5km' => ['total' => 100, 'price' => 10, 'label' => '7.5 km'],
+        '15km'  => ['total' => 100, 'price' => 15, 'label' => '15 km']
+    ];
+    
     public function __construct() {
         $this->clientId = getenv('HELLOASSO_CLIENT_ID') ?: '';
         $this->clientSecret = getenv('HELLOASSO_CLIENT_SECRET') ?: '';
@@ -23,16 +30,14 @@ class Statistics {
 
         $tokenUrl = 'https://api.helloasso.com/oauth2/token';
         
-        $postData = http_build_query([
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'grant_type' => 'client_credentials'
-        ]);
-
         $ch = curl_init($tokenUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'client_credentials'
+        ]));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/x-www-form-urlencoded'
         ]);
@@ -46,64 +51,111 @@ class Statistics {
         return $this->accessToken;
     }
     
+    private function apiGet($endpoint, $params = []) {
+        $token = $this->getAccessToken();
+        if (!$token) return null;
+        
+        $url = $this->apiUrl . $endpoint;
+        if ($params) {
+            $url .= '?' . http_build_query($params);
+        }
+        
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode === 200) {
+            return json_decode($response, true);
+        }
+        
+        error_log("HelloAsso API error ($httpCode): $response");
+        return null;
+    }
+    
     public function getRaceStats() {
-        $races = [
-            'test' => ['total' => 999, 'registered' => 0],
-            '3km' => ['total' => 50, 'registered' => 0],
-            '7.5km' => ['total' => 100, 'registered' => 0],
-            '15km' => ['total' => 100, 'registered' => 0]
-        ];
+        $races = [];
+        foreach ($this->racesConfig as $key => $config) {
+            $races[$key] = [
+                'total' => $config['total'],
+                'price' => $config['price'],
+                'label' => $config['label'],
+                'registered' => 0,
+                'remaining' => $config['total'],
+                'percentage' => 0
+            ];
+        }
         
         try {
-            $token = $this->getAccessToken();
-            if (!$token) {
-                return $this->calculateStats($races);
-            }
+            // Récupérer TOUS les items vendus (pagination)
+            $allItems = [];
+            $pageIndex = 1;
+            $pageSize = 100;
             
-            // Récupérer les items/commandes depuis HelloAsso
-            $url = $this->apiUrl . '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/items';
-            
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: Bearer ' . $token
-            ]);
-            
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            
-            if ($httpCode === 200) {
-                $data = json_decode($response, true);
-                $items = $data['data'] ?? [];
+            do {
+                $data = $this->apiGet(
+                    '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/items',
+                    [
+                        'pageIndex' => $pageIndex,
+                        'pageSize' => $pageSize,
+                        'itemStates' => 'Processed,Registered',
+                        'withDetails' => 'true'
+                    ]
+                );
                 
-                // Compter les inscriptions par course
-                foreach ($items as $item) {
-                    $itemName = strtolower($item['name'] ?? '');
-                    
-                    if (strpos($itemName, 'test') !== false || strpos($itemName, 'Test') !== false) {
-                        $races['test']['registered']++;
-                    } elseif (strpos($itemName, '3km') !== false || strpos($itemName, '3 km') !== false) {
-                        $races['3km']['registered']++;
-                    } elseif (strpos($itemName, '7.5km') !== false || strpos($itemName, '7.5 km') !== false) {
-                        $races['7.5km']['registered']++;
-                    } elseif (strpos($itemName, '15km') !== false || strpos($itemName, '15 km') !== false) {
-                        $races['15km']['registered']++;
+                if (!$data || !isset($data['data'])) break;
+                
+                $items = $data['data'];
+                $allItems = array_merge($allItems, $items);
+                
+                // Vérifier s'il y a une page suivante
+                $totalPages = $data['pagination']['totalPages'] ?? 1;
+                $pageIndex++;
+                
+            } while ($pageIndex <= $totalPages);
+            
+            // Compter les inscriptions par course
+            foreach ($allItems as $item) {
+                $itemName = strtolower($item['name'] ?? '');
+                $tierName = strtolower($item['tierName'] ?? '');
+                $searchIn = $itemName . ' ' . $tierName;
+                
+                foreach ($races as $key => &$race) {
+                    // Chercher dans le nom de l'item ou du tier
+                    if (strpos($searchIn, strtolower($key)) !== false) {
+                        $race['registered']++;
+                        break;
                     }
                 }
             }
+            
         } catch (Exception $e) {
             error_log('Erreur récupération stats HelloAsso: ' . $e->getMessage());
         }
         
-        return $this->calculateStats($races);
+        // Calculer remaining et percentage
+        foreach ($races as $key => &$race) {
+            $race['remaining'] = max(0, $race['total'] - $race['registered']);
+            $race['percentage'] = round(($race['registered'] / $race['total']) * 100, 1);
+        }
+        
+        return $races;
     }
     
-    private function calculateStats($races) {
-        foreach ($races as $course => &$data) {
-            $data['remaining'] = max(0, $data['total'] - $data['registered']);
-            $data['percentage'] = ($data['registered'] / $data['total']) * 100;
-        }
-        return $races;
+    // Debug : voir la réponse brute de l'API
+    public function debugItems() {
+        $data = $this->apiGet(
+            '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/items',
+            [
+                'pageSize' => 20,
+                'withDetails' => 'true'
+            ]
+        );
+        return $data;
     }
 }
