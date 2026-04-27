@@ -1,11 +1,12 @@
 <?php 
-require_once __DIR__ . "/../src/bootstrap.php";
-require_once __DIR__ . '/../src/HelloAsso.php';
+require_once __DIR__ . '/../src/bootstrap.php';
+
+$stats = new Statistics();
+$raceStats = $stats->getRaceStats();
 
 $error = null;
 $success = isset($_GET['success']);
 $paymentError = isset($_GET['error']);
-$checkoutUrl = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -29,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
         
         if ($checkoutUrl) {
-            // Rediriger vers la page de paiement HelloAsso
             header('Location: ' . $checkoutUrl);
             exit;
         }
@@ -96,8 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div class="race-price" style="color:var(--sky)">Gratuit</div>
       <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:0%; background:var(--sky)"></div></div>
-        <span class="spots-text">50 places</span>
+        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
+        <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> / <?= $raceStats['3km']['total'] ?> places</span>
       </div>
     </div>
     <div class="race-card" data-race="7.5km" data-price="10">
@@ -108,10 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 12 ans</span></div>
         <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
       </div>
-      <div class="race-price">10 €</div>
+      <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
       <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:0%"></div></div>
-        <span class="spots-text">100 places</span>
+        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
+        <span class="spots-text"><?= $raceStats['7.5km']['registered'] ?> inscrits · <?= $raceStats['7.5km']['remaining'] ?> / <?= $raceStats['7.5km']['total'] ?> places</span>
       </div>
     </div>
     <div class="race-card" data-race="15km" data-price="15">
@@ -122,10 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 16 ans</span></div>
         <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
       </div>
-      <div class="race-price">15 €</div>
+      <div class="race-price"><?= $raceStats['15km']['price'] ?> €</div>
       <div class="race-spots">
-        <div class="spots-bar"><div class="spots-fill" style="width:0%"></div></div>
-        <span class="spots-text">100 places</span>
+        <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
+        <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> / <?= $raceStats['15km']['total'] ?> places</span>
       </div>
     </div>
   </div>
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="hidden" name="course_price" id="selected-course-price" value="0">
     
     <div style="background:rgba(168,198,64,0.08); border:1px solid rgba(168,198,64,0.2); border-radius:4px; padding:1rem; margin:1.5rem 0; font-size:0.85rem; color:var(--sand);">
-      🔒 Paiement sécurisé par carte bancaire ou PayPal
+      🔒 Paiement sécurisé par carte bancaire
     </div>
     
     <button type="submit" class="submit-btn" disabled>Procéder au paiement sécurisé →</button>
@@ -218,12 +218,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
-<script src="/assets/js/main.js"></script>
 <script>
+let selectedRace = null;
+let selectedPrice = 0;
+
+const racePrices = {'3km': 0, '7.5km': 10, '15km': 15};
+const mealPrices = {'poulet': 10, 'saucisse': 12, 'nuggets': 8};
+
+const urlParams = new URLSearchParams(window.location.search);
+const preselectedCourse = urlParams.get('course');
+
+document.querySelectorAll('.race-card').forEach(card => {
+  const race = card.dataset.race;
+  
+  if (preselectedCourse === race) {
+    card.classList.add('selected');
+    selectedRace = race;
+    selectedPrice = parseInt(card.dataset.price);
+    document.getElementById('selected-course').value = race;
+    document.getElementById('selected-course-price').value = selectedPrice;
+    updatePrices();
+    checkFormValidity();
+  }
+  
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedRace = race;
+    selectedPrice = parseInt(card.dataset.price);
+    document.getElementById('selected-course').value = race;
+    document.getElementById('selected-course-price').value = selectedPrice;
+    updatePrices();
+    checkFormValidity();
+  });
+});
+
+document.querySelectorAll('.qty-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const meal = btn.dataset.meal;
+    const input = document.getElementById('repas_' + meal);
+    let value = parseInt(input.value) || 0;
+    if (btn.classList.contains('qty-plus')) value++;
+    else if (btn.classList.contains('qty-minus') && value > 0) value--;
+    input.value = value;
+    updatePrices();
+  });
+});
+
+function updatePrices() {
+  document.getElementById('course-price').textContent = (selectedPrice || 0) + ' €';
+  let mealTotal = 0;
+  Object.keys(mealPrices).forEach(meal => {
+    const qty = parseInt(document.getElementById('repas_' + meal).value) || 0;
+    mealTotal += qty * mealPrices[meal];
+  });
+  document.getElementById('meal-price').textContent = mealTotal + ' €';
+  document.getElementById('total-price').textContent = ((selectedPrice || 0) + mealTotal) + ' €';
+}
+
+function checkFormValidity() {
+  const prenom = document.getElementById('prenom').value.trim();
+  const nom = document.getElementById('nom').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const telephone = document.getElementById('telephone').value.trim();
+  const dateNaissance = document.getElementById('date_naissance').value;
+  const sexe = document.getElementById('sexe').value;
+  const allFilled = selectedRace && prenom && nom && email && telephone && dateNaissance && sexe;
+  document.querySelector('.submit-btn').disabled = !allFilled;
+}
+
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', checkFormValidity);
+  el.addEventListener('change', checkFormValidity);
+});
+
 document.getElementById('inscription-form').addEventListener('submit', function() {
   document.querySelector('.submit-btn').textContent = 'Redirection vers le paiement...';
   document.querySelector('.submit-btn').disabled = true;
 });
+
+updatePrices();
+checkFormValidity();
 </script>
 </body>
 </html>
