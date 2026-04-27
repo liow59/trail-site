@@ -545,3 +545,119 @@ body {
   font-size: 3rem !important;
   font-weight: 700;
 }
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media(max-width: 768px) {
+  .hero-content h1 {
+    font-size: clamp(3rem, 12vw, 6rem);
+  }
+  
+  .badge {
+    font-size: 1.2rem;
+    padding: 0.3rem 0.8rem;
+  }
+  
+  .hero-date-box {
+    padding: 0.4rem 1rem;
+  }
+  
+  .date-text {
+    font-size: 1.8rem !important;
+  }
+  
+  .subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+  
+  .cta-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .section {
+    padding: 2.5rem 1rem;
+  }
+  
+  .section-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  .races-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .race-card, .race-card-preview {
+    padding: 1.25rem;
+  }
+  
+  .race-dist {
+    font-size: 2.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .page-header {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .repas-row {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  
+  .repas-qty {
+    align-self: flex-end;
+  }
+  
+  .price-summary {
+    padding: 1rem;
+  }
+  
+  .scroll-hint {
+    bottom: 0.5rem;
+    font-size: 0.6rem;
+  }
+  
+  .hero {
+    padding: 1.5rem;
+    min-height: 100svh;
+  }
+}
+
+@media(max-width: 400px) {
+  .hero-content h1 {
+    font-size: clamp(2.5rem, 11vw, 5rem);
+  }
+  
+  .badge {
+    font-size: 1rem;
+  }
+  
+  .date-text {
+    font-size: 1.4rem !important;
+  }
+  
+  .race-dist {
+    font-size: 2rem;
+  }
+  
+  .qty-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .qty-input {
+    width: 40px;
+    height: 32px;
+  }
+}
