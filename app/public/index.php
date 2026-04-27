@@ -42,13 +42,13 @@ $raceStats = $stats->getRaceStats();
       <span style="font-size:1.5rem;">📍</span>
       <div>
         <p style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--lime); letter-spacing:0.05em;">Parking de la Halle</p>
-        <p style="font-size:0.85rem; color:var(--sand);">01630 Challex</p>
+        <p style="font-size:0.85rem; color:var(--sand);">381 rue de la Mairie, 01630 Challex</p>
       </div>
     </div>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2737.8!2d5.9728!3d46.182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDEwJzU1LjIiTiA1wrA1OCcyMi4xIkU!5e1!3m2!1sfr!2sfr!4v1234567890" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1368.9!2d5.975!3d46.181!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s381%20Rue%20de%20la%20Mairie%2C%2001630%20Challex!5e1!3m2!1sfr!2sfr!4v1234567890" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
     <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
-      <a href="https://www.google.com/maps/search/Parking+de+la+Halle+Challex+01630" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
-      <a href="https://waze.com/ul?ll=46.182,5.9728&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+      <a href="https://www.google.com/maps/search/381+Rue+de+la+Mairie+01630+Challex" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://waze.com/ul?q=381+Rue+de+la+Mairie+Challex&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
     </div>
   </div>
 </section>
@@ -59,7 +59,7 @@ $raceStats = $stats->getRaceStats();
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
     <a href="/inscription.php?course=3km" style="text-decoration:none; color:inherit;">
-      <div class="race-card" data-race="3km" data-price="0">
+      <div class="race-card">
         <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
         <div class="race-type">
           <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
@@ -69,39 +69,39 @@ $raceStats = $stats->getRaceStats();
         <div class="race-price" style="color:var(--sky)">Gratuit</div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
-          <span class="spots-text"><?= $raceStats['3km']['remaining'] ?> places restantes sur <?= $raceStats['3km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> places restantes sur <?= $raceStats['3km']['total'] ?></span>
         </div>
       </div>
     </a>
     
     <a href="/inscription.php?course=7.5km" style="text-decoration:none; color:inherit;">
-      <div class="race-card" data-race="7.5km" data-price="10">
+      <div class="race-card">
         <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
         <div class="race-type">
           <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
           <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 12 ans</span></div>
           <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
         </div>
-        <div class="race-price">10 €</div>
+        <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['7.5km']['remaining'] ?> places restantes sur <?= $raceStats['7.5km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['7.5km']['registered'] ?> inscrits · <?= $raceStats['7.5km']['remaining'] ?> places restantes sur <?= $raceStats['7.5km']['total'] ?></span>
         </div>
       </div>
     </a>
     
     <a href="/inscription.php?course=15km" style="text-decoration:none; color:inherit;">
-      <div class="race-card" data-race="15km" data-price="15">
+      <div class="race-card">
         <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
         <div class="race-type">
           <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
           <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 16 ans</span></div>
           <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
         </div>
-        <div class="race-price">15 €</div>
+        <div class="race-price"><?= $raceStats['15km']['price'] ?> €</div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['15km']['remaining'] ?> places restantes sur <?= $raceStats['15km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> places restantes sur <?= $raceStats['15km']['total'] ?></span>
         </div>
       </div>
     </a>

@@ -8,11 +8,12 @@ class Statistics {
     private $formSlug;
     private $accessToken;
     
-    // Configuration des courses (total places)
+    // Configuration alignée sur HelloAsso
     private $racesConfig = [
-        '3km'   => ['total' => 50,  'price' => 0,  'label' => '3 km'],
-        '7.5km' => ['total' => 100, 'price' => 10, 'label' => '7.5 km'],
-        '15km'  => ['total' => 100, 'price' => 15, 'label' => '15 km']
+        '3km'   => ['total' => 30,  'price' => 0,  'label' => 'Course Enfant',     'tierMatch' => 'course enfant'],
+        '7.5km' => ['total' => 75,  'price' => 10, 'label' => 'Course 7.5km',      'tierMatch' => 'course 7.5km'],
+        '15km'  => ['total' => 75,  'price' => 15, 'label' => 'Course 15km',        'tierMatch' => 'course 15km'],
+        'test'  => ['total' => 10,  'price' => 0.5,'label' => 'Test (payant)',       'tierMatch' => 'test']
     ];
     
     public function __construct() {
@@ -28,9 +29,7 @@ class Statistics {
             return $this->accessToken;
         }
 
-        $tokenUrl = 'https://api.helloasso.com/oauth2/token';
-        
-        $ch = curl_init($tokenUrl);
+        $ch = curl_init('https://api.helloasso.com/oauth2/token');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
@@ -38,9 +37,7 @@ class Statistics {
             'client_secret' => $this->clientSecret,
             'grant_type' => 'client_credentials'
         ]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded'
-        ]);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -62,9 +59,7 @@ class Statistics {
         
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $token
-        ]);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $token]);
         
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -73,8 +68,6 @@ class Statistics {
         if ($httpCode === 200) {
             return json_decode($response, true);
         }
-        
-        error_log("HelloAsso API error ($httpCode): $response");
         return null;
     }
     
@@ -92,70 +85,53 @@ class Statistics {
         }
         
         try {
-            // Récupérer TOUS les items vendus (pagination)
-            $allItems = [];
+            // Récupérer tous les items vendus avec pagination
             $pageIndex = 1;
-            $pageSize = 100;
             
             do {
                 $data = $this->apiGet(
                     '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/items',
                     [
                         'pageIndex' => $pageIndex,
-                        'pageSize' => $pageSize,
-                        'itemStates' => 'Processed,Registered',
+                        'pageSize' => 100,
                         'withDetails' => 'true'
                     ]
                 );
                 
                 if (!$data || !isset($data['data'])) break;
                 
-                $items = $data['data'];
-                $allItems = array_merge($allItems, $items);
+                foreach ($data['data'] as $item) {
+                    $itemName = strtolower($item['name'] ?? '');
+                    $state = $item['state'] ?? '';
+                    
+                    // Ne compter que les items valides
+                    if ($state === 'Canceled') continue;
+                    
+                    // Matcher avec les courses configurées
+                    foreach ($races as $key => &$race) {
+                        $match = $this->racesConfig[$key]['tierMatch'];
+                        if (strpos($itemName, $match) !== false) {
+                            $race['registered']++;
+                            break;
+                        }
+                    }
+                }
                 
-                // Vérifier s'il y a une page suivante
                 $totalPages = $data['pagination']['totalPages'] ?? 1;
                 $pageIndex++;
                 
-            } while ($pageIndex <= $totalPages);
-            
-            // Compter les inscriptions par course
-            foreach ($allItems as $item) {
-                $itemName = strtolower($item['name'] ?? '');
-                $tierName = strtolower($item['tierName'] ?? '');
-                $searchIn = $itemName . ' ' . $tierName;
-                
-                foreach ($races as $key => &$race) {
-                    // Chercher dans le nom de l'item ou du tier
-                    if (strpos($searchIn, strtolower($key)) !== false) {
-                        $race['registered']++;
-                        break;
-                    }
-                }
-            }
+            } while ($pageIndex <= $totalPages && $totalPages > 0);
             
         } catch (Exception $e) {
-            error_log('Erreur récupération stats HelloAsso: ' . $e->getMessage());
+            error_log('Erreur stats HelloAsso: ' . $e->getMessage());
         }
         
         // Calculer remaining et percentage
-        foreach ($races as $key => &$race) {
+        foreach ($races as &$race) {
             $race['remaining'] = max(0, $race['total'] - $race['registered']);
             $race['percentage'] = round(($race['registered'] / $race['total']) * 100, 1);
         }
         
         return $races;
-    }
-    
-    // Debug : voir la réponse brute de l'API
-    public function debugItems() {
-        $data = $this->apiGet(
-            '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/items',
-            [
-                'pageSize' => 20,
-                'withDetails' => 'true'
-            ]
-        );
-        return $data;
     }
 }
