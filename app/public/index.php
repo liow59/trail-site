@@ -12,6 +12,7 @@ $raceStats = $stats->getRaceStats();
 <title>Trail de la Vogue Challaisienne 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -69,7 +70,7 @@ $raceStats = $stats->getRaceStats();
         <div class="race-price" style="color:var(--sky)">Gratuit</div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
-          <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> places restantes sur <?= $raceStats['3km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> / <?= $raceStats['3km']['total'] ?> places</span>
         </div>
       </div>
     </a>
@@ -83,9 +84,12 @@ $raceStats = $stats->getRaceStats();
           <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
         </div>
         <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
+        <div style="margin-top:0.75rem;">
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxModal('7.5km');">🗺 Voir le parcours</span>
+        </div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['7.5km']['registered'] ?> inscrits · <?= $raceStats['7.5km']['remaining'] ?> places restantes sur <?= $raceStats['7.5km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['7.5km']['registered'] ?> inscrits · <?= $raceStats['7.5km']['remaining'] ?> / <?= $raceStats['7.5km']['total'] ?> places</span>
         </div>
       </div>
     </a>
@@ -101,7 +105,7 @@ $raceStats = $stats->getRaceStats();
         <div class="race-price"><?= $raceStats['15km']['price'] ?> €</div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> places restantes sur <?= $raceStats['15km']['total'] ?></span>
+          <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> / <?= $raceStats['15km']['total'] ?> places</span>
         </div>
       </div>
     </a>
@@ -111,9 +115,112 @@ $raceStats = $stats->getRaceStats();
   </div>
 </section>
 
+<!-- MODAL GPX -->
+<div id="gpx-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.85); padding:1rem;">
+  <div style="position:relative; width:100%; height:100%; max-width:1000px; margin:0 auto; display:flex; flex-direction:column;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem 0;">
+      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--lime);" id="gpx-modal-title">Parcours 7.5km</h3>
+      <button onclick="closeGpxModal()" style="background:none; border:none; color:var(--cream); font-size:2rem; cursor:pointer;">✕</button>
+    </div>
+    <div id="gpx-map" style="flex:1; border-radius:4px; min-height:400px;"></div>
+    <div id="gpx-stats" style="display:flex; gap:2rem; padding:1rem 0; justify-content:center; flex-wrap:wrap;"></div>
+  </div>
+</div>
+
 <footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:4rem;">
   <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+<script>
+const gpxFiles = {
+  '7.5km': '/assets/gpx/parcours-7.5km.gpx'
+};
+
+let gpxMap = null;
+
+function openGpxModal(course) {
+  const modal = document.getElementById('gpx-modal');
+  const title = document.getElementById('gpx-modal-title');
+  const statsDiv = document.getElementById('gpx-stats');
+  
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  title.textContent = 'Parcours ' + course;
+  
+  // Détruire l'ancienne carte si elle existe
+  if (gpxMap) {
+    gpxMap.remove();
+    gpxMap = null;
+  }
+  
+  // Créer la carte
+  gpxMap = L.map('gpx-map');
+  
+  // Fond satellite
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Esri',
+    maxZoom: 18
+  }).addTo(gpxMap);
+  
+  // Charger le GPX
+  new L.GPX(gpxFiles[course], {
+    async: true,
+    marker_options: {
+      startIconUrl: null,
+      endIconUrl: null,
+      shadowUrl: null,
+      wptIconUrls: {}
+    },
+    polyline_options: {
+      color: '#a8c640',
+      weight: 4,
+      opacity: 0.9,
+      lineCap: 'round'
+    }
+  }).on('loaded', function(e) {
+    var gpx = e.target;
+    gpxMap.fitBounds(gpx.getBounds(), { padding: [30, 30] });
+    
+    // Ajouter marqueur départ/arrivée
+    var start = gpx.get_start_point();
+    if (start) {
+      L.circleMarker([start.lat, start.lng], {
+        radius: 8, color: '#a8c640', fillColor: '#a8c640', fillOpacity: 1, weight: 2
+      }).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle');
+    }
+    
+    // Stats
+    var dist = (gpx.get_distance() / 1000).toFixed(1);
+    var eleGain = Math.round(gpx.get_elevation_gain());
+    var eleLoss = Math.round(gpx.get_elevation_loss());
+    var eleMin = Math.round(gpx.get_elevation_min());
+    var eleMax = Math.round(gpx.get_elevation_max());
+    
+    statsDiv.innerHTML = 
+      '<div style="text-align:center;"><div style="font-family:Bebas Neue,sans-serif; font-size:2rem; color:var(--lime);">' + dist + ' km</div><div style="font-size:0.75rem; color:var(--sand);">Distance</div></div>' +
+      '<div style="text-align:center;"><div style="font-family:Bebas Neue,sans-serif; font-size:2rem; color:var(--lime);">+ ' + eleGain + ' m</div><div style="font-size:0.75rem; color:var(--sand);">Dénivelé +</div></div>' +
+      '<div style="text-align:center;"><div style="font-family:Bebas Neue,sans-serif; font-size:2rem; color:var(--lime);">- ' + eleLoss + ' m</div><div style="font-size:0.75rem; color:var(--sand);">Dénivelé -</div></div>' +
+      '<div style="text-align:center;"><div style="font-family:Bebas Neue,sans-serif; font-size:2rem; color:var(--cream);">' + eleMin + ' - ' + eleMax + ' m</div><div style="font-size:0.75rem; color:var(--sand);">Altitude</div></div>';
+  }).on('error', function(e) {
+    statsDiv.innerHTML = '<p style="color:var(--rust);">Erreur chargement du parcours</p>';
+  }).addTo(gpxMap);
+}
+
+function closeGpxModal() {
+  document.getElementById('gpx-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  if (gpxMap) {
+    gpxMap.remove();
+    gpxMap = null;
+  }
+}
+
+// Fermer avec Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeGpxModal();
+});
+</script>
 </body>
 </html>

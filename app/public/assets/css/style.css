@@ -661,3 +661,19 @@ body {
     height: 32px;
   }
 }
+
+/* GPX Link */
+.gpx-link {
+  display: inline-block;
+  color: var(--lime);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gpx-link:hover {
+  color: var(--cream);
+}
