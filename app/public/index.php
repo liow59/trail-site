@@ -85,7 +85,7 @@ $raceStats = $stats->getRaceStats();
         </div>
         <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
         <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxModal('7.5km');">🗺 Voir le parcours</span>
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); window.open('/parcours.html','_blank');">🗺 Voir le parcours</span>
         </div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>

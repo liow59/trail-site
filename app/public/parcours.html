@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcours - Trail de la Vogue Challaisienne</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1208; color: #f4ede0; font-family: 'DM Sans', sans-serif; }
+  #map { width: 100%; height: 70vh; }
+  .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; padding: 1.5rem; }
+  .stat { text-align: center; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #a8c640; }
+  .stat-label { font-size: 0.75rem; color: #d4b896; }
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
+  .header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #a8c640; }
+  .close-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: #f4ede0; padding: 0.5rem 1rem; cursor: pointer; border-radius: 2px; font-size: 0.9rem; }
+  .close-btn:hover { background: #a8c640; color: #1a1208; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="header">
+  <h1>▲ Parcours 7.5 km</h1>
+  <button class="close-btn" onclick="window.close(); history.back();">✕ Fermer</button>
+</div>
+<div id="map"></div>
+<div class="stats" id="stats">Chargement du parcours...</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var map = L.map('map');
+
+// Fond satellite
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Esri', maxZoom: 18
+}).addTo(map);
+
+// Charger et parser le GPX
+fetch('/assets/gpx/parcours-7.5km.gpx')
+  .then(r => r.text())
+  .then(gpxText => {
+    var parser = new DOMParser();
+    var gpx = parser.parseFromString(gpxText, 'text/xml');
+    var trkpts = gpx.querySelectorAll('trkpt');
+    
+    var latlngs = [];
+    var elevations = [];
+    
+    trkpts.forEach(pt => {
+      var lat = parseFloat(pt.getAttribute('lat'));
+      var lon = parseFloat(pt.getAttribute('lon'));
+      var ele = pt.querySelector('ele');
+      latlngs.push([lat, lon]);
+      if (ele) elevations.push(parseFloat(ele.textContent));
+    });
+    
+    if (latlngs.length === 0) {
+      document.getElementById('stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé dans le fichier GPX</p>';
+      return;
+    }
+    
+    // Tracer le parcours
+    var polyline = L.polyline(latlngs, {
+      color: '#a8c640', weight: 4, opacity: 0.9, lineCap: 'round'
+    }).addTo(map);
+    
+    map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+    
+    // Marqueur départ
+    L.circleMarker(latlngs[0], {
+      radius: 10, color: '#a8c640', fillColor: '#a8c640', fillOpacity: 1, weight: 3
+    }).addTo(map).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle');
+    
+    // Calculer les stats
+    var totalDist = 0;
+    for (var i = 1; i < latlngs.length; i++) {
+      totalDist += map.distance(latlngs[i-1], latlngs[i]);
+    }
+    
+    var eleGain = 0, eleLoss = 0;
+    for (var i = 1; i < elevations.length; i++) {
+      var diff = elevations[i] - elevations[i-1];
+      if (diff > 0) eleGain += diff;
+      else eleLoss += Math.abs(diff);
+    }
+    
+    var eleMin = Math.round(Math.min(...elevations));
+    var eleMax = Math.round(Math.max(...elevations));
+    
+    document.getElementById('stats').innerHTML = 
+      '<div class="stat"><div class="stat-value">' + (totalDist / 1000).toFixed(1) + ' km</div><div class="stat-label">Distance</div></div>' +
+      '<div class="stat"><div class="stat-value">+ ' + Math.round(eleGain) + ' m</div><div class="stat-label">Dénivelé +</div></div>' +
+      '<div class="stat"><div class="stat-value">- ' + Math.round(eleLoss) + ' m</div><div class="stat-label">Dénivelé -</div></div>' +
+      '<div class="stat"><div class="stat-value">' + eleMin + ' - ' + eleMax + ' m</div><div class="stat-label">Altitude</div></div>';
+  })
+  .catch(err => {
+    document.getElementById('stats').innerHTML = '<p style="color:#c4440a;">Erreur: ' + err.message + '</p>';
+  });
+</script>
+</body>
+</html>
