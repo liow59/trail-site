@@ -194,7 +194,7 @@ body {
 }
 
 .race-card-preview {
-  background: rgba(255,255,255,0.95); color: #1a1208;
+  background: rgba(255,255,255,0.05); color: var(--cream);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
   padding: 1.75rem;
@@ -208,7 +208,7 @@ body {
 }
 
 .race-card {
-  background: rgba(255,255,255,0.95); color: #1a1208;
+  background: rgba(255,255,255,0.05); color: var(--cream);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
   padding: 1.75rem;
@@ -337,7 +337,7 @@ body {
 
 .form-group input,
 .form-group select {
-  background: rgba(255,255,255,0.95); color: #1a1208;
+  background: rgba(255,255,255,0.05); color: var(--cream);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 2px;
   padding: 0.8rem 1rem;
@@ -368,7 +368,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  background: rgba(255,255,255,0.95); color: #1a1208;
+  background: rgba(255,255,255,0.05); color: var(--cream);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 2px;
 }
@@ -676,4 +676,13 @@ body {
 
 .gpx-link:hover {
   color: var(--cream);
+}
+
+/* Forcer fond foncé sur tous les champs */
+.form-group input,
+.form-group select,
+.form-group input[type="date"] {
+  background: rgba(255,255,255,0.05) !important;
+  color: var(--cream) !important;
+  color-scheme: dark;
 }
