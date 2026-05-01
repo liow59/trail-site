@@ -9,7 +9,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #1a1208; color: #f4ede0; font-family: 'DM Sans', sans-serif; }
   #map { width: 100%; height: 55vh; }
-  #elevation { width: 100%; max-width: 1000px; margin: 0 auto; height: 180px; padding: 0 1rem; }
+  #elevation-container { width: 100%; max-width: 1000px; margin: 0 auto; height: 180px; padding: 0 1rem; }
+  #elevation { width: 100%; height: 100%; }
   .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; padding: 1rem 1.5rem; }
   .stat { text-align: center; }
   .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #a8c640; }
@@ -21,7 +22,7 @@
   .section-label { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #a8c640; letter-spacing: 0.12em; text-transform: uppercase; padding: 1rem 1.5rem 0.5rem; max-width: 1000px; margin: 0 auto; }
   @media(max-width: 768px) {
     #map { height: 45vh; }
-    #elevation { height: 150px; }
+    #elevation-container { height: 150px; }
     .stats { gap: 1rem; }
     .stat-value { font-size: 1.5rem; }
   }
@@ -36,13 +37,17 @@
 <div id="map"></div>
 <div class="stats" id="stats">Chargement du parcours...</div>
 <p class="section-label">// Profil altimétrique</p>
-<canvas id="elevation"></canvas>
+<div id="elevation-container">
+  <canvas id="elevation"></canvas>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 var map = L.map('map');
 var hoverMarker = null;
+var allLatLngs = [];
+var profileIndexes = [];
 
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Esri', maxZoom: 18
@@ -57,7 +62,6 @@ fetch('/gpx/Course_7_5.gpx')
     var trkpts = xml.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'trkpt');
     if (trkpts.length === 0) trkpts = xml.getElementsByTagName('trkpt');
     
-    var latlngs = [];
     var elevations = [];
     var distances = [0];
     var totalDist = 0;
@@ -66,30 +70,31 @@ fetch('/gpx/Course_7_5.gpx')
       var pt = trkpts[i];
       var lat = parseFloat(pt.getAttribute('lat'));
       var lon = parseFloat(pt.getAttribute('lon'));
-      latlngs.push([lat, lon]);
+      allLatLngs.push([lat, lon]);
       
       var ele = pt.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'ele')[0];
       if (!ele) ele = pt.getElementsByTagName('ele')[0];
       if (ele) elevations.push(parseFloat(ele.textContent));
+      else elevations.push(0);
       
       if (i > 0) {
-        totalDist += map.distance(latlngs[i-1], latlngs[i]);
+        totalDist += map.distance(allLatLngs[i-1], allLatLngs[i]);
         distances.push(totalDist);
       }
     }
     
-    if (latlngs.length === 0) {
+    if (allLatLngs.length === 0) {
       document.getElementById('stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé</p>';
       return;
     }
     
     // Simplifier pour la carte
     var simplified = [];
-    var step = Math.max(1, Math.floor(latlngs.length / 500));
-    for (var i = 0; i < latlngs.length; i += step) {
-      simplified.push(latlngs[i]);
+    var step = Math.max(1, Math.floor(allLatLngs.length / 500));
+    for (var i = 0; i < allLatLngs.length; i += step) {
+      simplified.push(allLatLngs[i]);
     }
-    simplified.push(latlngs[latlngs.length - 1]);
+    simplified.push(allLatLngs[allLatLngs.length - 1]);
     
     var polyline = L.polyline(simplified, {
       color: '#a8c640', weight: 4, opacity: 0.9, lineCap: 'round'
@@ -98,15 +103,20 @@ fetch('/gpx/Course_7_5.gpx')
     map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
     
     // Marqueur départ
-    L.circleMarker(latlngs[0], {
+    L.circleMarker(allLatLngs[0], {
       radius: 10, color: '#a8c640', fillColor: '#a8c640', fillOpacity: 1, weight: 3
     }).addTo(map).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
     
-    // Marqueur hover (invisible au début)
-    hoverMarker = L.circleMarker([0, 0], {
-      radius: 6, color: '#ffffff', fillColor: '#a8c640', fillOpacity: 1, weight: 2
+    // Marqueur hover (caché au début)
+    hoverMarker = L.marker(allLatLngs[0], {
+      opacity: 0,
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="width:14px;height:14px;background:#fff;border:3px solid #a8c640;border-radius:50%;"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+      })
     }).addTo(map);
-    hoverMarker.setOpacity(0);
     
     // Stats
     var eleGain = 0, eleLoss = 0;
@@ -125,15 +135,15 @@ fetch('/gpx/Course_7_5.gpx')
       '<div class="stat"><div class="stat-value">- ' + Math.round(eleLoss) + ' m</div><div class="stat-label">Dénivelé -</div></div>' +
       '<div class="stat"><div class="stat-value">' + eleMin + ' - ' + eleMax + ' m</div><div class="stat-label">Altitude</div></div>';
     
-    // Profil altimétrique avec Chart.js
+    // Profil altimétrique
     var profileStep = Math.max(1, Math.floor(elevations.length / 300));
     var profileEle = [];
     var profileDist = [];
-    var profileIdx = [];
+    
     for (var i = 0; i < elevations.length; i += profileStep) {
       profileEle.push(Math.round(elevations[i]));
       profileDist.push((distances[i] / 1000).toFixed(2));
-      profileIdx.push(i);
+      profileIndexes.push(i);
     }
     
     var ctx = document.getElementById('elevation').getContext('2d');
@@ -185,13 +195,13 @@ fetch('/gpx/Course_7_5.gpx')
           }
         },
         onHover: function(e, elements) {
-          if (elements.length > 0) {
-            var idx = profileIdx[elements[0].index];
-            if (idx < latlngs.length) {
-              hoverMarker.setLatLng(latlngs[idx]);
+          if (elements.length > 0 && hoverMarker) {
+            var idx = profileIndexes[elements[0].index];
+            if (idx < allLatLngs.length) {
+              hoverMarker.setLatLng(allLatLngs[idx]);
               hoverMarker.setOpacity(1);
             }
-          } else {
+          } else if (hoverMarker) {
             hoverMarker.setOpacity(0);
           }
         }
