@@ -69,10 +69,10 @@ $raceStats = $stats->getRaceStats();
         <p style="font-size:0.85rem; color:var(--sand);">381 rue de la Mairie, 01630 Challex</p>
       </div>
     </div>
-    <iframe src="https://maps.google.com/maps?q=46.18185,5.97385&t=k&z=17&output=embed"></iframe>
+    <iframe src="https://maps.google.com/maps?q=46.181861,5.973861&t=k&z=17&output=embed"></iframe>
     <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
-      <a href="https://www.google.com/maps/search/381+Rue+de+la+Mairie+01630+Challex" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
-      <a href="https://waze.com/ul?q=381+Rue+de+la+Mairie+Challex&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+      <a href="https://www.google.com/maps?q=46.181861,5.973861" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://waze.com/ul?ll=46.181861,5.973861&navigate=yes&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
     </div>
   </div>
 </section>
