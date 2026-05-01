@@ -38,7 +38,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
 }).addTo(map);
 
 // Charger et parser le GPX
-fetch('/assets/gpx/parcours-7.5km.gpx')
+fetch('/gpx/Course_7_5.gpx')
   .then(r => r.text())
   .then(gpxText => {
     var parser = new DOMParser();
