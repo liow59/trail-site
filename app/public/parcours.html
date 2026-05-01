@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcours 7.5km - Trail de la Vogue Challaisienne</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1208; color: #f4ede0; font-family: 'DM Sans', sans-serif; }
+  #map { width: 100%; height: 55vh; }
+  #elevation { width: 100%; max-width: 1000px; margin: 0 auto; height: 180px; padding: 0 1rem; }
+  .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; padding: 1rem 1.5rem; }
+  .stat { text-align: center; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #a8c640; }
+  .stat-label { font-size: 0.75rem; color: #d4b896; }
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
+  .header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #a8c640; }
+  .close-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: #f4ede0; padding: 0.5rem 1rem; cursor: pointer; border-radius: 2px; font-size: 0.9rem; text-decoration: none; }
+  .close-btn:hover { background: #a8c640; color: #1a1208; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #a8c640; letter-spacing: 0.12em; text-transform: uppercase; padding: 1rem 1.5rem 0.5rem; max-width: 1000px; margin: 0 auto; }
+  @media(max-width: 768px) {
+    #map { height: 45vh; }
+    #elevation { height: 150px; }
+    .stats { gap: 1rem; }
+    .stat-value { font-size: 1.5rem; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="header">
+  <h1>▲ Parcours 7.5 km</h1>
+  <a href="/" class="close-btn">✕ Retour</a>
+</div>
+<div id="map"></div>
+<div class="stats" id="stats">Chargement du parcours...</div>
+<p class="section-label">// Profil altimétrique</p>
+<canvas id="elevation"></canvas>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+var map = L.map('map');
+var hoverMarker = null;
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Esri', maxZoom: 18
+}).addTo(map);
+
+fetch('/gpx/Course_7_5.gpx')
+  .then(function(r) { return r.text(); })
+  .then(function(gpxText) {
+    var parser = new DOMParser();
+    var xml = parser.parseFromString(gpxText, 'text/xml');
+    
+    var trkpts = xml.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'trkpt');
+    if (trkpts.length === 0) trkpts = xml.getElementsByTagName('trkpt');
+    
+    var latlngs = [];
+    var elevations = [];
+    var distances = [0];
+    var totalDist = 0;
+    
+    for (var i = 0; i < trkpts.length; i++) {
+      var pt = trkpts[i];
+      var lat = parseFloat(pt.getAttribute('lat'));
+      var lon = parseFloat(pt.getAttribute('lon'));
+      latlngs.push([lat, lon]);
+      
+      var ele = pt.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'ele')[0];
+      if (!ele) ele = pt.getElementsByTagName('ele')[0];
+      if (ele) elevations.push(parseFloat(ele.textContent));
+      
+      if (i > 0) {
+        totalDist += map.distance(latlngs[i-1], latlngs[i]);
+        distances.push(totalDist);
+      }
+    }
+    
+    if (latlngs.length === 0) {
+      document.getElementById('stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé</p>';
+      return;
+    }
+    
+    // Simplifier pour la carte
+    var simplified = [];
+    var step = Math.max(1, Math.floor(latlngs.length / 500));
+    for (var i = 0; i < latlngs.length; i += step) {
+      simplified.push(latlngs[i]);
+    }
+    simplified.push(latlngs[latlngs.length - 1]);
+    
+    var polyline = L.polyline(simplified, {
+      color: '#a8c640', weight: 4, opacity: 0.9, lineCap: 'round'
+    }).addTo(map);
+    
+    map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+    
+    // Marqueur départ
+    L.circleMarker(latlngs[0], {
+      radius: 10, color: '#a8c640', fillColor: '#a8c640', fillOpacity: 1, weight: 3
+    }).addTo(map).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
+    
+    // Marqueur hover (invisible au début)
+    hoverMarker = L.circleMarker([0, 0], {
+      radius: 6, color: '#ffffff', fillColor: '#a8c640', fillOpacity: 1, weight: 2
+    }).addTo(map);
+    hoverMarker.setOpacity(0);
+    
+    // Stats
+    var eleGain = 0, eleLoss = 0;
+    for (var i = 1; i < elevations.length; i++) {
+      var diff = elevations[i] - elevations[i-1];
+      if (diff > 0) eleGain += diff;
+      else eleLoss += Math.abs(diff);
+    }
+    
+    var eleMin = Math.round(Math.min.apply(null, elevations));
+    var eleMax = Math.round(Math.max.apply(null, elevations));
+    
+    document.getElementById('stats').innerHTML = 
+      '<div class="stat"><div class="stat-value">' + (totalDist / 1000).toFixed(1) + ' km</div><div class="stat-label">Distance</div></div>' +
+      '<div class="stat"><div class="stat-value">+ ' + Math.round(eleGain) + ' m</div><div class="stat-label">Dénivelé +</div></div>' +
+      '<div class="stat"><div class="stat-value">- ' + Math.round(eleLoss) + ' m</div><div class="stat-label">Dénivelé -</div></div>' +
+      '<div class="stat"><div class="stat-value">' + eleMin + ' - ' + eleMax + ' m</div><div class="stat-label">Altitude</div></div>';
+    
+    // Profil altimétrique avec Chart.js
+    var profileStep = Math.max(1, Math.floor(elevations.length / 300));
+    var profileEle = [];
+    var profileDist = [];
+    var profileIdx = [];
+    for (var i = 0; i < elevations.length; i += profileStep) {
+      profileEle.push(Math.round(elevations[i]));
+      profileDist.push((distances[i] / 1000).toFixed(2));
+      profileIdx.push(i);
+    }
+    
+    var ctx = document.getElementById('elevation').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: profileDist,
+        datasets: [{
+          data: profileEle,
+          borderColor: '#a8c640',
+          backgroundColor: 'rgba(168, 198, 64, 0.15)',
+          borderWidth: 2,
+          fill: true,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#a8c640',
+          pointHoverBorderColor: '#ffffff',
+          pointHoverBorderWidth: 2,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1208',
+            borderColor: '#a8c640',
+            borderWidth: 1,
+            titleColor: '#a8c640',
+            bodyColor: '#f4ede0',
+            callbacks: {
+              title: function(items) { return items[0].label + ' km'; },
+              label: function(item) { return item.raw + ' m'; }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Distance (km)', color: '#d4b896', font: { size: 11 } },
+            ticks: { color: '#d4b896', maxTicksLimit: 8, font: { size: 10 } },
+            grid: { color: 'rgba(255,255,255,0.05)' }
+          },
+          y: {
+            title: { display: true, text: 'Altitude (m)', color: '#d4b896', font: { size: 11 } },
+            ticks: { color: '#d4b896', font: { size: 10 } },
+            grid: { color: 'rgba(255,255,255,0.08)' }
+          }
+        },
+        onHover: function(e, elements) {
+          if (elements.length > 0) {
+            var idx = profileIdx[elements[0].index];
+            if (idx < latlngs.length) {
+              hoverMarker.setLatLng(latlngs[idx]);
+              hoverMarker.setOpacity(1);
+            }
+          } else {
+            hoverMarker.setOpacity(0);
+          }
+        }
+      }
+    });
+  })
+  .catch(function(err) {
+    document.getElementById('stats').innerHTML = '<p style="color:#c4440a;">Erreur: ' + err.message + '</p>';
+  });
+</script>
+</body>
+</html>
