@@ -9,7 +9,7 @@ $raceStats = $stats->getRaceStats();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trail de la Vogue Challaisienne 2026</title>
+<title>Trail de la Vogue Challaisienne 2026 — www.vogue-challex.fr</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -51,9 +51,7 @@ $raceStats = $stats->getRaceStats();
     </div>
     <p style="font-family:'DM Mono',sans-serif; font-size:0.85rem; color:var(--sand); letter-spacing:0.12em; margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
     <a href="/inscription.php" class="cta-btn">S'inscrire maintenant</a>
-  </div>
-  <div class="scroll-hint">
-    <span>↓ Découvrir</span>
+    <div style="margin-top:2.5rem; font-size:0.7rem; letter-spacing:0.15em; color:rgba(255,255,255,0.4); text-transform:uppercase; animation:bounce 2s infinite;">↓ Découvrir</div>
   </div>
 </section>
 
@@ -65,14 +63,46 @@ $raceStats = $stats->getRaceStats();
     <div style="padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid rgba(255,255,255,0.07);">
       <span style="font-size:1.5rem;">📍</span>
       <div>
-        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--lime); letter-spacing:0.05em;">Parking de la Halle</p>
-        <p style="font-size:0.85rem; color:var(--sand);">381 rue de la Mairie, 01630 Challex</p>
+        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--lime); letter-spacing:0.05em;">Parking de la Halle</p>
+        <p style="font-size:1rem; color:var(--sand);">381 Rue de la Mairie, 01630 Challex, France</p>
       </div>
     </div>
-    <iframe src="https://maps.google.com/maps?q=46.181861,5.973861&t=k&z=17&output=embed"></iframe>
+    <iframe src="https://maps.google.com/maps?q=46.181861,5.973861&t=k&z=17&output=embed" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
     <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
       <a href="https://www.google.com/maps?q=46.181861,5.973861" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
-      <a href="https://waze.com/ul?ll=46.181861,5.973861&navigate=yes&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+      <a href="https://waze.com/ul?ll=46.181861,5.973861&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+    </div>
+  </div>
+</section>
+
+<!-- ACCES & PARKINGS -->
+<section class="section" style="padding-top:0;">
+  <p class="section-tag">// Accès & Parkings</p>
+  <h2 class="section-title">Se garer</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1rem;">
+    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+        <span style="font-size:1.3rem;">🅿️</span>
+        <strong style="color:var(--lime); font-size:0.95rem;">Parking de l'Église</strong>
+      </div>
+      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/Eglise+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+        <span style="font-size:1.3rem;">🅿️</span>
+        <strong style="color:var(--lime); font-size:0.95rem;">Parking Terrain de Foot</strong>
+      </div>
+      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">30-136 Rue de la Craz, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/30+Rue+de+la+Craz+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+        <span style="font-size:1.3rem;">🅿️</span>
+        <strong style="color:var(--lime); font-size:0.95rem;">Parking Rue de la Mairie</strong>
+      </div>
+      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/236+Rue+de+la+Mairie+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
     </div>
   </div>
 </section>
@@ -91,6 +121,9 @@ $raceStats = $stats->getRaceStats();
           <div class="race-info-item"><span class="icon">👨‍👧</span><span>Accompagnement adulte possible</span></div>
         </div>
         <div class="race-price" style="color:var(--sky)">Gratuit</div>
+        <div style="margin-top:0.75rem;">
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('3km');">🗺 Voir le parcours</span>
+        </div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
           <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> / <?= $raceStats['3km']['total'] ?> places</span>
@@ -108,7 +141,7 @@ $raceStats = $stats->getRaceStats();
         </div>
         <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
         <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup();">🗺 Voir le parcours</span>
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('7.5km');">🗺 Voir le parcours</span>
         </div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
@@ -126,6 +159,9 @@ $raceStats = $stats->getRaceStats();
           <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
         </div>
         <div class="race-price"><?= $raceStats['15km']['price'] ?> €</div>
+        <div style="margin-top:0.75rem;">
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('15km');">🗺 Voir le parcours</span>
+        </div>
         <div class="race-spots">
           <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
           <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> / <?= $raceStats['15km']['total'] ?> places</span>
@@ -133,16 +169,13 @@ $raceStats = $stats->getRaceStats();
       </div>
     </a>
   </div>
-  <div style="text-align:center; margin-top:2rem;">
-    <a href="/inscription.php" class="cta-btn">Choisir ma course →</a>
-  </div>
 </section>
 
 <!-- POPUP GPX -->
 <div class="gpx-overlay" id="gpx-overlay">
   <div class="gpx-inner">
     <div class="gpx-header">
-      <h2>▲ Parcours 7.5 km</h2>
+      <h2 id="gpx-title">▲ Parcours</h2>
       <button class="gpx-close" onclick="closeGpxPopup()">✕</button>
     </div>
     <div id="gpx-map"></div>
@@ -154,8 +187,16 @@ $raceStats = $stats->getRaceStats();
   </div>
 </div>
 
-<footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:4rem;">
-  <p>© 2026 Trail de la Vogue Challaisienne · Tous droits réservés</p>
+<!-- CONTACT -->
+<section class="section" style="text-align:center;">
+  <p class="section-tag">// Contact</p>
+  <h2 class="section-title">Une question ?</h2>
+  <p style="color:var(--sand); margin-bottom:1rem; font-size:1rem;">Contactez-nous par email</p>
+  <a href="mailto:contact@vogue-challex.fr" style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--lime); text-decoration:none; letter-spacing:0.05em;">contact@vogue-challex.fr</a>
+</section>
+
+<footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:2rem;">
+  <p>© 2026 Vogue Challaisienne · <a href="https://www.vogue-challex.fr" style="color:var(--lime); text-decoration:none;">www.vogue-challex.fr</a> · Tous droits réservés</p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -163,18 +204,32 @@ $raceStats = $stats->getRaceStats();
 <script>
 var gpxMap = null;
 var gpxChart = null;
-var gpxLoaded = false;
+var gpxLoadedCourse = null;
 
-function openGpxPopup() {
+// Tous les parcours pointent vers le même GPX pour l'instant
+var gpxFiles = {
+  '3km': '/gpx/Course_7_5.gpx',
+  '7.5km': '/gpx/Course_7_5.gpx',
+  '15km': '/gpx/Course_7_5.gpx'
+};
+
+var gpxColors = {
+  '3km': '#87b8c4',
+  '7.5km': '#87b8c4',
+  '15km': '#87b8c4'
+};
+
+function openGpxPopup(course) {
   var overlay = document.getElementById('gpx-overlay');
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
+  document.getElementById('gpx-title').textContent = '▲ Parcours ' + course;
   
-  if (!gpxLoaded) {
-    setTimeout(loadGpx, 100);
-  } else if (gpxMap) {
-    gpxMap.invalidateSize();
-  }
+  // Détruire l'ancienne carte
+  if (gpxMap) { gpxMap.remove(); gpxMap = null; }
+  if (gpxChart) { gpxChart.destroy(); gpxChart = null; }
+  
+  setTimeout(function() { loadGpx(course); }, 100);
 }
 
 function closeGpxPopup() {
@@ -190,14 +245,16 @@ document.getElementById('gpx-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeGpxPopup();
 });
 
-function loadGpx() {
+function loadGpx(course) {
+  var color = gpxColors[course] || '#87b8c4';
+  
   gpxMap = L.map('gpx-map');
 
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Esri', maxZoom: 18
   }).addTo(gpxMap);
 
-  fetch('/gpx/Course_7_5.gpx')
+  fetch(gpxFiles[course])
     .then(function(r) { return r.text(); })
     .then(function(gpxText) {
       var parser = new DOMParser();
@@ -241,14 +298,32 @@ function loadGpx() {
       }
       simplified.push(allLatLngs[allLatLngs.length - 1]);
       
-      L.polyline(simplified, {
-        color: '#a8c640', weight: 4, opacity: 0.9, lineCap: 'round'
+      // Tracé avec flèches de direction
+      var polyline = L.polyline(simplified, {
+        color: color, weight: 4, opacity: 0.9, lineCap: 'round'
       }).addTo(gpxMap);
+      
+      // Ajouter des flèches de direction tous les 30 points
+      for (var i = 30; i < simplified.length - 1; i += 30) {
+        var p1 = simplified[i];
+        var p2 = simplified[i + 1];
+        var angle = Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * (180 / Math.PI);
+        
+        L.marker(p1, {
+          icon: L.divIcon({
+            className: '',
+            html: '<div style="color:' + color + '; font-size:16px; transform:rotate(' + (90 - angle) + 'deg); text-shadow:0 0 3px rgba(0,0,0,0.8);">▸</div>',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+          })
+        }).addTo(gpxMap);
+      }
       
       gpxMap.fitBounds(L.latLngBounds(simplified), { padding: [30, 30] });
       
+      // Marqueur départ
       L.circleMarker(allLatLngs[0], {
-        radius: 10, color: '#a8c640', fillColor: '#a8c640', fillOpacity: 1, weight: 3
+        radius: 10, color: color, fillColor: color, fillOpacity: 1, weight: 3
       }).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
       
       // Stats
@@ -285,13 +360,13 @@ function loadGpx() {
           labels: profileDist,
           datasets: [{
             data: profileEle,
-            borderColor: '#a8c640',
-            backgroundColor: 'rgba(168, 198, 64, 0.15)',
+            borderColor: color,
+            backgroundColor: color.replace(')', ', 0.15)').replace('rgb', 'rgba'),
             borderWidth: 2,
             fill: true,
             pointRadius: 0,
             pointHoverRadius: 5,
-            pointHoverBackgroundColor: '#a8c640',
+            pointHoverBackgroundColor: color,
             pointHoverBorderColor: '#ffffff',
             pointHoverBorderWidth: 2,
             tension: 0.3
@@ -304,9 +379,9 @@ function loadGpx() {
             legend: { display: false },
             tooltip: {
               backgroundColor: '#1a1208',
-              borderColor: '#a8c640',
+              borderColor: color,
               borderWidth: 1,
-              titleColor: '#a8c640',
+              titleColor: color,
               bodyColor: '#f4ede0',
               callbacks: {
                 title: function(items) { return items[0].label + ' km'; },
@@ -328,8 +403,6 @@ function loadGpx() {
           }
         }
       });
-      
-      gpxLoaded = true;
     })
     .catch(function(err) {
       document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Erreur: ' + err.message + '</p>';
