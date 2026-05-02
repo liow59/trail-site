@@ -29,6 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkout = $helloasso->createCheckoutIntent($participantData);
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
         
+        if (isset($checkout["free"]) && $checkout["free"]) {
+            // Inscription gratuite - pas de paiement nécessaire
+            header("Location: /inscription.php?success=1");
+            exit;
+        }
+        
+        $checkoutUrl = $checkout["redirectUrl"] ?? null;
         if ($checkoutUrl) {
             header('Location: ' . $checkoutUrl);
             exit;
