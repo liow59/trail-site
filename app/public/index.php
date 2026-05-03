@@ -3,6 +3,25 @@ require_once __DIR__ . '/../src/bootstrap.php';
 
 $stats = new Statistics();
 $formData = $stats->getFormData();
+
+// Mapping des infos supplémentaires par course
+$courseExtras = [
+    'Course Enfant' => [
+        'shortName' => '3', 'unit' => 'km', 'color' => 'var(--sky)',
+        'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
+        'gpx' => '3km', 'urlParam' => '3km'
+    ],
+    'Course 7.5km' => [
+        'shortName' => '7.5', 'unit' => 'km', 'color' => 'var(--lime)',
+        'infos' => [['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
+        'gpx' => '7.5km', 'urlParam' => '7.5km'
+    ],
+    'Course 15km' => [
+        'shortName' => '15', 'unit' => 'km', 'color' => 'var(--lime)',
+        'infos' => [['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],
+        'gpx' => '15km', 'urlParam' => '15km'
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -107,67 +126,37 @@ $formData = $stats->getFormData();
   </div>
 </section>
 
-<!-- COURSES PREVIEW -->
+<!-- COURSES PREVIEW - 100% DYNAMIQUE -->
 <section class="section">
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <a href="/inscription.php?course=3km" style="text-decoration:none; color:inherit;">
+    <?php foreach ($formData['courses'] as $course): 
+      $extras = $courseExtras[$course['label']] ?? null;
+      if (!$extras) continue; // Ignorer les courses non mappées (tests)
+      $color = $extras['color'];
+    ?>
+    <a href="/inscription.php?course=<?= $extras['urlParam'] ?>" style="text-decoration:none; color:inherit;">
       <div class="race-card">
-        <div class="race-dist" style="font-size:2.5rem; color:var(--sky)">3<small style="font-size:1.5rem">km</small></div>
-        <div class="race-type">
-          <div class="race-info-item"><span class="icon">🕚</span><span>Départ à 11h00</span></div>
-          <div class="race-info-item"><span class="icon">👦</span><span>De 8 à 11 ans</span></div>
-          <div class="race-info-item"><span class="icon">👨‍👧</span><span>Accompagnement adulte possible</span></div>
+        <div class="race-dist" style="font-size:2.5rem; color:<?= $color ?>">
+          <?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small>
         </div>
-        <div class="race-price" style="color:var(--sky)">Gratuit</div>
+        <div class="race-type">
+          <?php foreach ($extras['infos'] as $info): ?>
+          <div class="race-info-item"><span class="icon"><?= $info[0] ?></span><span><?= $info[1] ?></span></div>
+          <?php endforeach; ?>
+        </div>
+        <div class="race-price" style="color:<?= $color ?>"><?= $course['price'] > 0 ? $course['price'] . ' €' : 'Gratuit' ?></div>
         <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('3km');">🗺 Voir le parcours</span>
+          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('<?= $extras['gpx'] ?>');">🗺 Voir le parcours</span>
         </div>
         <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['3km']['percentage'] ?>%; background:var(--sky)"></div></div>
-          <span class="spots-text"><?= $raceStats['3km']['registered'] ?> inscrits · <?= $raceStats['3km']['remaining'] ?> / <?= $raceStats['3km']['total'] ?> places</span>
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= min($course['percentage'], 100) ?>%; background:<?= $color ?>"></div></div>
+          <span class="spots-text"><?= $course['registered'] ?> inscrits</span>
         </div>
       </div>
     </a>
-    
-    <a href="/inscription.php?course=7.5km" style="text-decoration:none; color:inherit;">
-      <div class="race-card">
-        <div class="race-dist">7.5<small style="font-size:1.5rem">km</small></div>
-        <div class="race-type">
-          <div class="race-info-item"><span class="icon">🕙</span><span>Départ à 10h00</span></div>
-          <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 12 ans</span></div>
-          <div class="race-info-item"><span class="icon">⛰</span><span>150 D+</span></div>
-        </div>
-        <div class="race-price"><?= $raceStats['7.5km']['price'] ?> €</div>
-        <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('7.5km');">🗺 Voir le parcours</span>
-        </div>
-        <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['7.5km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['7.5km']['registered'] ?> inscrits · <?= $raceStats['7.5km']['remaining'] ?> / <?= $raceStats['7.5km']['total'] ?> places</span>
-        </div>
-      </div>
-    </a>
-    
-    <a href="/inscription.php?course=15km" style="text-decoration:none; color:inherit;">
-      <div class="race-card">
-        <div class="race-dist">15<small style="font-size:1.5rem">km</small></div>
-        <div class="race-type">
-          <div class="race-info-item"><span class="icon">🕘</span><span>Départ à 9h00</span></div>
-          <div class="race-info-item"><span class="icon">🏃</span><span>À partir de 16 ans</span></div>
-          <div class="race-info-item"><span class="icon">🔄</span><span>2 boucles · 300 D+</span></div>
-        </div>
-        <div class="race-price"><?= $raceStats['15km']['price'] ?> €</div>
-        <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('15km');">🗺 Voir le parcours</span>
-        </div>
-        <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= $raceStats['15km']['percentage'] ?>%"></div></div>
-          <span class="spots-text"><?= $raceStats['15km']['registered'] ?> inscrits · <?= $raceStats['15km']['remaining'] ?> / <?= $raceStats['15km']['total'] ?> places</span>
-        </div>
-      </div>
-    </a>
+    <?php endforeach; ?>
   </div>
 </section>
 
@@ -204,19 +193,11 @@ $formData = $stats->getFormData();
 <script>
 var gpxMap = null;
 var gpxChart = null;
-var gpxLoadedCourse = null;
 
-// Tous les parcours pointent vers le même GPX pour l'instant
 var gpxFiles = {
   '3km': '/gpx/Course_7_5.gpx',
   '7.5km': '/gpx/Course_7_5.gpx',
   '15km': '/gpx/Course_7_5.gpx'
-};
-
-var gpxColors = {
-  '3km': '#87b8c4',
-  '7.5km': '#87b8c4',
-  '15km': '#87b8c4'
 };
 
 function openGpxPopup(course) {
@@ -225,7 +206,6 @@ function openGpxPopup(course) {
   document.body.style.overflow = 'hidden';
   document.getElementById('gpx-title').textContent = '▲ Parcours ' + course;
   
-  // Détruire l'ancienne carte
   if (gpxMap) { gpxMap.remove(); gpxMap = null; }
   if (gpxChart) { gpxChart.destroy(); gpxChart = null; }
   
@@ -237,19 +217,13 @@ function closeGpxPopup() {
   document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeGpxPopup();
-});
-
-document.getElementById('gpx-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeGpxPopup();
-});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeGpxPopup(); });
+document.getElementById('gpx-overlay').addEventListener('click', function(e) { if (e.target === this) closeGpxPopup(); });
 
 function loadGpx(course) {
-  var color = gpxColors[course] || '#87b8c4';
+  var color = '#87b8c4';
   
   gpxMap = L.map('gpx-map');
-
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Esri', maxZoom: 18
   }).addTo(gpxMap);
@@ -259,154 +233,60 @@ function loadGpx(course) {
     .then(function(gpxText) {
       var parser = new DOMParser();
       var xml = parser.parseFromString(gpxText, 'text/xml');
-      
       var trkpts = xml.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'trkpt');
       if (trkpts.length === 0) trkpts = xml.getElementsByTagName('trkpt');
       
-      var allLatLngs = [];
-      var elevations = [];
-      var distances = [0];
-      var totalDist = 0;
+      var allLatLngs = [], elevations = [], distances = [0], totalDist = 0;
       
       for (var i = 0; i < trkpts.length; i++) {
         var pt = trkpts[i];
         var lat = parseFloat(pt.getAttribute('lat'));
         var lon = parseFloat(pt.getAttribute('lon'));
         allLatLngs.push([lat, lon]);
-        
         var ele = pt.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'ele')[0];
         if (!ele) ele = pt.getElementsByTagName('ele')[0];
-        if (ele) elevations.push(parseFloat(ele.textContent));
-        else elevations.push(0);
-        
-        if (i > 0) {
-          totalDist += gpxMap.distance(allLatLngs[i-1], allLatLngs[i]);
-          distances.push(totalDist);
-        }
+        elevations.push(ele ? parseFloat(ele.textContent) : 0);
+        if (i > 0) { totalDist += gpxMap.distance(allLatLngs[i-1], allLatLngs[i]); distances.push(totalDist); }
       }
       
-      if (allLatLngs.length === 0) {
-        document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé</p>';
-        return;
-      }
+      if (allLatLngs.length === 0) { document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé</p>'; return; }
       
-      // Simplifier
-      var simplified = [];
-      var step = Math.max(1, Math.floor(allLatLngs.length / 500));
-      for (var i = 0; i < allLatLngs.length; i += step) {
-        simplified.push(allLatLngs[i]);
-      }
+      var simplified = [], step = Math.max(1, Math.floor(allLatLngs.length / 500));
+      for (var i = 0; i < allLatLngs.length; i += step) simplified.push(allLatLngs[i]);
       simplified.push(allLatLngs[allLatLngs.length - 1]);
       
-      // Tracé avec flèches de direction
-      var polyline = L.polyline(simplified, {
-        color: color, weight: 4, opacity: 0.9, lineCap: 'round'
-      }).addTo(gpxMap);
+      L.polyline(simplified, { color: color, weight: 4, opacity: 0.9 }).addTo(gpxMap);
       
-      // Ajouter des flèches de direction tous les 30 points
       for (var i = 30; i < simplified.length - 1; i += 30) {
-        var p1 = simplified[i];
-        var p2 = simplified[i + 1];
-        var angle = Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * (180 / Math.PI);
-        
-        L.marker(p1, {
-          icon: L.divIcon({
-            className: '',
-            html: '<div style="color:' + color + '; font-size:16px; transform:rotate(' + (90 - angle) + 'deg); text-shadow:0 0 3px rgba(0,0,0,0.8);">▸</div>',
-            iconSize: [16, 16],
-            iconAnchor: [8, 8]
-          })
-        }).addTo(gpxMap);
+        var p1 = simplified[i], p2 = simplified[i+1];
+        var angle = Math.atan2(p2[1]-p1[1], p2[0]-p1[0]) * (180/Math.PI);
+        L.marker(p1, { icon: L.divIcon({ className:'', html:'<div style="color:'+color+';font-size:16px;transform:rotate('+(90-angle)+'deg);text-shadow:0 0 3px rgba(0,0,0,0.8);">▸</div>', iconSize:[16,16], iconAnchor:[8,8] }) }).addTo(gpxMap);
       }
       
       gpxMap.fitBounds(L.latLngBounds(simplified), { padding: [30, 30] });
+      L.circleMarker(allLatLngs[0], { radius:10, color:color, fillColor:color, fillOpacity:1, weight:3 }).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
       
-      // Marqueur départ
-      L.circleMarker(allLatLngs[0], {
-        radius: 10, color: color, fillColor: color, fillOpacity: 1, weight: 3
-      }).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
-      
-      // Stats
       var eleGain = 0, eleLoss = 0;
-      for (var i = 1; i < elevations.length; i++) {
-        var diff = elevations[i] - elevations[i-1];
-        if (diff > 0) eleGain += diff;
-        else eleLoss += Math.abs(diff);
-      }
-      
-      var eleMin = Math.round(Math.min.apply(null, elevations));
-      var eleMax = Math.round(Math.max.apply(null, elevations));
+      for (var i = 1; i < elevations.length; i++) { var d = elevations[i]-elevations[i-1]; if (d>0) eleGain+=d; else eleLoss+=Math.abs(d); }
+      var eleMin = Math.round(Math.min.apply(null, elevations)), eleMax = Math.round(Math.max.apply(null, elevations));
       
       document.getElementById('gpx-stats').innerHTML = 
-        '<div class="gpx-stat"><div class="gpx-stat-value">' + (totalDist / 1000).toFixed(1) + ' km</div><div class="gpx-stat-label">Distance</div></div>' +
-        '<div class="gpx-stat"><div class="gpx-stat-value">+ ' + Math.round(eleGain) + ' m</div><div class="gpx-stat-label">Dénivelé +</div></div>' +
-        '<div class="gpx-stat"><div class="gpx-stat-value">- ' + Math.round(eleLoss) + ' m</div><div class="gpx-stat-label">Dénivelé -</div></div>' +
-        '<div class="gpx-stat"><div class="gpx-stat-value">' + eleMin + ' - ' + eleMax + ' m</div><div class="gpx-stat-label">Altitude</div></div>';
+        '<div class="gpx-stat"><div class="gpx-stat-value">'+(totalDist/1000).toFixed(1)+' km</div><div class="gpx-stat-label">Distance</div></div>'+
+        '<div class="gpx-stat"><div class="gpx-stat-value">+ '+Math.round(eleGain)+' m</div><div class="gpx-stat-label">Dénivelé +</div></div>'+
+        '<div class="gpx-stat"><div class="gpx-stat-value">- '+Math.round(eleLoss)+' m</div><div class="gpx-stat-label">Dénivelé -</div></div>'+
+        '<div class="gpx-stat"><div class="gpx-stat-value">'+eleMin+' - '+eleMax+' m</div><div class="gpx-stat-label">Altitude</div></div>';
       
-      // Profil
-      var profileStep = Math.max(1, Math.floor(elevations.length / 300));
-      var profileEle = [];
-      var profileDist = [];
-      
-      for (var i = 0; i < elevations.length; i += profileStep) {
-        profileEle.push(Math.round(elevations[i]));
-        profileDist.push((distances[i] / 1000).toFixed(2));
-      }
+      var pStep = Math.max(1, Math.floor(elevations.length/300)), pEle = [], pDist = [];
+      for (var i = 0; i < elevations.length; i += pStep) { pEle.push(Math.round(elevations[i])); pDist.push((distances[i]/1000).toFixed(2)); }
       
       var ctx = document.getElementById('gpx-elevation').getContext('2d');
       gpxChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: profileDist,
-          datasets: [{
-            data: profileEle,
-            borderColor: color,
-            backgroundColor: color.replace(')', ', 0.15)').replace('rgb', 'rgba'),
-            borderWidth: 2,
-            fill: true,
-            pointRadius: 0,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: color,
-            pointHoverBorderColor: '#ffffff',
-            pointHoverBorderWidth: 2,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#1a1208',
-              borderColor: color,
-              borderWidth: 1,
-              titleColor: color,
-              bodyColor: '#f4ede0',
-              callbacks: {
-                title: function(items) { return items[0].label + ' km'; },
-                label: function(item) { return item.raw + ' m'; }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: 'Distance (km)', color: '#d4b896', font: { size: 11 } },
-              ticks: { color: '#d4b896', maxTicksLimit: 8, font: { size: 10 } },
-              grid: { color: 'rgba(255,255,255,0.05)' }
-            },
-            y: {
-              title: { display: true, text: 'Altitude (m)', color: '#d4b896', font: { size: 11 } },
-              ticks: { color: '#d4b896', font: { size: 10 } },
-              grid: { color: 'rgba(255,255,255,0.08)' }
-            }
-          }
-        }
+        type:'line',
+        data:{ labels:pDist, datasets:[{ data:pEle, borderColor:color, backgroundColor:'rgba(135,184,196,0.15)', borderWidth:2, fill:true, pointRadius:0, pointHoverRadius:5, tension:0.3 }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1a1208', borderColor:color, borderWidth:1, titleColor:color, bodyColor:'#f4ede0', callbacks:{ title:function(i){return i[0].label+' km';}, label:function(i){return i.raw+' m';} } } }, scales:{ x:{ title:{display:true,text:'Distance (km)',color:'#d4b896'}, ticks:{color:'#d4b896',maxTicksLimit:8}, grid:{color:'rgba(255,255,255,0.05)'} }, y:{ title:{display:true,text:'Altitude (m)',color:'#d4b896'}, ticks:{color:'#d4b896'}, grid:{color:'rgba(255,255,255,0.08)'} } } }
       });
     })
-    .catch(function(err) {
-      document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Erreur: ' + err.message + '</p>';
-    });
+    .catch(function(err) { document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Erreur: '+err.message+'</p>'; });
 }
 </script>
 </body>
