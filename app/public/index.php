@@ -18,6 +18,7 @@ $courseExtras = [
     ],
     'Course 15km' => [
 
+
         'shortName' => '15', 'unit' => 'km', 'color' => 'var(--lime)',
         'infos' => [['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],
         'gpx' => '15km', 'urlParam' => '15km'
