@@ -6,12 +6,6 @@ class Statistics {
     private $organizationSlug;
     private $formSlug;
     
-    private $racesConfig = [
-        '3km'   => ['total' => 30,  'price' => 0,  'label' => 'Course Enfant',  'tierMatch' => 'course enfant'],
-        '7.5km' => ['total' => 75,  'price' => 10, 'label' => 'Course 7.5km',   'tierMatch' => 'course 7.5km'],
-        '15km'  => ['total' => 75,  'price' => 15, 'label' => 'Course 15km',    'tierMatch' => 'course 15km']
-    ];
-    
     public function __construct() {
         $this->helloasso = new HelloAsso();
         $this->apiUrl = 'https://api.helloasso.com/v5';
@@ -19,9 +13,12 @@ class Statistics {
         $this->formSlug = getenv('HELLOASSO_FORM_SLUG') ?: '';
     }
     
-    public function getRaceStats() {
-        // Cache les stats pendant 5 minutes
-        $cacheFile = '/tmp/helloasso_stats.json';
+    /**
+     * Récupère les tiers (billets) depuis l'API HelloAsso
+     * et les catégorise en courses, repas, tests
+     */
+    public function getFormData() {
+        $cacheFile = '/tmp/helloasso_formdata.json';
         
         if (file_exists($cacheFile)) {
             $cache = json_decode(file_get_contents($cacheFile), true);
@@ -30,28 +27,75 @@ class Statistics {
             }
         }
         
-        $races = [];
-        foreach ($this->racesConfig as $key => $config) {
-            $races[$key] = [
-                'total' => $config['total'],
-                'price' => $config['price'],
-                'label' => $config['label'],
-                'registered' => 0,
-                'remaining' => $config['total'],
-                'percentage' => 0
-            ];
-        }
+        $result = [
+            'courses' => [],
+            'meals' => [],
+            'tests' => [],
+            'title' => '',
+            'description' => '',
+            'startDate' => '',
+            'place' => ''
+        ];
         
         try {
             $token = $this->helloasso->getAccessToken();
             
+            // 1. Récupérer les infos du formulaire (tiers, lieu, etc.)
+            $url = $this->apiUrl . '/organizations/' . $this->organizationSlug 
+                 . '/forms/Event/' . $this->formSlug . '/public';
+            
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $token]);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            if ($httpCode !== 200) {
+                return $this->fallbackData();
+            }
+            
+            $form = json_decode($response, true);
+            $result['title'] = $form['title'] ?? '';
+            $result['description'] = $form['description'] ?? '';
+            $result['startDate'] = $form['startDate'] ?? '';
+            $result['place'] = $form['place'] ?? [];
+            
+            // Catégoriser les tiers
+            foreach ($form['tiers'] ?? [] as $tier) {
+                $label = $tier['label'] ?? '';
+                $id = $tier['id'] ?? 0;
+                $price = ($tier['price'] ?? 0) / 100; // Centimes -> euros
+                $priceCents = $tier['price'] ?? 0;
+                
+                $tierData = [
+                    'id' => $id,
+                    'label' => $label,
+                    'price' => $price,
+                    'priceCents' => $priceCents,
+                    'registered' => 0,
+                    'total' => 0,
+                    'remaining' => 0,
+                    'percentage' => 0
+                ];
+                
+                if (stripos($label, 'test') !== false) {
+                    $result['tests'][] = $tierData;
+                } elseif (stripos($label, 'repas') !== false || stripos($label, 'kebab') !== false) {
+                    $result['meals'][] = $tierData;
+                } elseif (stripos($label, 'course') !== false) {
+                    $result['courses'][] = $tierData;
+                }
+            }
+            
+            // 2. Compter les inscrits par tier
             $pageIndex = 1;
             do {
-                $url = $this->apiUrl . '/organizations/' . $this->organizationSlug 
-                     . '/forms/Event/' . $this->formSlug . '/items'
-                     . '?pageIndex=' . $pageIndex . '&pageSize=100&withDetails=true';
+                $itemsUrl = $this->apiUrl . '/organizations/' . $this->organizationSlug 
+                          . '/forms/Event/' . $this->formSlug . '/items'
+                          . '?pageIndex=' . $pageIndex . '&pageSize=100';
                 
-                $ch = curl_init($url);
+                $ch = curl_init($itemsUrl);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $token]);
                 $response = curl_exec($ch);
@@ -64,40 +108,55 @@ class Statistics {
                 if (!$data || !isset($data['data'])) break;
                 
                 foreach ($data['data'] as $item) {
-                    $itemName = strtolower($item['name'] ?? '');
+                    $tierId = $item['tierId'] ?? 0;
                     $state = $item['state'] ?? '';
-                    
                     if ($state === 'Canceled') continue;
                     
-                    foreach ($races as $key => &$race) {
-                        $match = $this->racesConfig[$key]['tierMatch'];
-                        if (strpos($itemName, $match) !== false) {
-                            $race['registered']++;
-                            break;
-                        }
+                    // Compter dans courses
+                    foreach ($result['courses'] as &$c) {
+                        if ($c['id'] === $tierId) { $c['registered']++; break; }
+                    }
+                    // Compter dans meals
+                    foreach ($result['meals'] as &$m) {
+                        if ($m['id'] === $tierId) { $m['registered']++; break; }
+                    }
+                    // Compter dans tests
+                    foreach ($result['tests'] as &$t) {
+                        if ($t['id'] === $tierId) { $t['registered']++; break; }
                     }
                 }
                 
                 $totalPages = $data['pagination']['totalPages'] ?? 1;
                 $pageIndex++;
-                
             } while ($pageIndex <= $totalPages && $totalPages > 0);
             
         } catch (Exception $e) {
             error_log('Erreur stats HelloAsso: ' . $e->getMessage());
+            return $this->fallbackData();
         }
         
-        foreach ($races as &$race) {
-            $race['remaining'] = max(0, $race['total'] - $race['registered']);
-            $race['percentage'] = round(($race['registered'] / $race['total']) * 100, 1);
-        }
-        
-        // Sauvegarder en cache 5 minutes
+        // Cache 5 minutes
         file_put_contents($cacheFile, json_encode([
-            'data' => $races,
+            'data' => $result,
             'expiry' => time() + 300
         ]));
         
-        return $races;
+        return $result;
+    }
+    
+    private function fallbackData() {
+        return [
+            'courses' => [
+                ['id' => 0, 'label' => 'Course Enfant', 'price' => 0, 'priceCents' => 0, 'registered' => 0, 'total' => 30, 'remaining' => 30, 'percentage' => 0],
+                ['id' => 0, 'label' => 'Course 7.5km', 'price' => 10, 'priceCents' => 1000, 'registered' => 0, 'total' => 75, 'remaining' => 75, 'percentage' => 0],
+                ['id' => 0, 'label' => 'Course 15km', 'price' => 15, 'priceCents' => 1500, 'registered' => 0, 'total' => 75, 'remaining' => 75, 'percentage' => 0],
+            ],
+            'meals' => [],
+            'tests' => [],
+            'title' => 'Trail de la vogue Challaisienne 2026',
+            'description' => '',
+            'startDate' => '2026-09-06T09:00:00+02:00',
+            'place' => []
+        ];
     }
 }

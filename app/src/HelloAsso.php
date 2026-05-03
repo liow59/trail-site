@@ -46,9 +46,7 @@ class HelloAsso {
         $data = json_decode($response, true);
         $token = $data['access_token'] ?? null;
 
-        if (!$token) {
-            throw new Exception('Token non reçu');
-        }
+        if (!$token) throw new Exception('Token non reçu');
 
         file_put_contents($cacheFile, json_encode([
             'token' => $token,
@@ -58,63 +56,33 @@ class HelloAsso {
         return $token;
     }
 
-    public function createCheckoutIntent($participantData) {
+    /**
+     * Crée un checkout intent avec les tier IDs HelloAsso
+     * $selectedItems = [['tierId' => 123, 'label' => 'Course 7.5km', 'amount' => 1000], ...]
+     */
+    public function createCheckoutIntent($payer, $selectedItems) {
         $token = $this->getAccessToken();
 
-        $coursePrice = floatval($participantData['course_price']);
-        $mealTotal = ($participantData['repas_poulet'] * 10) + 
-                     ($participantData['repas_saucisse'] * 12) + 
-                     ($participantData['repas_nuggets'] * 8);
-        $totalAmount = $coursePrice + $mealTotal;
-
-        // HelloAsso n'accepte pas les montants à 0
-        if ($totalAmount <= 0) {
-            return ['redirectUrl' => null, 'free' => true];
-        }
-
-        // Montant en centimes (entier)
-        $totalCents = intval(round($totalAmount * 100));
-
+        // Calculer le total
+        $totalCents = 0;
         $items = [];
         
-        if ($coursePrice > 0) {
+        foreach ($selectedItems as $item) {
+            $amount = intval($item['amount']);
+            if ($amount <= 0) continue;
+            
             $items[] = [
-                'name' => 'Inscription ' . $participantData['course'],
+                'name' => $item['label'],
                 'priceCategory' => 'Fixed',
-                'amount' => intval(round($coursePrice * 100)),
+                'amount' => $amount,
                 'type' => 'Payment'
             ];
+            $totalCents += $amount;
         }
 
-        if ($participantData['repas_poulet'] > 0) {
-            $items[] = [
-                'name' => 'Poulet frites x' . $participantData['repas_poulet'],
-                'priceCategory' => 'Fixed',
-                'amount' => intval($participantData['repas_poulet'] * 10 * 100),
-                'type' => 'Payment'
-            ];
-        }
-        if ($participantData['repas_saucisse'] > 0) {
-            $items[] = [
-                'name' => 'Saucisse polenta x' . $participantData['repas_saucisse'],
-                'priceCategory' => 'Fixed',
-                'amount' => intval($participantData['repas_saucisse'] * 12 * 100),
-                'type' => 'Payment'
-            ];
-        }
-        if ($participantData['repas_nuggets'] > 0) {
-            $items[] = [
-                'name' => 'Nuggets x' . $participantData['repas_nuggets'],
-                'priceCategory' => 'Fixed',
-                'amount' => intval($participantData['repas_nuggets'] * 8 * 100),
-                'type' => 'Payment'
-            ];
-        }
-
-        // Vérifier que la somme des items = totalAmount
-        $itemsTotal = 0;
-        foreach ($items as $item) {
-            $itemsTotal += $item['amount'];
+        // Si total = 0, inscription gratuite
+        if ($totalCents <= 0) {
+            return ['free' => true, 'redirectUrl' => null];
         }
 
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -122,17 +90,17 @@ class HelloAsso {
         $baseUrl = $protocol . '://' . $host;
 
         $payload = [
-            'totalAmount' => $itemsTotal,
-            'initialAmount' => $itemsTotal,
+            'totalAmount' => $totalCents,
+            'initialAmount' => $totalCents,
             'itemName' => 'Trail de la Vogue Challaisienne 2026',
             'backUrl' => $baseUrl . '/inscription.php',
             'errorUrl' => $baseUrl . '/inscription.php?error=1',
             'returnUrl' => $baseUrl . '/inscription.php?success=1',
             'containsDonation' => false,
             'payer' => [
-                'firstName' => $participantData['prenom'],
-                'lastName' => $participantData['nom'],
-                'email' => $participantData['email']
+                'firstName' => $payer['prenom'],
+                'lastName' => $payer['nom'],
+                'email' => $payer['email']
             ],
             'items' => $items
         ];
