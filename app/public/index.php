@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../src/bootstrap.php';
 
 $stats = new Statistics();
-$raceStats = $stats->getRaceStats();
+$formData = $stats->getFormData();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
