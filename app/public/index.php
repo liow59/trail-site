@@ -5,25 +5,6 @@ $stats = new Statistics();
 $formData = $stats->getFormData();
 
 // Mapping des infos supplémentaires par course
-$courseExtras = [
-    'Course Enfant' => [
-        'shortName' => '3', 'unit' => 'km', 'color' => 'var(--sky)',
-        'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
-        'gpx' => '3km', 'urlParam' => '3km'
-    ],
-    'Course 7.5km' => [
-        'shortName' => '7.5', 'unit' => 'km', 'color' => 'var(--lime)',
-        'infos' => [['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
-        'gpx' => '7.5km', 'urlParam' => '7.5km'
-    ],
-    'Course 15km' => [
-
-
-        'shortName' => '15', 'unit' => 'km', 'color' => 'var(--lime)',
-        'infos' => [['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],
-        'gpx' => '15km', 'urlParam' => '15km'
-    ]
-];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -133,20 +114,42 @@ $courseExtras = [
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <?php foreach ($formData['courses'] as $course): 
-      $extras = $courseExtras[$course['label']] ?? null;
-      if (!$extras) continue; // Ignorer les courses non mappées (tests)
-      $color = $extras['color'];
-    ?>
+    <?php
+// Ordre forcé : 3km, 7.5km, 15km
+$orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
+$courseExtras = [
+    'Course Enfant' => ['shortName'=>'3','unit'=>'km','color'=>'var(--sky)','total'=>30,'infos'=>[['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],'gpx'=>'3km','urlParam'=>'3km'],
+    'Course 7.5km' => ['shortName'=>'7.5','unit'=>'km','color'=>'var(--lime)','total'=>75,'infos'=>[['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],'gpx'=>'7.5km','urlParam'=>'7.5km'],
+    'Course 15km' => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'infos'=>[['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],'gpx'=>'15km','urlParam'=>'15km']
+];
+foreach ($orderMap as $orderedLabel):
+    $course = null;
+    foreach ($formData['courses'] as $c) { if ($c['label'] === $orderedLabel) { $course = $c; break; } }
+    if (!$course) continue;
+    $extras = $courseExtras[$course['label']];
+    $color = $extras['color'];
+    $total = $extras['total'];
+    $pct = $total > 0 ? round(($course['registered'] / $total) * 100, 1) : 0;
+?>
     <a href="/inscription.php?course=<?= $extras['urlParam'] ?>" style="text-decoration:none; color:inherit;">
       <div class="race-card">
-        <div class="race-dist" style="font-size:2.5rem; color:<?= $color ?>">
-          <?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small>
-        </div>
+        <div class="race-dist" style="font-size:2.5rem; color:<?= $color ?>"><?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small></div>
         <div class="race-type">
           <?php foreach ($extras['infos'] as $info): ?>
           <div class="race-info-item"><span class="icon"><?= $info[0] ?></span><span><?= $info[1] ?></span></div>
           <?php endforeach; ?>
+        </div>
+        <div class="race-price" style="color:<?= $color ?>"><?= $course['price'] > 0 ? $course['price'] . ' €' : 'Gratuit' ?></div>
+        <div style="margin-top:0.75rem;">
+          <span class="gpx-link" style="color:<?= $color ?>;" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('<?= $extras['gpx'] ?>');">🗺 Voir le parcours</span>
+        </div>
+        <div class="race-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= min($pct, 100) ?>%; background:<?= $color ?>"></div></div>
+          <span class="spots-text"><?= $course['registered'] ?> inscrits / <?= $total ?> places</span>
+        </div>
+      </div>
+    </a>
+    <?php endforeach; ?>
         </div>
         <div class="race-price" style="color:<?= $color ?>"><?= $course['price'] > 0 ? $course['price'] . ' €' : 'Gratuit' ?></div>
         <div style="margin-top:0.75rem;">
