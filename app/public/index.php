@@ -14,7 +14,7 @@
   <div class="hero-content">
     <span class="badge">▲ 1ÈRE ÉDITION</span>
     <h1><span style="display:inline-block;font-size:0.7em;margin-right:0.3em;color:var(--lime);">▲</span>TRAIL<span style="display:inline-block;font-size:0.7em;margin-left:0.3em;color:var(--lime);">▲</span><br><span class="text-lime">DE LA</span><br>VOGUE<br>CHALLAISIENNE</h1>
-    <p class="subtitle">COURSE NATURE — INSCRIPTIONS OUVERTES 2026</p>
+    <p class="subtitle">COURSE NATURE — 6 SEPTEMBRE 2026</p>
     <div class="hero-date-box">
       <span class="date-icon">📅</span>
       <span class="date-text">DIMANCHE 6 SEPTEMBRE 2026</span>
