@@ -4,7 +4,25 @@ require_once __DIR__ . '/../src/bootstrap.php';
 $stats = new Statistics();
 $formData = $stats->getFormData();
 
-// Mapping des infos supplémentaires par course
+$orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
+
+$courseExtras = [
+    'Course Enfant' => [
+        'shortName' => '3', 'unit' => 'km', 'color' => 'var(--sky)', 'total' => 30,
+        'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
+        'gpx' => '3km', 'urlParam' => '3km'
+    ],
+    'Course 7.5km' => [
+        'shortName' => '7.5', 'unit' => 'km', 'color' => 'var(--lime)', 'total' => 75,
+        'infos' => [['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
+        'gpx' => '7.5km', 'urlParam' => '7.5km'
+    ],
+    'Course 15km' => [
+        'shortName' => '15', 'unit' => 'km', 'color' => '#e07850', 'total' => 75,
+        'infos' => [['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],
+        'gpx' => '15km', 'urlParam' => '15km'
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -41,131 +59,101 @@ $formData = $stats->getFormData();
 </head>
 <body>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-content">
     <span class="badge">▲ 1ÈRE ÉDITION</span>
-    <h1><span style="display:inline-block; font-size:0.7em; margin-right:0.3em; color:var(--lime);">▲</span>TRAIL<span style="display:inline-block; font-size:0.7em; margin-left:0.3em; color:var(--lime);">▲</span><br><span class="text-lime">DE LA</span><br>VOGUE<br>CHALLAISIENNE</h1>
+    <h1><span style="display:inline-block;font-size:0.7em;margin-right:0.3em;color:var(--lime);">▲</span>TRAIL<span style="display:inline-block;font-size:0.7em;margin-left:0.3em;color:var(--lime);">▲</span><br><span class="text-lime">DE LA</span><br>VOGUE<br>CHALLAISIENNE</h1>
     <p class="subtitle">COURSE NATURE — INSCRIPTIONS OUVERTES 2026</p>
     <div class="hero-date-box">
       <span class="date-icon">📅</span>
       <span class="date-text">DIMANCHE 6 SEPTEMBRE 2026</span>
     </div>
-    <p style="font-family:'DM Mono',sans-serif; font-size:0.85rem; color:var(--sand); letter-spacing:0.12em; margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
+    <p style="font-family:'DM Mono',sans-serif;font-size:0.85rem;color:var(--sand);letter-spacing:0.12em;margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
     <a href="/inscription.php" class="cta-btn">S'inscrire maintenant</a>
-    <div style="margin-top:2.5rem; font-size:0.7rem; letter-spacing:0.15em; color:rgba(255,255,255,0.4); text-transform:uppercase; animation:bounce 2s infinite;">↓ Découvrir</div>
+    <div style="margin-top:2.5rem;font-size:0.7rem;letter-spacing:0.15em;color:rgba(255,255,255,0.4);text-transform:uppercase;animation:bounce 2s infinite;">↓ Découvrir</div>
   </div>
 </section>
 
-<!-- LIEU -->
 <section class="section">
   <p class="section-tag">// Lieu de départ</p>
   <h2 class="section-title">Où nous<br>trouver ?</h2>
-  <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; margin-bottom:1.5rem;">
-    <div style="padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid rgba(255,255,255,0.07);">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;">
+    <div style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,0.07);">
       <span style="font-size:1.5rem;">📍</span>
       <div>
-        <p style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--lime); letter-spacing:0.05em;">Parking de la Halle</p>
-        <p style="font-size:1rem; color:var(--sand);">381 Rue de la Mairie, 01630 Challex, France</p>
+        <p style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);letter-spacing:0.05em;">Parking de la Halle</p>
+        <p style="font-size:1rem;color:var(--sand);">381 Rue de la Mairie, 01630 Challex, France</p>
       </div>
     </div>
-    <iframe src="https://maps.google.com/maps?q=46.181861,5.973861&t=k&z=17&output=embed" width="100%" height="300" style="border:0; display:block;" allowfullscreen="" loading="lazy"></iframe>
-    <div style="padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
-      <a href="https://www.google.com/maps?q=46.181861,5.973861" target="_blank" style="background:var(--lime); color:var(--earth); font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
-      <a href="https://waze.com/ul?ll=46.181861,5.973861&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.9rem; padding:0.75rem 1.5rem; border-radius:2px; text-decoration:none; letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+    <iframe src="https://maps.google.com/maps?q=46.181861,5.973861&t=k&z=17&output=embed" width="100%" height="300" style="border:0;display:block;" allowfullscreen="" loading="lazy"></iframe>
+    <div style="padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+      <a href="https://www.google.com/maps?q=46.181861,5.973861" target="_blank" style="background:var(--lime);color:var(--earth);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://waze.com/ul?ll=46.181861,5.973861&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
     </div>
   </div>
 </section>
 
-<!-- ACCES & PARKINGS -->
 <section class="section" style="padding-top:0;">
   <p class="section-tag">// Accès & Parkings</p>
   <h2 class="section-title">Se garer</h2>
-  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1rem;">
-    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
-      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-        <span style="font-size:1.3rem;">🅿️</span>
-        <strong style="color:var(--lime); font-size:0.95rem;">Parking de l'Église</strong>
-      </div>
-      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/Eglise+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de l'Église</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/Eglise+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
-    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
-      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-        <span style="font-size:1.3rem;">🅿️</span>
-        <strong style="color:var(--lime); font-size:0.95rem;">Parking Terrain de Foot</strong>
-      </div>
-      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">30-136 Rue de la Craz, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/30+Rue+de+la+Craz+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Terrain de Foot</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">30-136 Rue de la Craz, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/30+Rue+de+la+Craz+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
-    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.25rem;">
-      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-        <span style="font-size:1.3rem;">🅿️</span>
-        <strong style="color:var(--lime); font-size:0.95rem;">Parking Rue de la Mairie</strong>
-      </div>
-      <p style="font-size:0.85rem; color:var(--sand); margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/236+Rue+de+la+Mairie+Challex+01630" target="_blank" style="font-size:0.8rem; color:var(--lime); text-decoration:underline;">Voir sur la carte →</a>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Mairie</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
+      <a href="https://www.google.com/maps/search/236+Rue+de+la+Mairie+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
   </div>
 </section>
 
-<!-- COURSES PREVIEW - 100% DYNAMIQUE -->
 <section class="section">
   <p class="section-tag">// Les parcours</p>
   <h2 class="section-title">Trois distances<br>pour tous</h2>
   <div class="races-grid">
-    <?php
-// Ordre forcé : 3km, 7.5km, 15km
-$orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
-$courseExtras = [
-    'Course Enfant' => ['shortName'=>'3','unit'=>'km','color'=>'var(--sky)','total'=>30,'infos'=>[['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],'gpx'=>'3km','urlParam'=>'3km'],
-    'Course 7.5km' => ['shortName'=>'7.5','unit'=>'km','color'=>'var(--lime)','total'=>75,'infos'=>[['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],'gpx'=>'7.5km','urlParam'=>'7.5km'],
-    'Course 15km' => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'infos'=>[['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],'gpx'=>'15km','urlParam'=>'15km']
-];
+<?php
 foreach ($orderMap as $orderedLabel):
     $course = null;
-    foreach ($formData['courses'] as $c) { if ($c['label'] === $orderedLabel) { $course = $c; break; } }
+    foreach ($formData['courses'] as $c) {
+        if ($c['label'] === $orderedLabel) { $course = $c; break; }
+    }
     if (!$course) continue;
-    $extras = $courseExtras[$course['label']];
+    $extras = $courseExtras[$orderedLabel] ?? null;
+    if (!$extras) continue;
     $color = $extras['color'];
     $total = $extras['total'];
-    $pct = $total > 0 ? round(($course['registered'] / $total) * 100, 1) : 0;
+    $pct = $total > 0 ? min(round(($course['registered'] / $total) * 100, 1), 100) : 0;
 ?>
-    <a href="/inscription.php?course=<?= $extras['urlParam'] ?>" style="text-decoration:none; color:inherit;">
+    <a href="/inscription.php?course=<?= $extras['urlParam'] ?>" style="text-decoration:none;color:inherit;">
       <div class="race-card">
-        <div class="race-dist" style="font-size:2.5rem; color:<?= $color ?>"><?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small></div>
+        <div class="race-dist" style="font-size:2.5rem;color:<?= $color ?>"><?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small></div>
         <div class="race-type">
-          <?php foreach ($extras['infos'] as $info): ?>
+<?php foreach ($extras['infos'] as $info): ?>
           <div class="race-info-item"><span class="icon"><?= $info[0] ?></span><span><?= $info[1] ?></span></div>
-          <?php endforeach; ?>
+<?php endforeach; ?>
         </div>
         <div class="race-price" style="color:<?= $color ?>"><?= $course['price'] > 0 ? $course['price'] . ' €' : 'Gratuit' ?></div>
         <div style="margin-top:0.75rem;">
-          <span class="gpx-link" style="color:<?= $color ?>;" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('<?= $extras['gpx'] ?>');">🗺 Voir le parcours</span>
+          <span class="gpx-link" style="color:<?= $color ?>;" onclick="event.preventDefault();event.stopPropagation();openGpxPopup('<?= $extras['gpx'] ?>');">🗺 Voir le parcours</span>
         </div>
         <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= min($pct, 100) ?>%; background:<?= $color ?>"></div></div>
+          <div class="spots-bar"><div class="spots-fill" style="width:<?= $pct ?>%;background:<?= $color ?>"></div></div>
           <span class="spots-text"><?= $course['registered'] ?> inscrits / <?= $total ?> places</span>
         </div>
       </div>
     </a>
-    <?php endforeach; ?>
-        </div>
-        <div class="race-price" style="color:<?= $color ?>"><?= $course['price'] > 0 ? $course['price'] . ' €' : 'Gratuit' ?></div>
-        <div style="margin-top:0.75rem;">
-          <span class="gpx-link" onclick="event.preventDefault(); event.stopPropagation(); openGpxPopup('<?= $extras['gpx'] ?>');">🗺 Voir le parcours</span>
-        </div>
-        <div class="race-spots">
-          <div class="spots-bar"><div class="spots-fill" style="width:<?= min($course['percentage'], 100) ?>%; background:<?= $color ?>"></div></div>
-          <span class="spots-text"><?= $course['registered'] ?> inscrits</span>
-        </div>
-      </div>
-    </a>
-    <?php endforeach; ?>
+<?php endforeach; ?>
   </div>
 </section>
 
-<!-- POPUP GPX -->
 <div class="gpx-overlay" id="gpx-overlay">
   <div class="gpx-inner">
     <div class="gpx-header">
@@ -175,45 +163,33 @@ foreach ($orderMap as $orderedLabel):
     <div id="gpx-map"></div>
     <div class="gpx-stats" id="gpx-stats">Chargement...</div>
     <p class="gpx-section-label">// Profil altimétrique</p>
-    <div id="gpx-elevation-container">
-      <canvas id="gpx-elevation"></canvas>
-    </div>
+    <div id="gpx-elevation-container"><canvas id="gpx-elevation"></canvas></div>
   </div>
 </div>
 
-<!-- CONTACT -->
 <section class="section" style="text-align:center;">
   <p class="section-tag">// Contact</p>
   <h2 class="section-title">Une question ?</h2>
-  <p style="color:var(--sand); margin-bottom:1rem; font-size:1rem;">Contactez-nous par email</p>
-  <a href="mailto:contact@vogue-challex.fr" style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--lime); text-decoration:none; letter-spacing:0.05em;">contact@vogue-challex.fr</a>
+  <p style="color:var(--sand);margin-bottom:1rem;font-size:1rem;">Contactez-nous par email</p>
+  <a href="mailto:contact@vogue-challex.fr" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);text-decoration:none;letter-spacing:0.05em;">contact@vogue-challex.fr</a>
 </section>
 
-<footer style="text-align:center; padding:2rem; color:var(--sand); font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.1); margin-top:2rem;">
-  <p>© 2026 Vogue Challaisienne · <a href="https://www.vogue-challex.fr" style="color:var(--lime); text-decoration:none;">www.vogue-challex.fr</a> · Tous droits réservés</p>
+<footer style="text-align:center;padding:2rem;color:var(--sand);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1);margin-top:2rem;">
+  <p>© 2026 Vogue Challaisienne · <a href="https://www.vogue-challex.fr" style="color:var(--lime);text-decoration:none;">www.vogue-challex.fr</a> · Tous droits réservés</p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-var gpxMap = null;
-var gpxChart = null;
-
-var gpxFiles = {
-  '3km': '/gpx/Course_7_5.gpx',
-  '7.5km': '/gpx/Course_7_5.gpx',
-  '15km': '/gpx/Course_7_5.gpx'
-};
+var gpxMap = null, gpxChart = null;
+var gpxFiles = {'3km':'/gpx/Course_7_5.gpx','7.5km':'/gpx/Course_7_5.gpx','15km':'/gpx/Course_7_5.gpx'};
 
 function openGpxPopup(course) {
-  var overlay = document.getElementById('gpx-overlay');
-  overlay.classList.add('active');
+  document.getElementById('gpx-overlay').classList.add('active');
   document.body.style.overflow = 'hidden';
   document.getElementById('gpx-title').textContent = '▲ Parcours ' + course;
-  
   if (gpxMap) { gpxMap.remove(); gpxMap = null; }
   if (gpxChart) { gpxChart.destroy(); gpxChart = null; }
-  
   setTimeout(function() { loadGpx(course); }, 100);
 }
 
@@ -222,76 +198,49 @@ function closeGpxPopup() {
   document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeGpxPopup(); });
-document.getElementById('gpx-overlay').addEventListener('click', function(e) { if (e.target === this) closeGpxPopup(); });
+document.addEventListener('keydown', function(e) { if (e.key==='Escape') closeGpxPopup(); });
+document.getElementById('gpx-overlay').addEventListener('click', function(e) { if (e.target===this) closeGpxPopup(); });
 
 function loadGpx(course) {
-  var color = '#87b8c4';
-  
+  var color = course==='3km' ? '#87b8c4' : course==='15km' ? '#e07850' : '#a8c640';
   gpxMap = L.map('gpx-map');
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Esri', maxZoom: 18
-  }).addTo(gpxMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:18}).addTo(gpxMap);
 
-  fetch(gpxFiles[course])
-    .then(function(r) { return r.text(); })
-    .then(function(gpxText) {
-      var parser = new DOMParser();
-      var xml = parser.parseFromString(gpxText, 'text/xml');
-      var trkpts = xml.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'trkpt');
-      if (trkpts.length === 0) trkpts = xml.getElementsByTagName('trkpt');
-      
-      var allLatLngs = [], elevations = [], distances = [0], totalDist = 0;
-      
-      for (var i = 0; i < trkpts.length; i++) {
-        var pt = trkpts[i];
-        var lat = parseFloat(pt.getAttribute('lat'));
-        var lon = parseFloat(pt.getAttribute('lon'));
-        allLatLngs.push([lat, lon]);
-        var ele = pt.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1', 'ele')[0];
-        if (!ele) ele = pt.getElementsByTagName('ele')[0];
-        elevations.push(ele ? parseFloat(ele.textContent) : 0);
-        if (i > 0) { totalDist += gpxMap.distance(allLatLngs[i-1], allLatLngs[i]); distances.push(totalDist); }
-      }
-      
-      if (allLatLngs.length === 0) { document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Aucun point trouvé</p>'; return; }
-      
-      var simplified = [], step = Math.max(1, Math.floor(allLatLngs.length / 500));
-      for (var i = 0; i < allLatLngs.length; i += step) simplified.push(allLatLngs[i]);
-      simplified.push(allLatLngs[allLatLngs.length - 1]);
-      
-      L.polyline(simplified, { color: color, weight: 4, opacity: 0.9 }).addTo(gpxMap);
-      
-      for (var i = 30; i < simplified.length - 1; i += 30) {
-        var p1 = simplified[i], p2 = simplified[i+1];
-        var angle = Math.atan2(p2[1]-p1[1], p2[0]-p1[0]) * (180/Math.PI);
-        L.marker(p1, { icon: L.divIcon({ className:'', html:'<div style="color:'+color+';font-size:16px;transform:rotate('+(90-angle)+'deg);text-shadow:0 0 3px rgba(0,0,0,0.8);">▸</div>', iconSize:[16,16], iconAnchor:[8,8] }) }).addTo(gpxMap);
-      }
-      
-      gpxMap.fitBounds(L.latLngBounds(simplified), { padding: [30, 30] });
-      L.circleMarker(allLatLngs[0], { radius:10, color:color, fillColor:color, fillOpacity:1, weight:3 }).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
-      
-      var eleGain = 0, eleLoss = 0;
-      for (var i = 1; i < elevations.length; i++) { var d = elevations[i]-elevations[i-1]; if (d>0) eleGain+=d; else eleLoss+=Math.abs(d); }
-      var eleMin = Math.round(Math.min.apply(null, elevations)), eleMax = Math.round(Math.max.apply(null, elevations));
-      
-      document.getElementById('gpx-stats').innerHTML = 
-        '<div class="gpx-stat"><div class="gpx-stat-value">'+(totalDist/1000).toFixed(1)+' km</div><div class="gpx-stat-label">Distance</div></div>'+
-        '<div class="gpx-stat"><div class="gpx-stat-value">+ '+Math.round(eleGain)+' m</div><div class="gpx-stat-label">Dénivelé +</div></div>'+
-        '<div class="gpx-stat"><div class="gpx-stat-value">- '+Math.round(eleLoss)+' m</div><div class="gpx-stat-label">Dénivelé -</div></div>'+
-        '<div class="gpx-stat"><div class="gpx-stat-value">'+eleMin+' - '+eleMax+' m</div><div class="gpx-stat-label">Altitude</div></div>';
-      
-      var pStep = Math.max(1, Math.floor(elevations.length/300)), pEle = [], pDist = [];
-      for (var i = 0; i < elevations.length; i += pStep) { pEle.push(Math.round(elevations[i])); pDist.push((distances[i]/1000).toFixed(2)); }
-      
-      var ctx = document.getElementById('gpx-elevation').getContext('2d');
-      gpxChart = new Chart(ctx, {
-        type:'line',
-        data:{ labels:pDist, datasets:[{ data:pEle, borderColor:color, backgroundColor:'rgba(135,184,196,0.15)', borderWidth:2, fill:true, pointRadius:0, pointHoverRadius:5, tension:0.3 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1a1208', borderColor:color, borderWidth:1, titleColor:color, bodyColor:'#f4ede0', callbacks:{ title:function(i){return i[0].label+' km';}, label:function(i){return i.raw+' m';} } } }, scales:{ x:{ title:{display:true,text:'Distance (km)',color:'#d4b896'}, ticks:{color:'#d4b896',maxTicksLimit:8}, grid:{color:'rgba(255,255,255,0.05)'} }, y:{ title:{display:true,text:'Altitude (m)',color:'#d4b896'}, ticks:{color:'#d4b896'}, grid:{color:'rgba(255,255,255,0.08)'} } } }
-      });
-    })
-    .catch(function(err) { document.getElementById('gpx-stats').innerHTML = '<p style="color:#c4440a;">Erreur: '+err.message+'</p>'; });
+  fetch(gpxFiles[course]).then(function(r){return r.text();}).then(function(gpxText){
+    var xml = new DOMParser().parseFromString(gpxText,'text/xml');
+    var pts = xml.getElementsByTagNameNS('http://www.topografix.com/GPX/1/1','trkpt');
+    if (pts.length===0) pts = xml.getElementsByTagName('trkpt');
+    var ll=[], ele=[], dist=[0], total=0;
+    for (var i=0;i<pts.length;i++) {
+      var lat=parseFloat(pts[i].getAttribute('lat')), lon=parseFloat(pts[i].getAttribute('lon'));
+      ll.push([lat,lon]);
+      var e=pts[i].getElementsByTagNameNS('http://www.topografix.com/GPX/1/1','ele')[0]||pts[i].getElementsByTagName('ele')[0];
+      ele.push(e?parseFloat(e.textContent):0);
+      if (i>0){total+=gpxMap.distance(ll[i-1],ll[i]);dist.push(total);}
+    }
+    if (!ll.length){document.getElementById('gpx-stats').innerHTML='<p style="color:#c4440a;">Aucun point</p>';return;}
+    var simp=[],step=Math.max(1,Math.floor(ll.length/500));
+    for(var i=0;i<ll.length;i+=step)simp.push(ll[i]);
+    simp.push(ll[ll.length-1]);
+    L.polyline(simp,{color:color,weight:4,opacity:0.9}).addTo(gpxMap);
+    for(var i=30;i<simp.length-1;i+=30){
+      var a=Math.atan2(simp[i+1][1]-simp[i][1],simp[i+1][0]-simp[i][0])*(180/Math.PI);
+      L.marker(simp[i],{icon:L.divIcon({className:'',html:'<div style="color:'+color+';font-size:16px;transform:rotate('+(90-a)+'deg);text-shadow:0 0 3px rgba(0,0,0,0.8);">▸</div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(gpxMap);
+    }
+    gpxMap.fitBounds(L.latLngBounds(simp),{padding:[30,30]});
+    L.circleMarker(ll[0],{radius:10,color:color,fillColor:color,fillOpacity:1,weight:3}).addTo(gpxMap).bindPopup('<b>Départ / Arrivée</b><br>Parking de la Halle').openPopup();
+    var g=0,l=0;
+    for(var i=1;i<ele.length;i++){var d=ele[i]-ele[i-1];if(d>0)g+=d;else l+=Math.abs(d);}
+    document.getElementById('gpx-stats').innerHTML=
+      '<div class="gpx-stat"><div class="gpx-stat-value">'+(total/1000).toFixed(1)+' km</div><div class="gpx-stat-label">Distance</div></div>'+
+      '<div class="gpx-stat"><div class="gpx-stat-value">+ '+Math.round(g)+' m</div><div class="gpx-stat-label">Dénivelé +</div></div>'+
+      '<div class="gpx-stat"><div class="gpx-stat-value">- '+Math.round(l)+' m</div><div class="gpx-stat-label">Dénivelé -</div></div>'+
+      '<div class="gpx-stat"><div class="gpx-stat-value">'+Math.round(Math.min.apply(null,ele))+' - '+Math.round(Math.max.apply(null,ele))+' m</div><div class="gpx-stat-label">Altitude</div></div>';
+    var ps=Math.max(1,Math.floor(ele.length/300)),pe=[],pd=[];
+    for(var i=0;i<ele.length;i+=ps){pe.push(Math.round(ele[i]));pd.push((dist[i]/1000).toFixed(2));}
+    var ctx=document.getElementById('gpx-elevation').getContext('2d');
+    gpxChart=new Chart(ctx,{type:'line',data:{labels:pd,datasets:[{data:pe,borderColor:color,backgroundColor:color.replace('rgb','rgba').replace(')',',0.15)'),borderWidth:2,fill:true,pointRadius:0,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1208',borderColor:color,borderWidth:1,titleColor:color,bodyColor:'#f4ede0',callbacks:{title:function(i){return i[0].label+' km';},label:function(i){return i.raw+' m';}}}},scales:{x:{title:{display:true,text:'Distance (km)',color:'#d4b896'},ticks:{color:'#d4b896',maxTicksLimit:8},grid:{color:'rgba(255,255,255,0.05)'}},y:{title:{display:true,text:'Altitude (m)',color:'#d4b896'},ticks:{color:'#d4b896'},grid:{color:'rgba(255,255,255,0.08)'}}}}});
+  }).catch(function(err){document.getElementById('gpx-stats').innerHTML='<p style="color:#c4440a;">Erreur: '+err.message+'</p>';});
 }
 </script>
 </body>
