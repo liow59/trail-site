@@ -45,7 +45,6 @@ class HelloAsso {
 
         $data = json_decode($response, true);
         $token = $data['access_token'] ?? null;
-
         if (!$token) throw new Exception('Token non reçu');
 
         file_put_contents($cacheFile, json_encode([
@@ -56,21 +55,15 @@ class HelloAsso {
         return $token;
     }
 
-    /**
-     * Crée un checkout intent avec les tier IDs HelloAsso
-     * $selectedItems = [['tierId' => 123, 'label' => 'Course 7.5km', 'amount' => 1000], ...]
-     */
     public function createCheckoutIntent($payer, $selectedItems) {
         $token = $this->getAccessToken();
 
-        // Calculer le total
         $totalCents = 0;
         $items = [];
         
         foreach ($selectedItems as $item) {
             $amount = intval($item['amount']);
             if ($amount <= 0) continue;
-            
             $items[] = [
                 'name' => $item['label'],
                 'priceCategory' => 'Fixed',
@@ -80,14 +73,13 @@ class HelloAsso {
             $totalCents += $amount;
         }
 
-        // Si total = 0, inscription gratuite
+        // Inscription gratuite
         if ($totalCents <= 0) {
             return ['free' => true, 'redirectUrl' => null];
         }
 
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $baseUrl = $protocol . '://' . $host;
+        // URL de base fixe avec HTTPS
+        $baseUrl = 'https://www.vogue-challex.fr';
 
         $payload = [
             'totalAmount' => $totalCents,
@@ -102,7 +94,12 @@ class HelloAsso {
                 'lastName' => $payer['nom'],
                 'email' => $payer['email']
             ],
-            'items' => $items
+            'items' => $items,
+            'metadata' => [
+                'telephone' => $payer['telephone'],
+                'date_naissance' => $payer['date_naissance'],
+                'sexe' => $payer['sexe']
+            ]
         ];
 
         $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
