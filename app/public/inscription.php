@@ -10,7 +10,8 @@ $paymentError = isset($_GET['error']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $helloasso = new HelloAsso();
+        $stats = new Statistics();
+    $formData = $stats->getFormData();
         
         $payer = [
             'prenom' => trim($_POST['prenom'] ?? ''),
