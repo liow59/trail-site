@@ -58,6 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $checkout = $helloasso->createCheckoutIntent($payer, $selectedItems);
         if (isset($checkout['free']) && $checkout['free']) {
+            // Inscription gratuite : assigner dossard et envoyer email maintenant
+            $mailer = new Mailer();
+            $dossard = $mailer->assignDossard($courseLabel);
+            $pdo2 = new PDO('mysql:host='.getenv('DB_HOST').';dbname='.getenv('DB_NAME').';charset=utf8mb4', getenv('DB_USER'), getenv('DB_PASS'));
+            $pdo2->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
+            $inscriptionData = array_merge($payer, ['course' => $courseLabel, 'dossard' => $dossard, 'ticket_url' => null, 'repas' => json_encode($repasData)]);
+            $mailer->sendConfirmationEmail($inscriptionData);
             header('Location: /inscription.php?success=1'); exit;
         }
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
