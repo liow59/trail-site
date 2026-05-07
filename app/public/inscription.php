@@ -6,21 +6,9 @@ $formData = $stats->getFormData();
 
 $orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
 $courseExtras = [
-    'Course Enfant' => [
-        'shortName' => '3', 'unit' => 'km', 'color' => 'var(--sky)', 'total' => 30,
-        'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
-        'urlParam' => '3km'
-    ],
-    'Course 7.5km' => [
-        'shortName' => '7.5', 'unit' => 'km', 'color' => 'var(--lime)', 'total' => 75,
-        'infos' => [['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
-        'urlParam' => '7.5km'
-    ],
-    'Course 15km' => [
-        'shortName' => '15', 'unit' => 'km', 'color' => '#e07850', 'total' => 75,
-        'infos' => [['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],
-        'urlParam' => '15km'
-    ]
+    'Course Enfant' => ['shortName'=>'3','unit'=>'km','color'=>'var(--sky)','total'=>30,'infos'=>[['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],'urlParam'=>'3km'],
+    'Course 7.5km'  => ['shortName'=>'7.5','unit'=>'km','color'=>'var(--lime)','total'=>75,'infos'=>[['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],'urlParam'=>'7.5km'],
+    'Course 15km'   => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'infos'=>[['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],'urlParam'=>'15km']
 ];
 
 $error = null;
@@ -29,46 +17,88 @@ $paymentError = isset($_GET['error']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $helloasso = new HelloAsso();
-        $payer = [
-            'prenom' => trim($_POST['prenom'] ?? ''),
-            'nom' => trim($_POST['nom'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'telephone' => trim($_POST['telephone'] ?? ''),
-            'date_naissance' => $_POST['date_naissance'] ?? '',
-            'sexe' => $_POST['sexe'] ?? ''
-        ];
-        $selectedItems = [];
-        $courseId = intval($_POST['course_tier_id'] ?? 0);
-        $courseLabel = $_POST['course_label'] ?? '';
+        $prenom       = trim($_POST['prenom'] ?? '');
+        $nom          = trim($_POST['nom'] ?? '');
+        $email        = trim($_POST['email'] ?? '');
+        $telephone    = trim($_POST['telephone'] ?? '');
+        $dateNaiss    = $_POST['date_naissance'] ?? '';
+        $sexe         = $_POST['sexe'] ?? '';
+        $courseLabel  = $_POST['course_label'] ?? '';
+        $courseTierId = intval($_POST['course_tier_id'] ?? 0);
         $courseAmount = intval($_POST['course_amount'] ?? 0);
-        if ($courseId && $courseAmount > 0) {
-            $selectedItems[] = ['tierId' => $courseId, 'label' => $courseLabel, 'amount' => $courseAmount];
+
+        $payer = [
+            'prenom'         => $prenom,
+            'nom'            => $nom,
+            'email'          => $email,
+            'telephone'      => $telephone,
+            'date_naissance' => $dateNaiss,
+            'sexe'           => $sexe
+        ];
+
+        // Construire les items sélectionnés
+        $selectedItems = [];
+        $repasData = [];
+
+        if ($courseTierId && $courseAmount > 0) {
+            $selectedItems[] = ['tierId' => $courseTierId, 'label' => $courseLabel, 'amount' => $courseAmount];
         }
+
         foreach ($_POST as $key => $value) {
             if (strpos($key, 'meal_qty_') === 0 && intval($value) > 0) {
-                $mealId = intval(str_replace('meal_qty_', '', $key));
+                $mealId    = intval(str_replace('meal_qty_', '', $key));
                 $mealLabel = $_POST['meal_label_' . $mealId] ?? '';
                 $mealPrice = intval($_POST['meal_price_' . $mealId] ?? 0);
-                $qty = intval($value);
+                $qty       = intval($value);
                 for ($i = 0; $i < $qty; $i++) {
                     $selectedItems[] = ['tierId' => $mealId, 'label' => $mealLabel, 'amount' => $mealPrice];
                 }
+                $repasData[] = ['label' => $mealLabel, 'qty' => $qty, 'amount' => $mealPrice * $qty];
             }
         }
+
+        $totalCents = array_sum(array_column($selectedItems, 'amount'));
+        $statut = $totalCents <= 0 ? 'free' : 'pending';
+
+        // Sauvegarder en DB
+        $pdo = new PDO(
+            'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';charset=utf8mb4',
+            getenv('DB_USER'), getenv('DB_PASS')
+        );
+        $stmt = $pdo->prepare('INSERT INTO inscriptions (prenom, nom, email, telephone, date_naissance, sexe, course, tier_id, repas, total_cents, statut) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+        $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
+        $inscriptionId = $pdo->lastInsertId();
+
+        // Créer le checkout HelloAsso
+        $helloasso = new HelloAsso();
         $checkout = $helloasso->createCheckoutIntent($payer, $selectedItems);
+
         if (isset($checkout['free']) && $checkout['free']) {
-            // Inscription gratuite : assigner dossard et envoyer email maintenant
+            // Inscription gratuite : email immédiat
             $mailer = new Mailer();
             $dossard = $mailer->assignDossard($courseLabel);
-            $pdo2 = new PDO('mysql:host='.getenv('DB_HOST').';dbname='.getenv('DB_NAME').';charset=utf8mb4', getenv('DB_USER'), getenv('DB_PASS'));
-            $pdo2->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
-            $inscriptionData = array_merge($payer, ['course' => $courseLabel, 'dossard' => $dossard, 'ticket_url' => null, 'repas' => json_encode($repasData)]);
+            $pdo->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
+            $inscriptionData = array_merge($payer, [
+                'course'     => $courseLabel,
+                'dossard'    => $dossard,
+                'ticket_url' => null,
+                'repas'      => json_encode($repasData)
+            ]);
             $mailer->sendConfirmationEmail($inscriptionData);
-            header('Location: /inscription.php?success=1'); exit;
+            header('Location: /inscription.php?success=1');
+            exit;
         }
+
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
-        if ($checkoutUrl) { header('Location: ' . $checkoutUrl); exit; }
+        if ($checkoutUrl) {
+            // Sauvegarder l'order_id si disponible
+            if (!empty($checkout['id'])) {
+                $pdo->prepare("UPDATE inscriptions SET order_id=? WHERE id=?")->execute([$checkout['id'], $inscriptionId]);
+            }
+            header('Location: ' . $checkoutUrl);
+            exit;
+        }
+
     } catch (Exception $e) {
         $error = $e->getMessage();
     }
@@ -96,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div style="background:rgba(168,198,64,0.1);border:1px solid var(--lime);border-radius:4px;padding:2rem;text-align:center;max-width:600px;margin:0 auto;">
     <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--lime);margin-bottom:1rem;">Inscription confirmée !</h2>
-    <p style="color:var(--sand);margin-bottom:1.5rem;">Vous recevrez un email de confirmation.</p>
+    <p style="color:var(--sand);margin-bottom:1.5rem;">Un email de confirmation avec votre numéro de dossard vous a été envoyé.</p>
     <a href="/" class="cta-btn">Retour à l'accueil</a>
   </div>
 </div>
@@ -105,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div style="background:rgba(196,68,10,0.15);border:1px solid var(--rust);border-radius:4px;padding:2rem;text-align:center;max-width:600px;margin:0 auto;">
     <div style="font-size:3rem;margin-bottom:1rem;">❌</div>
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--rust);margin-bottom:1rem;">Paiement annulé</h2>
-    <p style="color:var(--sand);margin-bottom:1.5rem;">Le paiement n'a pas pu être finalisé.</p>
+    <p style="color:var(--sand);margin-bottom:1.5rem;">Le paiement n'a pas pu être finalisé. Vous pouvez réessayer.</p>
     <a href="/inscription.php" class="cta-btn">Réessayer</a>
   </div>
 </div>
@@ -172,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <?php if (!empty($formData['meals'])): ?>
-    <p class="section-tag" style="margin-top:2rem">// Étape 3 - Repas</p>
+    <p class="section-tag" style="margin-top:2rem">// Étape 3 - Repas de fin de course</p>
     <div class="repas-grid">
       <?php foreach ($formData['meals'] as $meal): ?>
       <div class="repas-row">
@@ -209,7 +239,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <button type="submit" class="submit-btn" disabled>Procéder au paiement sécurisé →</button>
   </form>
 </section>
-
 <?php endif; ?>
 
 <footer style="text-align:center;padding:2rem;color:var(--sand);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1);margin-top:4rem;">
@@ -217,86 +246,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </footer>
 
 <script>
-var mealsData = <?= json_encode(array_map(function($m) {
-    return ['id' => $m['id'], 'price' => $m['price'], 'priceCents' => $m['priceCents']];
-}, $formData['meals'])) ?>;
+var mealsData = <?= json_encode(array_map(function($m){return['id'=>$m['id'],'price'=>$m['price'],'priceCents'=>$m['priceCents']];},$formData['meals'])) ?>;
+var selectedTierId=null,selectedPrice=0,selectedPriceCents=0;
+var urlParams=new URLSearchParams(window.location.search);
+var preselect=urlParams.get('course');
+var preselectionMap={'3km':'Course Enfant','7.5km':'Course 7.5km','15km':'Course 15km'};
 
-var selectedTierId = null, selectedPrice = 0, selectedPriceCents = 0;
-var urlParams = new URLSearchParams(window.location.search);
-var preselect = urlParams.get('course');
-var preselectionMap = {'3km':'Course Enfant','7.5km':'Course 7.5km','15km':'Course 15km'};
-
-document.querySelectorAll('.race-card').forEach(function(card) {
-  var tierId = parseInt(card.dataset.tierId);
-  var priceCents = parseInt(card.dataset.price);
-  var label = card.dataset.label;
-  if (preselect && preselectionMap[preselect] === label) selectCard(card, tierId, priceCents, label);
-  card.addEventListener('click', function() { selectCard(card, tierId, priceCents, label); });
+document.querySelectorAll('.race-card').forEach(function(card){
+  var tierId=parseInt(card.dataset.tierId);
+  var priceCents=parseInt(card.dataset.price);
+  var label=card.dataset.label;
+  if(preselect&&preselectionMap[preselect]===label) selectCard(card,tierId,priceCents,label);
+  card.addEventListener('click',function(){selectCard(card,tierId,priceCents,label);});
 });
 
-function selectCard(card, tierId, priceCents, label) {
-  document.querySelectorAll('.race-card').forEach(function(c) { c.classList.remove('selected'); });
+function selectCard(card,tierId,priceCents,label){
+  document.querySelectorAll('.race-card').forEach(function(c){c.classList.remove('selected');});
   card.classList.add('selected');
-  selectedTierId = tierId;
-  selectedPriceCents = priceCents;
-  selectedPrice = priceCents / 100;
-  document.getElementById('course_tier_id').value = tierId;
-  document.getElementById('course_label').value = label;
-  document.getElementById('course_amount').value = priceCents;
-  updatePrices();
-  checkFormValidity();
+  selectedTierId=tierId; selectedPriceCents=priceCents; selectedPrice=priceCents/100;
+  document.getElementById('course_tier_id').value=tierId;
+  document.getElementById('course_label').value=label;
+  document.getElementById('course_amount').value=priceCents;
+  updatePrices(); checkFormValidity();
 }
 
-document.querySelectorAll('.qty-btn').forEach(function(btn) {
-  btn.addEventListener('click', function(e) {
+document.querySelectorAll('.qty-btn').forEach(function(btn){
+  btn.addEventListener('click',function(e){
     e.preventDefault();
-    var mealId = btn.dataset.mealId;
-    var input = document.querySelector('input[name="meal_qty_' + mealId + '"]');
-    var value = parseInt(input.value) || 0;
-    if (btn.classList.contains('qty-plus')) value++;
-    else if (btn.classList.contains('qty-minus') && value > 0) value--;
-    input.value = value;
-    updatePrices();
+    var mealId=btn.dataset.mealId;
+    var input=document.querySelector('input[name="meal_qty_'+mealId+'"]');
+    var value=parseInt(input.value)||0;
+    if(btn.classList.contains('qty-plus')) value++;
+    else if(btn.classList.contains('qty-minus')&&value>0) value--;
+    input.value=value; updatePrices();
   });
 });
 
-function updatePrices() {
-  document.getElementById('course-price').textContent = (selectedPrice || 0).toFixed(2) + ' €';
-  var mealTotal = 0;
-  mealsData.forEach(function(meal) {
-    var qty = parseInt(document.querySelector('input[name="meal_qty_' + meal.id + '"]').value) || 0;
-    mealTotal += qty * meal.price;
+function updatePrices(){
+  document.getElementById('course-price').textContent=(selectedPrice||0).toFixed(2)+' €';
+  var mealTotal=0;
+  mealsData.forEach(function(meal){
+    var qty=parseInt(document.querySelector('input[name="meal_qty_'+meal.id+'"]').value)||0;
+    mealTotal+=qty*meal.price;
   });
-  document.getElementById('meal-price').textContent = mealTotal.toFixed(2) + ' €';
-  var total = (selectedPrice || 0) + mealTotal;
-  document.getElementById('total-price').textContent = total.toFixed(2) + ' €';
-  var btn = document.querySelector('.submit-btn');
-  btn.textContent = total <= 0 && selectedTierId ? 'Confirmer mon inscription gratuite →' : 'Procéder au paiement (' + total.toFixed(2) + ' €) →';
+  document.getElementById('meal-price').textContent=mealTotal.toFixed(2)+' €';
+  var total=(selectedPrice||0)+mealTotal;
+  document.getElementById('total-price').textContent=total.toFixed(2)+' €';
+  var btn=document.querySelector('.submit-btn');
+  btn.textContent=total<=0&&selectedTierId?'Confirmer mon inscription gratuite →':'Procéder au paiement ('+total.toFixed(2)+' €) →';
 }
 
-function checkFormValidity() {
-  var prenom = document.getElementById('prenom').value.trim();
-  var nom = document.getElementById('nom').value.trim();
-  var email = document.getElementById('email').value.trim();
-  var telephone = document.getElementById('telephone').value.trim();
-  var dob = document.getElementById('date_naissance').value;
-  var sexe = document.getElementById('sexe').value;
-  document.querySelector('.submit-btn').disabled = !(selectedTierId && prenom && nom && email && telephone && dob && sexe);
+function checkFormValidity(){
+  var prenom=document.getElementById('prenom').value.trim();
+  var nom=document.getElementById('nom').value.trim();
+  var email=document.getElementById('email').value.trim();
+  var telephone=document.getElementById('telephone').value.trim();
+  var dob=document.getElementById('date_naissance').value;
+  var sexe=document.getElementById('sexe').value;
+  document.querySelector('.submit-btn').disabled=!(selectedTierId&&prenom&&nom&&email&&telephone&&dob&&sexe);
 }
 
-document.querySelectorAll('input, select').forEach(function(el) {
-  el.addEventListener('input', checkFormValidity);
-  el.addEventListener('change', checkFormValidity);
+document.querySelectorAll('input,select').forEach(function(el){
+  el.addEventListener('input',checkFormValidity);
+  el.addEventListener('change',checkFormValidity);
 });
 
-document.getElementById('inscription-form').addEventListener('submit', function() {
-  var btn = document.querySelector('.submit-btn');
-  btn.textContent = 'Redirection...';
-  btn.disabled = true;
+document.getElementById('inscription-form').addEventListener('submit',function(){
+  var btn=document.querySelector('.submit-btn');
+  btn.textContent='Redirection...'; btn.disabled=true;
 });
 
-updatePrices();
-checkFormValidity();
+updatePrices(); checkFormValidity();
 </script>
 </body>
 </html>
