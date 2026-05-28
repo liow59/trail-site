@@ -70,18 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $payer = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'telephone' => $telephone, 'date_naissance' => $dateNaiss, 'sexe' => $sexe];
 
-        if ($totalCents <= 0) {
-            // Gratuit : dossard + email direct
-            $mailer = new Mailer();
-            $dossard = $mailer->assignDossard($courseLabel);
-            $pdo->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
-            $mailer->sendConfirmationEmail(array_merge($payer, [
-                'course' => $courseLabel, 'dossard' => $dossard,
-                'ticket_url' => null, 'repas' => json_encode($repasData)
-            ]));
-            header('Location: /inscription.php?success=1');
-            exit;
-        }
+
 
         // Payant : créer checkout HelloAsso (pré-rempli avec les infos)
         $helloasso = new HelloAsso();

@@ -73,9 +73,15 @@ class HelloAsso {
             $totalCents += $amount;
         }
 
-        // Inscription gratuite
+        // Si gratuit, rediriger vers HelloAsso directement
         if ($totalCents <= 0) {
-            return ['free' => true, 'redirectUrl' => null];
+            $haUrl = 'https://www.helloasso.com/associations/' . $this->organizationSlug . '/evenements/' . $this->formSlug;
+            $params = http_build_query([
+                'firstName' => $payer['prenom'],
+                'lastName'  => $payer['nom'],
+                'email'     => $payer['email']
+            ]);
+            return ['free' => false, 'redirectUrl' => $haUrl . '?' . $params];
         }
 
         // URL de base fixe avec HTTPS
