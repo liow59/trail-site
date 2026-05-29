@@ -106,7 +106,8 @@ class HelloAsso {
                 'items' => $freeItems
             ];
 
-            $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
+            // Utiliser l'endpoint lié à l'événement pour apparaître dans la billetterie
+        $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/checkout-intents');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
@@ -150,7 +151,8 @@ class HelloAsso {
             'items' => $items
         ];
 
-        $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
+        // Utiliser l'endpoint lié à l'événement pour apparaître dans la billetterie
+        $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/forms/Event/' . $this->formSlug . '/checkout-intents');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));

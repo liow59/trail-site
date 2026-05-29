@@ -51,17 +51,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$prenom,$nom,$email,$telephone,$dateNaiss,$sexe,$courseLabel,$courseTierId,json_encode($repasData),$totalCents,$statut]);
         $inscriptionId = $pdo->lastInsertId();
 
-        // Toujours widget HelloAsso pour billetterie officielle
-        $_SESSION['inscription'] = [
-            'prenom'        => $prenom,
-            'nom'           => $nom,
-            'email'         => $email,
-            'course'        => $courseLabel,
-            'tierId'        => $courseTierId,
-            'inscriptionId' => $inscriptionId
-        ];
-        header('Location: /inscription.php?widget=1');
-        exit;
+        // Checkout via HelloAsso (endpoint événement pour billetterie)
+        $payer = ['prenom'=>$prenom,'nom'=>$nom,'email'=>$email,'telephone'=>$telephone,'date_naissance'=>$dateNaiss,'sexe'=>$sexe];
+        $selectedItems = [['tierId'=>$courseTierId,'label'=>$courseLabel,'amount'=>$courseAmount]];
+        foreach ($repasData as $r) {
+            for ($i=0;$i<$r['qty'];$i++) $selectedItems[] = ['label'=>$r['label'],'amount'=>intval($r['amount']/$r['qty'])];
+        }
+
+        if ($totalCents <= 0) {
+            // Gratuit : email direct
+            $mailer = new Mailer();
+            $dossard = $mailer->assignDossard($courseLabel);
+            $pdo->prepare("UPDATE inscriptions SET statut='free',dossard=? WHERE id=?")->execute([$dossard,$inscriptionId]);
+            $mailer->sendConfirmationEmail(['prenom'=>$prenom,'nom'=>$nom,'email'=>$email,'course'=>$courseLabel,'dossard'=>$dossard,'ticket_url'=>null,'repas'=>json_encode($repasData)]);
+            header('Location: /inscription.php?success=1');
+            exit;
+        }
+
+        $helloasso = new HelloAsso();
+        $checkout  = $helloasso->createCheckoutIntent($payer, $selectedItems);
+        if (!empty($checkout['id'])) $pdo->prepare("UPDATE inscriptions SET order_id=? WHERE id=?")->execute([$checkout['id'],$inscriptionId]);
+        $checkoutUrl = $checkout['redirectUrl'] ?? null;
+        if ($checkoutUrl) { header('Location: '.$checkoutUrl); exit; }
+        throw new Exception('URL de paiement non reçue');
 
     } catch (Exception $e) {
         $error = $e->getMessage();
