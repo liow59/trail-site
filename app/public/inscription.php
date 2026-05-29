@@ -7,7 +7,7 @@ $stats    = new Statistics();
 $formData = $stats->getFormData();
 
 $courses = [
-    'Course Enfant' => ['shortName'=>'3','unit'=>'km','color'=>'var(--sky)','total'=>30,'price'=>'Gratuit','infos'=>'Course Enfant · 8-11 ans'],
+    'Course Enfant' => ['shortName'=>'3.5','unit'=>'km','color'=>'var(--sky)','total'=>30,'price'=>'Gratuit','infos'=>'Course Enfant · 8-11 ans'],
     'Course 7.5km'  => ['shortName'=>'7.5','unit'=>'km','color'=>'var(--lime)','total'=>75,'price'=>'10 €','infos'=>'À partir de 12 ans · 150 D+'],
     'Course 15km'   => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'price'=>'15 €','infos'=>'À partir de 16 ans · 300 D+'],
 ];

@@ -8,7 +8,7 @@ $orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
 
 $courseExtras = [
     'Course Enfant' => [
-        'shortName' => '3', 'unit' => 'km', 'color' => 'var(--sky)', 'total' => 30,
+        'shortName'=>'3.5','unit'=>'km', 'color' => 'var(--sky)', 'total' => 30,
         'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
         'gpx' => '3km', 'urlParam' => '3km'
     ],
