@@ -1,4 +1,5 @@
-<?php 
+<?php
+session_start();
 require_once __DIR__ . '/../src/bootstrap.php';
 
 $stats = new Statistics();
@@ -14,6 +15,7 @@ $courseExtras = [
 $error   = null;
 $success = isset($_GET['success']);
 $payErr  = isset($_GET['error']);
+$showWidget = isset($_GET['widget']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -70,15 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
         $inscriptionId = $pdo->lastInsertId();
 
-        // 5. Gratuit : redirection vers HelloAsso (inscription officielle)
+        // 5. Gratuit : afficher widget HelloAsso avec données pré-remplies
         if ($totalCents <= 0) {
-            $haUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026';
-            $params = http_build_query([
-                'firstName' => $payer['prenom'],
-                'lastName'  => $payer['nom'],
-                'email'     => $payer['email']
-            ]);
-            header('Location: ' . $haUrl . '?' . $params);
+            // Stocker les données en session pour pré-remplir le widget
+            session_start();
+            $_SESSION['inscription'] = [
+                'prenom'    => $prenom,
+                'nom'       => $nom,
+                'email'     => $email,
+                'telephone' => $telephone,
+                'course'    => $courseLabel,
+                'inscriptionId' => $inscriptionId
+            ];
+            header('Location: /inscription.php?widget=1');
             exit;
         }
 
@@ -236,6 +242,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <button type="submit" class="submit-btn" disabled>Procéder au paiement →</button>
   </form>
+</section>
+<?php endif; ?>
+
+<?php if ($showWidget):
+    session_start();
+    $inscData = $_SESSION['inscription'] ?? [];
+    $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026/widget';
+?>
+<section class="section">
+  <div style="background:rgba(168,198,64,0.08);border:1px solid rgba(168,198,64,0.2);border-radius:4px;padding:1rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--sand);">
+    ✅ Vos informations ont été enregistrées. Confirmez votre inscription ci-dessous.
+  </div>
+  <div style="background:#fff;border-radius:8px;overflow:hidden;">
+    <iframe id="haWidget"
+      src="<?= $widgetUrl ?>?firstName=<?= urlencode($inscData['prenom'] ?? '') ?>&lastName=<?= urlencode($inscData['nom'] ?? '') ?>&email=<?= urlencode($inscData['email'] ?? '') ?>"
+      style="width:100%;min-height:700px;border:none;display:block;"
+      allowtransparency="true">
+    </iframe>
+  </div>
 </section>
 <?php endif; ?>
 
