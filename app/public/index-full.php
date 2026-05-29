@@ -109,7 +109,7 @@ $courseExtras = [
 <section class="section">
   <p class="section-tag">// Restauration</p>
   <h2 class="section-title">Repas d'après<br>course</h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:1.5rem;margin-bottom:2rem;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:1.5rem;margin-bottom:2rem;">
 <?php foreach ($formData['meals'] as $meal): ?>
     <a href="https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026" target="_blank" style="text-decoration:none;color:inherit;">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.75rem;display:flex;justify-content:space-between;align-items:center;">
