@@ -24,7 +24,7 @@
       <p style="font-family:'DM Mono',sans-serif;font-size:0.8rem;color:var(--lime);letter-spacing:0.15em;text-transform:uppercase;">🚧 Site en construction</p>
       <p style="font-size:0.85rem;color:var(--sand);margin-top:0.5rem;">Les inscriptions ouvriront bientôt</p>
     </div>
-    <a href="mailto:contact@vogue-challex.fr" style="font-family:'DM Mono',sans-serif;font-size:0.9rem;color:var(--lime);text-decoration:none;letter-spacing:0.08em;">✉ contact@vogue-challex.fr</a>
+    <a href="mailto:trail@vogue-challex.fr" style="font-family:'DM Mono',sans-serif;font-size:0.9rem;color:var(--lime);text-decoration:none;letter-spacing:0.08em;">✉ trail@vogue-challex.fr</a>
   </div>
 </section>
 
