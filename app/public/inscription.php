@@ -173,9 +173,12 @@ $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/even
   <form class="reg-form" method="POST" id="inscription-form">
     <p class="section-tag">// Étape 1 — Votre course</p>
     <div class="races-grid" style="margin-bottom:2rem;">
-<?php foreach ($orderMap as $orderedLabel):
+<?php
+// Fusionner courses + tests pour la boucle
+$allCourses = array_merge($formData['courses'], $formData['tests']);
+foreach ($orderMap as $orderedLabel):
     $course = null;
-    foreach ($formData['courses'] as $c) { if ($c['label'] === $orderedLabel) { $course = $c; break; } }
+    foreach ($allCourses as $c) { if ($c['label'] === $orderedLabel) { $course = $c; break; } }
     if (!$course) continue;
     $extras = $courseExtras[$orderedLabel] ?? null;
     if (!$extras) continue;
