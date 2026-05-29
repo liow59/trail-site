@@ -68,54 +68,6 @@ $courseExtras = [
   </div>
 </section>
 
-<!-- LIEU -->
-<section class="section">
-  <p class="section-tag">// Lieu de départ</p>
-  <h2 class="section-title">Où nous<br>trouver ?</h2>
-  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;">
-    <div style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,0.07);">
-      <span style="font-size:1.5rem;">📍</span>
-      <div>
-        <p style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);letter-spacing:0.05em;">Parking de la Halle</p>
-        <p style="font-size:1rem;color:var(--sand);">381 Rue de la Mairie, 01630 Challex, France</p>
-      </div>
-    </div>
-    <div id="lieu-map"></div>
-    <div style="padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
-      <a href="https://www.google.com/maps?q=5XMF%2B6C+Challex" target="_blank" style="background:var(--lime);color:var(--earth);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
-      <a href="https://waze.com/ul?ll=46.18186,5.97386&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
-    </div>
-  </div>
-</section>
-
-<!-- PARKINGS -->
-<section class="section" style="padding-top:0;">
-  <p class="section-tag">// Accès & Parkings</p>
-  <h2 class="section-title">Se garer</h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de l'Église</strong></div>
-      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
-      <a href="https://www.google.com/maps?q=5XMG%2B8G+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de la Halle</strong></div>
-      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Parking de la Halle, 01630 Challex</p>
-      <a href="https://www.google.com/maps?q=5XMF%2B6C+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Mairie</strong></div>
-      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
-      <a href="https://www.google.com/maps?q=5XJF%2BR4+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Craz</strong></div>
-      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Rue de la Craz, 01630 Challex</p>
-      <a href="https://www.google.com/maps?q=5XJC%2BPP+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
-    </div>
-  </div>
-</section>
-
 <!-- COURSES -->
 <section class="section">
   <p class="section-tag">// Les parcours</p>
@@ -171,6 +123,54 @@ $courseExtras = [
 <?php endforeach; ?>
   </div>
   <p style="text-align:center;color:var(--sand);font-size:0.85rem;">🍽 Repas d'après course disponible à la commande lors de l'inscription</p>
+</section>
+
+<!-- LIEU -->
+<section class="section">
+  <p class="section-tag">// Lieu de départ</p>
+  <h2 class="section-title">Où nous<br>trouver ?</h2>
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;">
+    <div style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,0.07);">
+      <span style="font-size:1.5rem;">📍</span>
+      <div>
+        <p style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);letter-spacing:0.05em;">Parking de la Halle</p>
+        <p style="font-size:1rem;color:var(--sand);">381 Rue de la Mairie, 01630 Challex, France</p>
+      </div>
+    </div>
+    <div id="lieu-map"></div>
+    <div style="padding:1.25rem 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+      <a href="https://www.google.com/maps?q=5XMF%2B6C+Challex" target="_blank" style="background:var(--lime);color:var(--earth);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">📍 Ouvrir dans Google Maps</a>
+      <a href="https://waze.com/ul?ll=46.18186,5.97386&navigate=yes" target="_blank" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:2px;text-decoration:none;letter-spacing:0.05em;">🚗 Ouvrir dans Waze</a>
+    </div>
+  </div>
+</section>
+
+<!-- PARKINGS -->
+<section class="section" style="padding-top:0;">
+  <p class="section-tag">// Accès & Parkings</p>
+  <h2 class="section-title">Se garer</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de l'Église</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
+      <a href="https://www.google.com/maps?q=5XMG%2B8G+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de la Halle</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Parking de la Halle, 01630 Challex</p>
+      <a href="https://www.google.com/maps?q=5XMF%2B6C+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Mairie</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
+      <a href="https://www.google.com/maps?q=5XJF%2BR4+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Craz</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Rue de la Craz, 01630 Challex</p>
+      <a href="https://www.google.com/maps?q=5XJC%2BPP+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+  </div>
 </section>
 
 <!-- POPUP GPX -->
