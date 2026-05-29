@@ -114,7 +114,7 @@ $courseExtras = [
     <a href="https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026" target="_blank" style="text-decoration:none;color:inherit;">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.75rem;display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--cream);letter-spacing:0.05em;">🥙 <?= htmlspecialchars($meal['label']) ?></div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--cream);letter-spacing:0.05em;">🥙 <?= htmlspecialchars(str_replace(' - Frites', '', $meal['label'])) ?></div>
         <div style="font-size:0.85rem;color:var(--sand);margin-top:0.25rem;">Frites · Salade · Tomate · Oignon</div>
       </div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--lime);"><?= number_format($meal['price'],2) ?> €</div>
