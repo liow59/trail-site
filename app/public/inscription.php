@@ -70,21 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
         $inscriptionId = $pdo->lastInsertId();
 
-        // 5. Gratuit : email direct, pas de paiement
+        // 5. Gratuit : redirection vers HelloAsso (inscription officielle)
         if ($totalCents <= 0) {
-            $mailer  = new Mailer();
-            $dossard = $mailer->assignDossard($courseLabel);
-            $pdo->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
-            $mailer->sendConfirmationEmail([
-                'prenom'     => $prenom,
-                'nom'        => $nom,
-                'email'      => $email,
-                'course'     => $courseLabel,
-                'dossard'    => $dossard,
-                'ticket_url' => null,
-                'repas'      => json_encode($repasData)
+            $haUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026';
+            $params = http_build_query([
+                'firstName' => $payer['prenom'],
+                'lastName'  => $payer['nom'],
+                'email'     => $payer['email']
             ]);
-            header('Location: /inscription.php?success=1');
+            header('Location: ' . $haUrl . '?' . $params);
             exit;
         }
 
