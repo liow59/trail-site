@@ -153,6 +153,24 @@ $courseExtras = [
   </div>
 </section>
 
+<!-- REPAS -->
+<section class="section">
+  <p class="section-tag">// Restauration</p>
+  <h2 class="section-title">Repas de<br>fin de course</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem;">
+<?php foreach ($formData['meals'] as $meal): ?>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.75rem;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--cream);letter-spacing:0.05em;">🥙 <?= htmlspecialchars($meal['label']) ?></div>
+        <div style="font-size:0.85rem;color:var(--sand);margin-top:0.25rem;">Servi après la course</div>
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--lime);"><?= number_format($meal['price'],2) ?> €</div>
+    </div>
+<?php endforeach; ?>
+  </div>
+  <p style="text-align:center;color:var(--sand);font-size:0.85rem;">🍽 Repas disponible à la commande lors de l'inscription</p>
+</section>
+
 <!-- POPUP GPX -->
 <div class="gpx-overlay" id="gpx-overlay">
   <div class="gpx-inner">
