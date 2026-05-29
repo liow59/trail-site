@@ -132,8 +132,27 @@ $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/even
     ✅ Bonjour <strong style="color:var(--cream)"><?= htmlspecialchars($inscData['prenom'] ?? '') ?> <?= htmlspecialchars($inscData['nom'] ?? '') ?></strong> — confirmez votre inscription à la <strong style="color:var(--lime)"><?= htmlspecialchars($inscData['course'] ?? '') ?></strong>
   </div>
   <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
+    <?php
+    // Mapping course -> tierId HelloAsso
+    $tierIds = [
+        'Course Enfant' => 20476860,
+        'Course 7.5km'  => 20476845,
+        'Course 15km'   => 20476854,
+    ];
+    $tierId = $tierIds[$inscData['course'] ?? ''] ?? 0;
+    
+    // Construire URL avec pré-sélection tier + pré-remplissage infos
+    $widgetParams = http_build_query([
+        'firstName' => $inscData['prenom'] ?? '',
+        'lastName'  => $inscData['nom'] ?? '',
+        'email'     => $inscData['email'] ?? '',
+    ]);
+    if ($tierId) {
+        $widgetParams .= '&defaultTierCount[' . $tierId . ']=1';
+    }
+    ?>
     <iframe
-      src="<?= $widgetUrl ?>?firstName=<?= urlencode($inscData['prenom'] ?? '') ?>&lastName=<?= urlencode($inscData['nom'] ?? '') ?>&email=<?= urlencode($inscData['email'] ?? '') ?>"
+      src="<?= $widgetUrl ?>?<?= $widgetParams ?>"
       style="width:100%;min-height:750px;border:none;display:block;"
       allowtransparency="true">
     </iframe>
