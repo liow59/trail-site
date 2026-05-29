@@ -5,8 +5,9 @@ require_once __DIR__ . '/../src/bootstrap.php';
 $stats = new Statistics();
 $formData = $stats->getFormData();
 
-$orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
+$orderMap = ['Course Test (payant)', 'Course Enfant', 'Course 7.5km', 'Course 15km'];
 $courseExtras = [
+    'Course Test (payant)' => ['shortName'=>'TEST','unit'=>'','color'=>'var(--rust)','total'=>5,'infos'=>[['🧪','Test paiement'],['💳','0.50 €']],'urlParam'=>'test'],
     'Course Enfant' => ['shortName'=>'3','unit'=>'km','color'=>'var(--sky)','total'=>30,'infos'=>[['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],'urlParam'=>'3km'],
     'Course 7.5km'  => ['shortName'=>'7.5','unit'=>'km','color'=>'var(--lime)','total'=>75,'infos'=>[['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],'urlParam'=>'7.5km'],
     'Course 15km'   => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'infos'=>[['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],'urlParam'=>'15km']
