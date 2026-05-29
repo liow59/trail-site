@@ -180,8 +180,8 @@ $courseExtras = [
 // CARTE LIEU
 var lieuMap = L.map('lieu-map');
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:18}).addTo(lieuMap);
-lieuMap.setView([46.18186, 5.97386], 17);
-L.circleMarker([46.18186, 5.97386],{radius:12,color:'#a8c640',fillColor:'#a8c640',fillOpacity:1,weight:3}).addTo(lieuMap).bindPopup('<b>Parking de la Halle</b><br>381 Rue de la Mairie').openPopup();
+lieuMap.setView([46.181799, 5.972645], 17);
+L.circleMarker([46.181799, 5.972645],{radius:12,color:'#a8c640',fillColor:'#a8c640',fillOpacity:1,weight:3}).addTo(lieuMap).bindPopup('<b>Parking de la Halle</b><br>381 Rue de la Mairie').openPopup();
 
 // GPX
 var gpxMap = null, gpxChart = null;
