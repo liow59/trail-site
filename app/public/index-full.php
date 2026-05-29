@@ -131,7 +131,7 @@ $courseExtras = [
     $total = $extras['total'];
     $pct = $total > 0 ? min(round(($course['registered'] / $total) * 100, 1), 100) : 0;
 ?>
-    <a href="/inscription.php?course=<?= $extras['urlParam'] ?>" style="text-decoration:none;color:inherit;">
+    <a href="https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026" target="_blank" style="text-decoration:none;color:inherit;">
       <div class="race-card">
         <div class="race-dist" style="font-size:2.5rem;color:<?= $color ?>"><?= $extras['shortName'] ?><small style="font-size:1.5rem"><?= $extras['unit'] ?></small></div>
         <div class="race-type">
@@ -159,6 +159,7 @@ $courseExtras = [
   <h2 class="section-title">Repas d'après<br>course</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem;">
 <?php foreach ($formData['meals'] as $meal): ?>
+    <a href="https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026" target="_blank" style="text-decoration:none;color:inherit;">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.75rem;display:flex;justify-content:space-between;align-items:center;">
       <div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--cream);letter-spacing:0.05em;">🥙 <?= htmlspecialchars($meal['label']) ?></div>
@@ -166,6 +167,7 @@ $courseExtras = [
       </div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--lime);"><?= number_format($meal['price'],2) ?> €</div>
     </div>
+    </a>
 <?php endforeach; ?>
   </div>
   <p style="text-align:center;color:var(--sand);font-size:0.85rem;">🍽 Repas d'après course disponible à la commande lors de l'inscription</p>
