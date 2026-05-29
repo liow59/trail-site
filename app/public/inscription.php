@@ -68,6 +68,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
         $inscriptionId = $pdo->lastInsertId();
 
+        // Inscription gratuite : email direct, pas de paiement
+        if ($totalCents <= 0) {
+            $mailer = new Mailer();
+            $dossard = $mailer->assignDossard($courseLabel);
+            $pdo->prepare("UPDATE inscriptions SET statut='free', dossard=? WHERE id=?")->execute([$dossard, $inscriptionId]);
+            $mailer->sendConfirmationEmail(array_merge($payer, [
+                'course'     => $courseLabel,
+                'dossard'    => $dossard,
+                'ticket_url' => null,
+                'repas'      => json_encode($repasData)
+            ]));
+            header('Location: /inscription.php?success=1');
+            exit;
+        }
+
         $payer = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'telephone' => $telephone, 'date_naissance' => $dateNaiss, 'sexe' => $sexe];
 
 
