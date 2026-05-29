@@ -196,7 +196,7 @@ $courseExtras = [
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
       <div style="font-size:1.5rem;margin-bottom:0.75rem;">🎽</div>
       <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--lime);margin-bottom:0.5rem;">Retrait des dossards</h3>
-      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">À partir de <strong style="color:var(--cream);">8h15</strong> sur place.</p>
+      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">À partir de <strong style="color:var(--cream);">8h15</strong> sur place.<br><br>Retrait anticipé possible le <strong style="color:var(--cream);">samedi de 14h00 à 18h00</strong> sur place.</p>
       <p style="color:var(--rust);font-size:0.85rem;margin-top:0.75rem;font-weight:600;">⚠ IMPORTANT : Retrait du dossard au minimum <strong>15 minutes</strong> avant le début de votre course.</p>
     </div>
 
