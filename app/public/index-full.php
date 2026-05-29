@@ -64,7 +64,7 @@ $courseExtras = [
       <span class="date-text">DIMANCHE 6 SEPTEMBRE 2026</span>
     </div>
     <p style="font-family:'DM Mono',sans-serif;font-size:0.85rem;color:var(--sand);letter-spacing:0.12em;margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
-    <a href="/inscription.php" class="cta-btn">S'inscrire maintenant</a>
+    <a href="https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026" target="_blank" class="cta-btn">S'inscrire maintenant</a>
   </div>
 </section>
 
