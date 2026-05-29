@@ -74,13 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /inscription.php?widget=1');
         exit;
 
-$inscData  = $_SESSION['inscription'] ?? [];
-$widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026/widget';
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inscription - Trail de la Vogue Challaisienne 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
