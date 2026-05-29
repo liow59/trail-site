@@ -8,7 +8,7 @@ $orderMap = ['Course Enfant', 'Course 7.5km', 'Course 15km'];
 
 $courseExtras = [
     'Course Enfant' => [
-        'shortName'=>'3.5','unit'=>'km', 'color' => 'var(--sky)', 'total' => 30,
+        'shortName'=>'3','unit'=>'km', 'color' => 'var(--sky)', 'total' => 30,
         'infos' => [['🕚','Départ à 11h00'],['👦','De 8 à 11 ans'],['👨‍👧','Accompagnement adulte possible']],
         'gpx' => '3km', 'urlParam' => '3km'
     ],
@@ -210,7 +210,7 @@ L.circleMarker([46.1828, 5.9729],{radius:12,color:'#a8c640',fillColor:'#a8c640',
 
 // GPX
 var gpxMap = null, gpxChart = null;
-var gpxFiles = {'3km':'/gpx/Course_7_5.gpx','7.5km':'/gpx/Course_7_5.gpx','15km':'/gpx/Course_7_5.gpx'};
+var gpxFiles = {'3km':'/gpx/COURSE_3km.gpx','7.5km':'/gpx/COURSE_7_5km.gpx','15km':'/gpx/COURSE_15km.gpx'};
 
 function openGpxPopup(course) {
   document.getElementById('gpx-overlay').classList.add('active');
