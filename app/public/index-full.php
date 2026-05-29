@@ -96,7 +96,7 @@ $courseExtras = [
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de l'Église</strong></div>
       <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Challex, Église, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/Eglise+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+      <a href="https://www.google.com/maps?q=5XMG%2B8G+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking de la Halle</strong></div>
