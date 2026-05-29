@@ -17,12 +17,9 @@ class HelloAsso {
 
     public function getAccessToken() {
         $cacheFile = '/tmp/helloasso_token.json';
-        
         if (file_exists($cacheFile)) {
             $cache = json_decode(file_get_contents($cacheFile), true);
-            if ($cache && $cache['expiry'] > time()) {
-                return $cache['token'];
-            }
+            if ($cache && $cache['expiry'] > time()) return $cache['token'];
         }
 
         $ch = curl_init('https://api.helloasso.com/oauth2/token');
@@ -39,28 +36,33 @@ class HelloAsso {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpCode !== 200) {
-            throw new Exception('Erreur authentification HelloAsso (HTTP ' . $httpCode . '): ' . $response);
-        }
+        if ($httpCode !== 200) throw new Exception('Erreur authentification HelloAsso (HTTP ' . $httpCode . '): ' . $response);
 
         $data = json_decode($response, true);
         $token = $data['access_token'] ?? null;
         if (!$token) throw new Exception('Token non reçu');
 
-        file_put_contents($cacheFile, json_encode([
-            'token' => $token,
-            'expiry' => time() + 1500
-        ]));
-
+        file_put_contents($cacheFile, json_encode(['token' => $token, 'expiry' => time() + 1500]));
         return $token;
     }
 
     public function createCheckoutIntent($payer, $selectedItems) {
         $token = $this->getAccessToken();
 
+        // Sanitizer les noms
+        $sanitize = function($str) {
+            $str = trim($str);
+            $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+            $str = preg_replace('/[^a-zA-Z0-9 \-\.\']/', '', $str);
+            return trim($str);
+        };
+
+        $payer['prenom'] = $sanitize($payer['prenom']);
+        $payer['nom']    = $sanitize($payer['nom']);
+
+        // Calculer le total
         $totalCents = 0;
         $items = [];
-        
         foreach ($selectedItems as $item) {
             $amount = intval($item['amount']);
             if ($amount <= 0) continue;
@@ -73,13 +75,12 @@ class HelloAsso {
             $totalCents += $amount;
         }
 
-        // Inscription gratuite : gérée localement
+        // Inscription gratuite : gérée localement sans HelloAsso
         if ($totalCents <= 0) {
             return ['free' => true, 'redirectUrl' => null];
         }
-        }
 
-        // URL de base fixe avec HTTPS
+        // URL de base
         $baseUrl = 'https://www.vogue-challex.fr';
 
         $payload = [
@@ -92,15 +93,10 @@ class HelloAsso {
             'containsDonation' => false,
             'payer' => [
                 'firstName' => $payer['prenom'],
-                'lastName' => $payer['nom'],
-                'email' => $payer['email']
+                'lastName'  => $payer['nom'],
+                'email'     => $payer['email']
             ],
-            'items' => $items,
-            'metadata' => [
-                'telephone' => $payer['telephone'],
-                'date_naissance' => $payer['date_naissance'],
-                'sexe' => $payer['sexe']
-            ]
+            'items' => $items
         ];
 
         $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
