@@ -216,6 +216,12 @@ $courseExtras = [
       <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">Cérémonie de remise des prix à <strong style="color:var(--cream);">12h00</strong> sur le lieu d'arrivée.</p>
     </div>
 
+    <div style="background:rgba(168,198,64,0.08);border:1px solid rgba(168,198,64,0.25);border-radius:4px;padding:1.5rem;">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem;">🥙</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--lime);margin-bottom:0.5rem;">Repas d'après course</h3>
+      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">Profitez d'un super repas d'après course, disponible <strong style="color:var(--cream);">sur commande lors de votre inscription</strong>. Un moment convivial pour célébrer votre performance !</p>
+    </div>
+
   </div>
 </section>
 
