@@ -101,12 +101,17 @@ $courseExtras = [
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Terrain de Foot</strong></div>
       <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">30-136 Rue de la Craz, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/30+Rue+de+la+Craz+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+      <a href="https://www.google.com/maps?q=5XMF%2B6C+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Mairie</strong></div>
       <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">236-310 Rue de la Mairie, 01630 Challex</p>
-      <a href="https://www.google.com/maps/search/236+Rue+de+la+Mairie+Challex+01630" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+      <a href="https://www.google.com/maps?q=5XJF%2BR4+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;"><span style="font-size:1.3rem;">🅿️</span><strong style="color:var(--lime);font-size:0.95rem;">Parking Rue de la Craz</strong></div>
+      <p style="font-size:0.85rem;color:var(--sand);margin-bottom:0.75rem;">Rue de la Craz, 01630 Challex</p>
+      <a href="https://www.google.com/maps?q=5XJC%2BPP+Challex" target="_blank" style="font-size:0.8rem;color:var(--lime);text-decoration:underline;">Voir sur la carte →</a>
     </div>
   </div>
 </section>
@@ -180,8 +185,8 @@ $courseExtras = [
 // CARTE LIEU
 var lieuMap = L.map('lieu-map');
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:18}).addTo(lieuMap);
-lieuMap.setView([46.18186, 5.97386], 17);
-L.circleMarker([46.18186, 5.97386],{radius:12,color:'#a8c640',fillColor:'#a8c640',fillOpacity:1,weight:3}).addTo(lieuMap).bindPopup('<b>Parking de la Halle</b><br>381 Rue de la Mairie').openPopup();
+lieuMap.setView([46.1828, 5.9729], 17);
+L.circleMarker([46.1828, 5.9729],{radius:12,color:'#a8c640',fillColor:'#a8c640',fillOpacity:1,weight:3}).addTo(lieuMap).bindPopup('<b>Parking de la Halle</b><br>381 Rue de la Mairie').openPopup();
 
 // GPX
 var gpxMap = null, gpxChart = null;
