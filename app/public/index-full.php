@@ -14,7 +14,7 @@ $courseExtras = [
     ],
     'Course 7.5km' => [
         'shortName' => '7.5', 'unit' => 'km', 'color' => 'var(--lime)', 'total' => 75,
-        'infos' => [['🕙','Départ à 10h00'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
+        'infos' => [['🕙','Départ à 9h30'],['🏃','À partir de 12 ans'],['⛰','150 D+']],
         'gpx' => '7.5km', 'urlParam' => '7.5km'
     ],
     'Course 15km' => [
