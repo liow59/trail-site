@@ -187,6 +187,38 @@ $courseExtras = [
   </div>
 </div>
 
+<!-- INFOS -->
+<section class="section">
+  <p class="section-tag">// Informations pratiques</p>
+  <h2 class="section-title">Plus<br>d'infos</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;">
+    
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem;">🎽</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--lime);margin-bottom:0.5rem;">Retrait des dossards</h3>
+      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">À partir de <strong style="color:var(--cream);">8h15</strong> sur place.</p>
+      <p style="color:var(--rust);font-size:0.85rem;margin-top:0.75rem;font-weight:600;">⚠ IMPORTANT : Retrait du dossard au minimum <strong>15 minutes</strong> avant le début de votre course.</p>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem;">💧</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--lime);margin-bottom:0.5rem;">Ravitaillement</h3>
+      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">
+        <span style="color:var(--sky);">3km</span> — Ravitaillement à l'arrivée<br>
+        <span style="color:var(--lime);">7.5km</span> — Ravitaillement à l'arrivée<br>
+        <span style="color:#e07850;">15km</span> — Ravitaillement à 7.5km + arrivée
+      </p>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem;">🏆</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--lime);margin-bottom:0.5rem;">Remise des prix</h3>
+      <p style="color:var(--sand);font-size:0.9rem;line-height:1.6;">Cérémonie de remise des prix à <strong style="color:var(--cream);">12h00</strong> sur le lieu d'arrivée.</p>
+    </div>
+
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section class="section" style="text-align:center;">
   <p class="section-tag">// Contact</p>
