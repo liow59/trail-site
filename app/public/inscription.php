@@ -135,15 +135,7 @@ $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/even
   </div>
   <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
     <?php
-    // Mapping course -> tierId HelloAsso
-    $tierIds = [
-        'Course Enfant' => 20476860,
-        'Course 7.5km'  => 20476845,
-        'Course 15km'   => 20476854,
-    ];
-    $tierId = $tierIds[$inscData['course'] ?? ''] ?? 0;
-    
-    // Construire URL avec pré-sélection tier + pré-remplissage infos
+    $tierId = $inscData['tierId'] ?? 0;
     $widgetParams = http_build_query([
         'firstName' => $inscData['prenom'] ?? '',
         'lastName'  => $inscData['nom'] ?? '',
@@ -154,10 +146,25 @@ $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/even
     }
     ?>
     <iframe
+      id="helloasso-widget"
       src="<?= $widgetUrl ?>?<?= $widgetParams ?>"
       style="width:100%;min-height:750px;border:none;display:block;"
-      allowtransparency="true">
+      allowtransparency="true"
+      scrolling="auto">
     </iframe>
+    <script>
+    // Écouter les messages HelloAsso pour détecter la fin d'inscription
+    window.addEventListener('message', function(e) {
+        if (e.origin.indexOf('helloasso') !== -1) {
+            if (e.data && (e.data.type === 'resize' || e.data.action === 'scrollTop')) return;
+            console.log('HelloAsso message:', e.data);
+            // Rediriger vers succès si paiement confirmé
+            if (e.data && e.data.type === 'payment-success') {
+                window.location.href = '/inscription.php?success=1';
+            }
+        }
+    });
+    </script>
   </div>
 </section>
 
