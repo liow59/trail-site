@@ -12,14 +12,13 @@ $courseExtras = [
     'Course 15km'   => ['shortName'=>'15','unit'=>'km','color'=>'#e07850','total'=>75,'infos'=>[['🕘','Départ à 9h00'],['🏃','À partir de 16 ans'],['🔄','2 boucles · 300 D+']],'urlParam'=>'15km']
 ];
 
-$error   = null;
-$success = isset($_GET['success']);
-$payErr  = isset($_GET['error']);
+$error      = null;
+$success    = isset($_GET['success']);
+$payErr     = isset($_GET['error']);
 $showWidget = isset($_GET['widget']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // 1. Récupérer toutes les données
         $prenom       = trim($_POST['prenom'] ?? '');
         $nom          = trim($_POST['nom'] ?? '');
         $email        = trim($_POST['email'] ?? '');
@@ -32,17 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $courseTierId = intval($_POST['course_tier_id'] ?? 0);
         $courseAmount = intval($_POST['course_amount'] ?? 0);
 
-        // 2. Tableau payer
-        $payer = [
-            'prenom'         => $prenom,
-            'nom'            => $nom,
-            'email'          => $email,
-            'telephone'      => $telephone,
-            'date_naissance' => $dateNaiss,
-            'sexe'           => $sexe
-        ];
+        $payer = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'telephone' => $telephone, 'date_naissance' => $dateNaiss, 'sexe' => $sexe];
 
-        // 3. Items sélectionnés
         $selectedItems = [];
         $repasData     = [];
 
@@ -66,41 +56,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $totalCents = array_sum(array_column($selectedItems, 'amount'));
         $statut     = $totalCents <= 0 ? 'free' : 'pending';
 
-        // 4. Sauvegarder en DB
         $pdo  = new PDO('mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';charset=utf8mb4', getenv('DB_USER'), getenv('DB_PASS'));
         $stmt = $pdo->prepare('INSERT INTO inscriptions (prenom, nom, email, telephone, date_naissance, sexe, course, tier_id, repas, total_cents, statut) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
         $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
         $inscriptionId = $pdo->lastInsertId();
 
-        // 5. Gratuit : afficher widget HelloAsso avec données pré-remplies
         if ($totalCents <= 0) {
-            // Stocker les données en session pour pré-remplir le widget
-            session_start();
-            $_SESSION['inscription'] = [
-                'prenom'    => $prenom,
-                'nom'       => $nom,
-                'email'     => $email,
-                'telephone' => $telephone,
-                'course'    => $courseLabel,
-                'inscriptionId' => $inscriptionId
-            ];
+            // Gratuit : widget HelloAsso intégré
+            $_SESSION['inscription'] = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'course' => $courseLabel, 'inscriptionId' => $inscriptionId];
             header('Location: /inscription.php?widget=1');
             exit;
         }
 
-        // 6. Payant : checkout HelloAsso
-        $helloasso  = new HelloAsso();
-        $checkout   = $helloasso->createCheckoutIntent($payer, $selectedItems);
+        // Payant : checkout HelloAsso
+        $helloasso = new HelloAsso();
+        $checkout  = $helloasso->createCheckoutIntent($payer, $selectedItems);
 
         if (!empty($checkout['id'])) {
             $pdo->prepare("UPDATE inscriptions SET order_id=? WHERE id=?")->execute([$checkout['id'], $inscriptionId]);
         }
 
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
-        if ($checkoutUrl) {
-            header('Location: ' . $checkoutUrl);
-            exit;
-        }
+        if ($checkoutUrl) { header('Location: ' . $checkoutUrl); exit; }
 
         throw new Exception('URL de paiement non reçue');
 
@@ -108,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = $e->getMessage();
     }
 }
+
+$inscData  = $_SESSION['inscription'] ?? [];
+$widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026/widget';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -123,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="page-header">
   <a href="/" class="back-link">← Retour à l'accueil</a>
   <h1>Inscription</h1>
-  <p>Remplissez le formulaire puis procédez au paiement</p>
+  <p><?= $showWidget ? 'Confirmez votre inscription' : 'Remplissez le formulaire puis procédez au paiement' ?></p>
 </div>
 
 <?php if ($success): ?>
@@ -135,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="/" class="cta-btn">Retour à l'accueil</a>
   </div>
 </div>
+
 <?php elseif ($payErr): ?>
 <div class="section">
   <div style="background:rgba(196,68,10,0.15);border:1px solid var(--rust);border-radius:4px;padding:2rem;text-align:center;max-width:600px;margin:0 auto;">
@@ -144,6 +125,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="/inscription.php" class="cta-btn">Réessayer</a>
   </div>
 </div>
+
+<?php elseif ($showWidget): ?>
+<section class="section">
+  <div style="background:rgba(168,198,64,0.08);border:1px solid rgba(168,198,64,0.2);border-radius:4px;padding:1rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--sand);">
+    ✅ Bonjour <strong style="color:var(--cream)"><?= htmlspecialchars($inscData['prenom'] ?? '') ?> <?= htmlspecialchars($inscData['nom'] ?? '') ?></strong> — confirmez votre inscription à la <strong style="color:var(--lime)"><?= htmlspecialchars($inscData['course'] ?? '') ?></strong>
+  </div>
+  <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
+    <iframe
+      src="<?= $widgetUrl ?>?firstName=<?= urlencode($inscData['prenom'] ?? '') ?>&lastName=<?= urlencode($inscData['nom'] ?? '') ?>&email=<?= urlencode($inscData['email'] ?? '') ?>"
+      style="width:100%;min-height:750px;border:none;display:block;"
+      allowtransparency="true">
+    </iframe>
+  </div>
+</section>
+
 <?php else: ?>
 <section class="section">
 
@@ -154,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php endif; ?>
 
   <form class="reg-form" method="POST" id="inscription-form">
-
     <p class="section-tag">// Étape 1 — Votre course</p>
     <div class="races-grid" style="margin-bottom:2rem;">
 <?php foreach ($orderMap as $orderedLabel):
@@ -240,27 +235,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       🔒 Paiement sécurisé
     </div>
 
-    <button type="submit" class="submit-btn" disabled>Procéder au paiement →</button>
+    <button type="submit" class="submit-btn" disabled>Procéder →</button>
   </form>
-</section>
-<?php endif; ?>
-
-<?php if ($showWidget):
-    session_start();
-    $inscData = $_SESSION['inscription'] ?? [];
-    $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026/widget';
-?>
-<section class="section">
-  <div style="background:rgba(168,198,64,0.08);border:1px solid rgba(168,198,64,0.2);border-radius:4px;padding:1rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--sand);">
-    ✅ Vos informations ont été enregistrées. Confirmez votre inscription ci-dessous.
-  </div>
-  <div style="background:#fff;border-radius:8px;overflow:hidden;">
-    <iframe id="haWidget"
-      src="<?= $widgetUrl ?>?firstName=<?= urlencode($inscData['prenom'] ?? '') ?>&lastName=<?= urlencode($inscData['nom'] ?? '') ?>&email=<?= urlencode($inscData['email'] ?? '') ?>"
-      style="width:100%;min-height:700px;border:none;display:block;"
-      allowtransparency="true">
-    </iframe>
-  </div>
 </section>
 <?php endif; ?>
 
@@ -269,8 +245,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </footer>
 
 <script>
-var mealsData = <?= json_encode(array_map(function($m){return['id'=>$m['id'],'price'=>$m['price'],'priceCents'=>$m['priceCents']];},$formData['meals'])) ?>;
-var selectedTierId=null, selectedPrice=0;
+var mealsData=<?= json_encode(array_map(function($m){return['id'=>$m['id'],'price'=>$m['price'],'priceCents'=>$m['priceCents']];},$formData['meals'])) ?>;
+var selectedTierId=null,selectedPrice=0;
 var urlParams=new URLSearchParams(window.location.search);
 var preselect=urlParams.get('course');
 var preselectionMap={'3km':'Course Enfant','7.5km':'Course 7.5km','15km':'Course 15km'};
@@ -316,10 +292,13 @@ function updatePrices(){
   var total=(selectedPrice||0)+mealTotal;
   document.getElementById('total-price').textContent=total.toFixed(2)+' €';
   var btn=document.querySelector('.submit-btn');
+  if(!btn) return;
   btn.textContent=total<=0&&selectedTierId?'Confirmer mon inscription gratuite →':'Procéder au paiement ('+total.toFixed(2)+' €) →';
 }
 
 function checkFormValidity(){
+  var btn=document.querySelector('.submit-btn');
+  if(!btn) return;
   var ok=selectedTierId
     &&document.getElementById('prenom').value.trim()
     &&document.getElementById('nom').value.trim()
@@ -327,7 +306,7 @@ function checkFormValidity(){
     &&document.getElementById('telephone').value.trim()
     &&document.getElementById('date_naissance').value
     &&document.getElementById('sexe').value;
-  document.querySelector('.submit-btn').disabled=!ok;
+  btn.disabled=!ok;
 }
 
 document.querySelectorAll('input,select').forEach(function(el){
@@ -335,9 +314,10 @@ document.querySelectorAll('input,select').forEach(function(el){
   el.addEventListener('change',checkFormValidity);
 });
 
-document.getElementById('inscription-form').addEventListener('submit',function(){
+var form=document.getElementById('inscription-form');
+if(form) form.addEventListener('submit',function(){
   var btn=document.querySelector('.submit-btn');
-  btn.textContent='⏳ Traitement en cours...'; btn.disabled=true;
+  btn.textContent='⏳ Traitement...'; btn.disabled=true;
 });
 
 updatePrices(); checkFormValidity();
