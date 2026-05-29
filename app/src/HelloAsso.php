@@ -75,8 +75,59 @@ class HelloAsso {
             $totalCents += $amount;
         }
 
-        // Inscription gratuite : gérée localement sans HelloAsso
+        // Inscription gratuite : checkout-intent avec priceCategory Free
         if ($totalCents <= 0) {
+            $freeItems = [];
+            foreach ($selectedItems as $item) {
+                $freeItems[] = [
+                    'name'          => $item['label'],
+                    'priceCategory' => 'Free',
+                    'amount'        => 0,
+                    'type'          => 'Registration'
+                ];
+            }
+
+            $host    = $_SERVER['HTTP_HOST'] ?? 'www.vogue-challex.fr';
+            $baseUrl = 'https://www.vogue-challex.fr';
+
+            $payload = [
+                'totalAmount'      => 0,
+                'initialAmount'    => 0,
+                'itemName'         => 'Trail de la Vogue Challaisienne 2026',
+                'backUrl'          => $baseUrl . '/inscription.php',
+                'errorUrl'         => $baseUrl . '/inscription.php?error=1',
+                'returnUrl'        => $baseUrl . '/inscription.php?success=1',
+                'containsDonation' => false,
+                'payer'            => [
+                    'firstName' => $payer['prenom'],
+                    'lastName'  => $payer['nom'],
+                    'email'     => $payer['email']
+                ],
+                'items' => $freeItems
+            ];
+
+            $ch = curl_init($this->apiUrl . '/organizations/' . $this->organizationSlug . '/checkout-intents');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $token,
+                'Content-Type: application/json'
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            // Si checkout-intent fonctionne, rediriger
+            if ($httpCode === 200 || $httpCode === 201) {
+                $data = json_decode($response, true);
+                if (!empty($data['redirectUrl'])) {
+                    return $data;
+                }
+            }
+
+            // Sinon fallback : widget intégré
             return ['free' => true, 'redirectUrl' => null];
         }
 

@@ -61,14 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$prenom, $nom, $email, $telephone, $dateNaiss, $sexe, $courseLabel, $courseTierId, json_encode($repasData), $totalCents, $statut]);
         $inscriptionId = $pdo->lastInsertId();
 
-        if ($totalCents <= 0) {
-            // Gratuit : widget HelloAsso intégré
-            $_SESSION['inscription'] = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'course' => $courseLabel, 'inscriptionId' => $inscriptionId];
-            header('Location: /inscription.php?widget=1');
-            exit;
-        }
-
-        // Payant : checkout HelloAsso
+        // Créer checkout HelloAsso (gratuit ou payant)
         $helloasso = new HelloAsso();
         $checkout  = $helloasso->createCheckoutIntent($payer, $selectedItems);
 
@@ -76,8 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare("UPDATE inscriptions SET order_id=? WHERE id=?")->execute([$checkout['id'], $inscriptionId]);
         }
 
+        // Si checkout réussi (payant ou gratuit via API)
         $checkoutUrl = $checkout['redirectUrl'] ?? null;
         if ($checkoutUrl) { header('Location: ' . $checkoutUrl); exit; }
+
+        // Fallback gratuit : widget intégré
+        if ($totalCents <= 0) {
+            $_SESSION['inscription'] = ['prenom' => $prenom, 'nom' => $nom, 'email' => $email, 'course' => $courseLabel, 'inscriptionId' => $inscriptionId];
+            header('Location: /inscription.php?widget=1');
+            exit;
+        }
 
         throw new Exception('URL de paiement non reçue');
 
