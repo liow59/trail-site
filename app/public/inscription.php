@@ -74,13 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /inscription.php?widget=1');
         exit;
 
-        throw new Exception('URL de paiement non reçue');
-
-    } catch (Exception $e) {
-        $error = $e->getMessage();
-    }
-}
-
 $inscData  = $_SESSION['inscription'] ?? [];
 $widgetUrl = 'https://www.helloasso.com/associations/la-vogue-challaisienne/evenements/trail-de-la-vogue-challaisienne-2026/widget';
 ?>
