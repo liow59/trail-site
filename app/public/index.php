@@ -237,7 +237,7 @@ $courseExtras = [
   <p class="section-tag">// Contact</p>
   <h2 class="section-title">Une question ?</h2>
   <p style="color:var(--sand);margin-bottom:1rem;">Contactez-nous par email</p>
-  <a href="mailto:trail@vogue-challex.fr" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);text-decoration:none;letter-spacing:0.05em;">trail@vogue-challex.fr</a>
+  <a href="mailto:contact@vogue-challex.fr" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--lime);text-decoration:none;letter-spacing:0.05em;">contact@vogue-challex.fr</a>
 </section>
 
 <footer style="text-align:center;padding:2rem;color:var(--sand);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1);margin-top:2rem;">
