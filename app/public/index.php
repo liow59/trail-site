@@ -60,7 +60,14 @@ $courseExtras = [
     <h1><span style="display:inline-block;font-size:0.7em;margin-right:0.3em;color:var(--lime);">▲</span>TRAIL<span style="display:inline-block;font-size:0.7em;margin-left:0.3em;color:var(--lime);">▲</span><br><span class="text-lime">DE LA</span><br>VOGUE<br>CHALLAISIENNE</h1>
     <p class="subtitle">COURSE NATURE — 6 SEPTEMBRE 2026</p>
     <div class="hero-date-box">
-      <span style="font-family:'DM Mono',monospace;font-size:0.9rem;color:var(--earth);font-weight:700;">6 SEP</span>
+      <span style="display:inline-flex;align-items:center;margin-right:0.3rem;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--earth);">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+    </span>
       <span class="date-text">DIMANCHE 6 SEPTEMBRE 2026</span>
     </div>
     <p style="font-family:'DM Mono',sans-serif;font-size:0.85rem;color:var(--sand);letter-spacing:0.12em;margin-bottom:1.5rem;">⏱ Course non chronométrée</p>
