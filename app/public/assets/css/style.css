@@ -692,3 +692,60 @@ body {
   background: #1a1208;
   color: #f4ede0;
 }
+
+/* ===== OPTIMISATION MOBILE ===== */
+@media(max-width: 768px) {
+
+  /* Hero */
+  .hero { padding: 1.5rem 1rem; min-height: 100svh; }
+  .hero-content h1 { font-size: clamp(2.8rem, 13vw, 6rem); line-height: 0.85; }
+  .badge { font-size: 1rem; padding: 0.3rem 0.75rem; }
+  .date-text { font-size: 1.4rem !important; }
+  .subtitle { font-size: 0.65rem; letter-spacing: 0.1em; }
+  .cta-btn { padding: 0.75rem 1.5rem; font-size: 0.85rem; }
+
+  /* Sections */
+  .section { padding: 2rem 1rem; }
+  .section-title { font-size: clamp(1.8rem, 8vw, 3rem); }
+
+  /* Cartes courses */
+  .races-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .race-card, .race-card-preview { padding: 1.25rem; }
+  .race-dist { font-size: 2rem !important; }
+
+  /* Repas */
+  .repas-row { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+  .repas-qty { align-self: flex-end; }
+
+  /* Formulaire */
+  .form-row { grid-template-columns: 1fr; }
+  .page-header { padding: 1rem; margin-bottom: 1.5rem; }
+  .page-header h1 { font-size: 1.8rem; }
+
+  /* Parkings */
+  .section div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+
+  /* Carte Leaflet */
+  #lieu-map { height: 220px; }
+  #gpx-map { height: 40vh; }
+  #gpx-elevation-container { height: 140px; }
+  .gpx-stats { gap: 1rem; }
+  .gpx-stat-value { font-size: 1.5rem; }
+  .gpx-inner { padding: 0.75rem; }
+
+  /* Prix summary */
+  .price-summary { padding: 0.75rem 1rem; }
+  .price-total span { font-size: 1.2rem; }
+
+  /* Footer */
+  footer { padding: 1.5rem 1rem; font-size: 0.8rem; }
+}
+
+@media(max-width: 400px) {
+  .hero-content h1 { font-size: clamp(2.2rem, 11vw, 4rem); }
+  .badge { font-size: 0.85rem; }
+  .date-text { font-size: 1.1rem !important; }
+  .race-dist { font-size: 1.8rem !important; }
+  .qty-btn { width: 32px; height: 32px; }
+  .qty-input { width: 40px; height: 32px; }
+}
