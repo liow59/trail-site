@@ -31,6 +31,9 @@ do {
 
     foreach ($data['data'] ?? [] as $item) {
         if (($item['state'] ?? '') === 'Canceled') continue;
+        $name = strtolower($item['name'] ?? '');
+        if (stripos($name, 'repas') !== false) continue;
+        if (stripos($name, 'test') !== false) continue;
         $participants[] = $item;
     }
 
