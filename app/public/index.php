@@ -242,6 +242,7 @@ $courseExtras = [
 
 <footer style="text-align:center;padding:2rem;color:var(--sand);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1);margin-top:2rem;">
   <p>© 2026 Vogue Challaisienne · <a href="https://www.vogue-challex.fr" style="color:var(--lime);text-decoration:none;">www.vogue-challex.fr</a></p>
+  <p style="margin-top:0.5rem;"><a href="/participants2026.php?key=Vogue2026" style="color:var(--sand);text-decoration:none;font-size:0.8rem;opacity:0.6;">📋 Liste des participants</a></p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
